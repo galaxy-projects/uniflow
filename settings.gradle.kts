@@ -6,3 +6,5 @@
  */
 
 rootProject.name = "uniflow"
+
+include("api")
