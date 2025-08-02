@@ -1,6 +1,5 @@
-package org.galaxy.uniflow.api;
+package org.galaxy.uniflow.api.methods;
 
-import org.galaxy.uniflow.api.methods.UniMethodSignature;
 import org.galaxy.uniflow.api.types.UniTypeName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

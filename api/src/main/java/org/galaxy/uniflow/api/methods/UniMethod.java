@@ -1,6 +1,7 @@
-package org.galaxy.uniflow.api;
+package org.galaxy.uniflow.api.methods;
 
-import org.galaxy.uniflow.api.methods.UniMethodSignature;
+import org.galaxy.uniflow.api.UniBlock;
+import org.galaxy.uniflow.api.UniMember;
 import org.galaxy.uniflow.api.parameters.UniParameterList;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeList;
