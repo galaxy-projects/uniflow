@@ -2,7 +2,7 @@ package org.galaxy.uniflow.api;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface UniImportStatement extends UniElement {
+public interface UniImport extends UniElement {
 
     boolean isGroup();
 

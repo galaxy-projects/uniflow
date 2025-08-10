@@ -1,0 +1,12 @@
+package org.galaxy.uniflow.api.elements;
+
+import org.galaxy.uniflow.api.UniList;
+import org.jetbrains.annotations.NotNull;
+
+public interface UniCaseList extends UniList<UniCase> {
+
+    default @NotNull UniCase @NotNull [] getCases() {
+        return get();
+    }
+
+}

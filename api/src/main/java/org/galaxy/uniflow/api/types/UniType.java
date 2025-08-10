@@ -1,3 +1,5 @@
 package org.galaxy.uniflow.api.types;
 
-public interface UniType {}
+import org.galaxy.uniflow.api.UniElement;
+
+public interface UniType extends UniElement {}
