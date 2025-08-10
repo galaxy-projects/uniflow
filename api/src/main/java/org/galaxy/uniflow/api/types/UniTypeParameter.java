@@ -7,7 +7,7 @@ public interface UniTypeParameter extends UniType, UniAnnotationHolder {
 
     @NotNull UniTypeName getName();
 
-    @NotNull UniClassType getType();
+    @NotNull UniType getType();
 
     @NotNull UniTypeList getExtends();
 
