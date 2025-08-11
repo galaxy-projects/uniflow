@@ -1,6 +1,5 @@
-package org.galaxy.uniflow.api.initializers;
+package org.galaxy.uniflow.api;
 
-import org.galaxy.uniflow.api.UniMember;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.jetbrains.annotations.NotNull;
 

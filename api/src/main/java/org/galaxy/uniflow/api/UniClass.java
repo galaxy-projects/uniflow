@@ -1,9 +1,9 @@
 package org.galaxy.uniflow.api;
 
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
-import org.galaxy.uniflow.api.fields.UniFieldList;
-import org.galaxy.uniflow.api.initializers.UniClassInitializerList;
-import org.galaxy.uniflow.api.methods.UniMethodList;
+import org.galaxy.uniflow.api.lists.UniClassInitializerList;
+import org.galaxy.uniflow.api.lists.UniFieldList;
+import org.galaxy.uniflow.api.lists.UniMethodList;
 import org.galaxy.uniflow.api.modifiers.UniModifierHolder;
 import org.galaxy.uniflow.api.types.UniTypeList;
 import org.galaxy.uniflow.api.types.UniTypeName;

@@ -1,6 +1,6 @@
 package org.galaxy.uniflow.api.statements;
 
-import org.galaxy.uniflow.api.elements.UniCaseList;
+import org.galaxy.uniflow.api.lists.UniCaseList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,5 +1,6 @@
-package org.galaxy.uniflow.api.parameters;
+package org.galaxy.uniflow.api.lists;
 
+import org.galaxy.uniflow.api.UniParameter;
 import org.galaxy.uniflow.api.types.UniTypeName;
 import org.jetbrains.annotations.NotNull;
 

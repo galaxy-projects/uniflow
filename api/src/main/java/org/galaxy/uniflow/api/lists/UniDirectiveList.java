@@ -1,4 +1,4 @@
-package org.galaxy.uniflow.api.elements;
+package org.galaxy.uniflow.api.lists;
 
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;

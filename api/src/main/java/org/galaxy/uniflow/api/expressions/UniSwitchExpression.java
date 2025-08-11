@@ -1,6 +1,6 @@
 package org.galaxy.uniflow.api.expressions;
 
-import org.galaxy.uniflow.api.elements.UniCaseList;
+import org.galaxy.uniflow.api.lists.UniCaseList;
 import org.jetbrains.annotations.NotNull;
 
 public interface UniSwitchExpression extends UniExpression {

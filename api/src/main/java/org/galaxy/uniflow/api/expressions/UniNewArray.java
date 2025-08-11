@@ -2,6 +2,7 @@ package org.galaxy.uniflow.api.expressions;
 
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
+import org.galaxy.uniflow.api.lists.UniExpressionList;
 import org.galaxy.uniflow.api.types.UniType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

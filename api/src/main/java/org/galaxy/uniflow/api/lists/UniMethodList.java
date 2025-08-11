@@ -1,18 +1,19 @@
-package org.galaxy.uniflow.api.methods;
+package org.galaxy.uniflow.api.lists;
 
+import org.galaxy.uniflow.api.UniList;
+import org.galaxy.uniflow.api.UniMethod;
+import org.galaxy.uniflow.api.UniMethodSignature;
 import org.galaxy.uniflow.api.types.UniTypeName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface UniMethodList {
+public interface UniMethodList extends UniList<UniMethod> {
 
-    @NotNull UniMethod @NotNull [] getMethods();
-
-    void addMethod(@NotNull UniMethod uniMethod);
+    default @NotNull UniMethod @NotNull [] getMethods() {
+        return get();
+    }
 
     void removeMethod(@NotNull UniMethodSignature signature);
-
-    void removeMethod(@NotNull UniMethod uniMethod);
 
     @NotNull UniMethod @NotNull [] getMethods(@NotNull UniTypeName name);
 

@@ -2,6 +2,7 @@ package org.galaxy.uniflow.api.expressions;
 
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
+import org.galaxy.uniflow.api.lists.UniExpressionList;
 import org.jetbrains.annotations.NotNull;
 
 public interface UniMethodInvocation extends UniExpression {

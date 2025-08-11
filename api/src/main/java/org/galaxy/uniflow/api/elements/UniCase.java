@@ -1,7 +1,7 @@
 package org.galaxy.uniflow.api.elements;
 
 import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.expressions.UniExpressionList;
+import org.galaxy.uniflow.api.lists.UniExpressionList;
 import org.galaxy.uniflow.api.statements.UniStatementList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

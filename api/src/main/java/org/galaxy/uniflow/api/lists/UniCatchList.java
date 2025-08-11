@@ -1,6 +1,7 @@
-package org.galaxy.uniflow.api.elements;
+package org.galaxy.uniflow.api.lists;
 
 import org.galaxy.uniflow.api.UniList;
+import org.galaxy.uniflow.api.elements.UniCatch;
 import org.jetbrains.annotations.NotNull;
 
 public interface UniCatchList extends UniList<UniCatch> {
