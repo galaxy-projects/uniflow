@@ -1,11 +1,237 @@
 package org.galaxy.uniflow.api;
 
-import org.galaxy.uniflow.api.types.UniClassType;
+import org.galaxy.uniflow.api.annotations.UniAnnotation;
+import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
+import org.galaxy.uniflow.api.elements.UniCase;
+import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.expressions.*;
+import org.galaxy.uniflow.api.expressions.pattern.UniBindingPattern;
+import org.galaxy.uniflow.api.expressions.pattern.UniPattern;
+import org.galaxy.uniflow.api.modifiers.UniModifier;
+import org.galaxy.uniflow.api.modules.UniModule;
+import org.galaxy.uniflow.api.modules.directives.*;
+import org.galaxy.uniflow.api.statements.*;
+import org.galaxy.uniflow.api.types.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Set;
 
 public interface UniElementFactory {
 
-    
+    @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
+                                               @NotNull List<@NotNull UniImport> imports,
+                                               @NotNull List<@NotNull UniClass> classes);
+
+    @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
+                                               @NotNull List<@NotNull UniModule> modules);
+
+    @NotNull UniCompilationUnit createTopLevel(@NotNull List<@NotNull UniElement> elements);
+
+    @NotNull UniPackage createPackage(@NotNull List<@NotNull UniAnnotation> annotations,
+                                      @NotNull UniExpression expression);
+
+    @NotNull UniClass createClass(@NotNull List<@NotNull UniAnnotation> annotations,
+                                  @NotNull Set<@NotNull UniModifier> modifiers,
+                                  @NotNull String name,
+                                  @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                  @NotNull UniType extending,
+                                  @NotNull List<@NotNull UniType> implementing,
+                                  @NotNull List<@NotNull UniField> fields,
+                                  @NotNull List<@NotNull UniMethod> methods);
+
+    @NotNull UniClass createClass(@NotNull List<@NotNull UniAnnotation> annotations,
+                                  @NotNull Set<@NotNull UniModifier> modifiers,
+                                  @NotNull String name,
+                                  @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                  @NotNull UniType extending,
+                                  @NotNull List<@NotNull UniType> implementing,
+                                  @NotNull List<@NotNull UniExpression> permitting,
+                                  @NotNull List<@NotNull UniMethod> methods,
+                                  @NotNull List<@NotNull UniField> fields);
+
+    @NotNull UniMethod createMethod(@NotNull List<@NotNull UniAnnotation> annotations,
+                                    @NotNull Set<@NotNull UniModifier> modifiers,
+                                    @NotNull String name,
+                                    @NotNull UniType returnType,
+                                    @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                    @NotNull UniVariable receiveParam,
+                                    @NotNull List<@NotNull UniVariable> parameters,
+                                    @NotNull List<@NotNull UniExpression> thrown,
+                                    @NotNull UniBlock body,
+                                    @NotNull UniExpression defaultValue);
+
+    @NotNull UniField createField(@NotNull List<@NotNull UniAnnotation> annotations,
+                                  @NotNull Set<@NotNull UniModifier> modifiers,
+                                  @NotNull String name,
+                                  @NotNull UniType type,
+                                  @NotNull UniExpression init);
+
+    @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
+                                        @NotNull String name,
+                                        @NotNull UniType type,
+                                        @NotNull UniExpression init,
+                                        boolean useVar);
+
+    @NotNull UniEmpty createSkip();
+
+    @NotNull UniBlock createBlock(boolean isStatic, @NotNull List<@NotNull UniStatement> statements);
+
+    @NotNull UniDoWhileLoop createDoWhileLoop(@NotNull UniStatement body, @NotNull UniExpression condition);
+
+    @NotNull UniWhileLoop createWhileLoop(@NotNull UniExpression condition, @NotNull UniStatement body);
+
+    @NotNull UniForLoop createForLoop(@NotNull List<@NotNull UniStatement> init,
+                                      @NotNull UniExpression condition,
+                                      @NotNull List<@NotNull UniExpressionStatement> step,
+                                      @NotNull UniStatement body);
+
+    @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniVariable variable,
+                                                  @NotNull UniExpression iterable,
+                                                  @NotNull UniStatement body);
+
+    @NotNull UniLabel createLabel(@NotNull String name, @NotNull UniStatement body);
+
+    @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
+                                    @NotNull List<@NotNull UniCase> cases);
+
+    @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
+                                                        @NotNull List<@NotNull UniCase> cases);
+
+    @NotNull UniCase createCase(@NotNull UniCase.CaseKind kind,
+                                @NotNull List<@NotNull UniCaseLabel> labels,
+                                @NotNull List<@NotNull UniStatement> statements,
+                                @NotNull UniElement body);
+
+    @NotNull UniSynchronized createSynchronized(@NotNull UniExpression lock, @NotNull UniBlock body);
+
+    @NotNull UniTry createTry(@NotNull UniBlock body,
+                              @NotNull List<@NotNull UniCatch> catches,
+                              @Nullable UniBlock finallyBlock);
+
+    @NotNull UniTry createTry(@NotNull List<@NotNull UniElement> resources,
+                              @NotNull UniBlock body,
+                              @NotNull List<@NotNull UniCatch> catches,
+                              @Nullable UniBlock finallyBlock);
+
+    @NotNull UniCatch createCatch(@NotNull UniVariable variable, @NotNull UniBlock body);
+
+    @NotNull UniConditionalExpression createTernary(@NotNull UniExpression condition,
+                                                    @NotNull UniExpression thenBlock,
+                                                    @NotNull UniExpression elseBlock);
+
+    @NotNull UniIf createIf(@NotNull UniExpression condition,
+                            @NotNull UniStatement thenBlock,
+                            @NotNull UniStatement elseBlock);
+
+    @NotNull UniExpressionStatement createExecution(@NotNull UniExpression expression);
+
+    @NotNull UniBreak createBreak(@Nullable String label);
+
+    @NotNull UniYield createYield(@NotNull UniExpression value);
+
+    @NotNull UniContinue createContinue(@Nullable String label);
+
+    @NotNull UniReturn createReturn(@NotNull UniExpression value);
+
+    @NotNull UniThrow createThrow(@NotNull UniExpression value);
+
+    @NotNull UniAssert createAssert(@NotNull UniExpression condition, @Nullable UniExpression details);
+
+    @NotNull UniMethodInvocation createMethodInvocation(@NotNull UniExpression method,
+                                                        @NotNull List<@NotNull UniType> argumentTypes,
+                                                        @NotNull List<@NotNull UniExpression> args);
+
+    @NotNull UniNewClass createNewClass(@NotNull UniExpression enclosing,
+                                        @NotNull List<@NotNull UniType> argumentTypes,
+                                        @NotNull List<@NotNull UniExpression> args,
+                                        @NotNull UniType classType);
+
+    @NotNull UniNewArray createNewArray(@NotNull UniType elementType,
+                                        @NotNull List<@NotNull UniExpression> dimensions,
+                                        @NotNull List<@NotNull UniExpression> elements);
+
+    @NotNull UniParenthesized createParenthesized(@NotNull UniExpression expression);
+
+    @NotNull UniAssignment createAssignment(@NotNull UniExpression lhs, @NotNull UniExpression rhs);
+
+    @NotNull UniCompoundAssignment createCompoundAssignment(@NotNull UniElement.Tag opcode,
+                                                            @NotNull UniExpression lhs,
+                                                            @NotNull UniExpression rhs);
+
+    @NotNull UniUnary createUnary(@NotNull UniElement.Tag opcode,
+                                  @NotNull UniExpression argument);
+
+    @NotNull UniBinary createBinary(@NotNull UniElement.Tag opcode,
+                                    @NotNull UniExpression lhs,
+                                    @NotNull UniExpression rhs);
+
+    @NotNull UniTypeCast createTypeCast(@NotNull UniType type, @NotNull UniExpression expression);
+
+    @NotNull UniInstanceOf createInstanceOf(@NotNull UniExpression expression, @NotNull UniType type);
+
+    @NotNull UniInstanceOf createInstanceOf(@NotNull UniExpression expression,
+                                            @NotNull UniType type,
+                                            @NotNull UniPattern pattern);
+
+    @NotNull UniBindingPattern createBindingPattern(@NotNull UniVariable variable);
+
+    @NotNull UniArrayAccess createArrayAccess(@NotNull UniExpression array, @NotNull UniExpression index);
+
+    @NotNull UniMemberSelect createMemberSelect(@NotNull UniExpression selected, @NotNull String selector);
+
+    @NotNull UniIdentifier createIdentifier(@NotNull String name);
+
+    @NotNull UniLiteral createLiteral(@NotNull TypeTag tag, @NotNull Object value);
+
+    @NotNull UniAnnotation createAnnotation(@NotNull UniType annotationType,
+                                            @NotNull List<@NotNull UniAnnotationAttribute> attributes);
+
+    @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors);
+
+    // modules
+    @NotNull UniModule createModule(@NotNull List<@NotNull UniAnnotation> annotations,
+                                    @NotNull UniModule.ModuleKind kind,
+                                    @NotNull String name,
+                                    @NotNull List<@NotNull UniDirective> directives);
+
+    @NotNull UniExports createExports(@NotNull String name,
+                                      @NotNull List<@NotNull String> moduleNames);
+
+    @NotNull UniOpens createOpens(@NotNull String name,
+                                  @NotNull List<@NotNull String> moduleNames);
+
+    @NotNull UniProvides createProvides(@NotNull String serviceName,
+                                        @NotNull List<@NotNull String> implementationNames);
+
+    @NotNull UniRequires createRequires(boolean isTransitive, boolean isStatic, @NotNull String name);
+
+    @NotNull UniUses createUses(@NotNull String serviceName);
+
+    @NotNull UniExpression createLet(@NotNull List<@NotNull UniStatement> definitions,
+                                     @NotNull UniExpression expression);
+
+    // types
+    @NotNull UniPrimitiveType asType(@NotNull TypeTag tag);
+
+    @NotNull UniArrayType createArrayType(@NotNull UniType elementType);
+
+    @NotNull UniParameterizedType createParameterizedType(@NotNull UniType elementType,
+                                                          @NotNull List<@NotNull UniType> argumentTypes);
+
+    @NotNull UniTypeParameter createTypeParameter(@NotNull String name,
+                                                  @NotNull List<@NotNull UniType> bounds);
+
+    @NotNull UniWildcard createWildcard(@NotNull UniTypeBound bound, @NotNull UniType type);
+
+    @NotNull UniTypeBound createTypeBound(@NotNull UniTypeBound.BoundKind kind);
+
+    // utilities methods
     @NotNull UniClassType findClass(@NotNull String name);
+
+    @NotNull UniMethodSignature createSignature(@NotNull String name, @NotNull Class<?> returnType,
+                                                @NotNull Class<?>... parameterTypes);
 
 }
