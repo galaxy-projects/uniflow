@@ -1,7 +1,6 @@
 package org.galaxy.uniflow.api.lists;
 
 import org.galaxy.uniflow.api.UniParameter;
-import org.galaxy.uniflow.api.types.UniTypeName;
 import org.jetbrains.annotations.NotNull;
 
 public interface UniParameterList {
@@ -10,11 +9,11 @@ public interface UniParameterList {
 
     boolean hasParameters();
 
-    boolean hasParameter(@NotNull UniTypeName name);
+    boolean hasParameter(@NotNull String name);
 
     void addParameter(@NotNull UniParameter parameter);
 
-    int getParameterIndex(@NotNull UniTypeName name);
+    int getParameterIndex(@NotNull String name);
 
     void removeParameter(int index);
 

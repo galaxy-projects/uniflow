@@ -5,17 +5,17 @@ import org.galaxy.uniflow.api.lists.UniClassInitializerList;
 import org.galaxy.uniflow.api.lists.UniFieldList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
 import org.galaxy.uniflow.api.modifiers.UniModifierHolder;
+import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniTypeList;
-import org.galaxy.uniflow.api.types.UniTypeName;
 import org.galaxy.uniflow.api.types.UniTypeParameterHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface UniClass extends UniAnnotationHolder, UniModifierHolder, UniTypeParameterHolder {
 
-    @NotNull UniTypeName getName();
+    @NotNull UniClassType asType();
 
-    @NotNull UniTypeName asTypeName();
+    @NotNull String getName();
 
     boolean isInterface();
 

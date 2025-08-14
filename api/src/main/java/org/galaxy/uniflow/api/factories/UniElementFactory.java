@@ -1,5 +1,6 @@
-package org.galaxy.uniflow.api;
+package org.galaxy.uniflow.api.factories;
 
+import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.elements.UniCase;
@@ -12,7 +13,9 @@ import org.galaxy.uniflow.api.modifiers.UniModifier;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.*;
 import org.galaxy.uniflow.api.statements.*;
-import org.galaxy.uniflow.api.types.*;
+import org.galaxy.uniflow.api.types.TypeTag;
+import org.galaxy.uniflow.api.types.UniType;
+import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,13 +34,13 @@ public interface UniElementFactory {
     @NotNull UniCompilationUnit createTopLevel(@NotNull List<@NotNull UniElement> elements);
 
     @NotNull UniPackage createPackage(@NotNull List<@NotNull UniAnnotation> annotations,
-                                      @NotNull UniExpression expression);
+                                      @NotNull String name);
 
     @NotNull UniClass createClass(@NotNull List<@NotNull UniAnnotation> annotations,
                                   @NotNull Set<@NotNull UniModifier> modifiers,
                                   @NotNull String name,
                                   @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                  @NotNull UniType extending,
+                                  @Nullable UniType extending,
                                   @NotNull List<@NotNull UniType> implementing,
                                   @NotNull List<@NotNull UniField> fields,
                                   @NotNull List<@NotNull UniMethod> methods);
@@ -46,7 +49,7 @@ public interface UniElementFactory {
                                   @NotNull Set<@NotNull UniModifier> modifiers,
                                   @NotNull String name,
                                   @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                  @NotNull UniType extending,
+                                  @Nullable UniType extending,
                                   @NotNull List<@NotNull UniType> implementing,
                                   @NotNull List<@NotNull UniExpression> permitting,
                                   @NotNull List<@NotNull UniMethod> methods,
@@ -63,11 +66,28 @@ public interface UniElementFactory {
                                     @NotNull UniBlock body,
                                     @NotNull UniExpression defaultValue);
 
+    @NotNull UniMethod createMethod(@NotNull List<@NotNull UniAnnotation> annotations,
+                                    @NotNull Set<@NotNull UniModifier> modifiers,
+                                    @NotNull String name,
+                                    @NotNull Class<?> returnType,
+                                    @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                    @NotNull UniVariable receiveParam,
+                                    @NotNull List<@NotNull UniVariable> parameters,
+                                    @NotNull List<@NotNull UniExpression> thrown,
+                                    @NotNull UniBlock body,
+                                    @NotNull UniExpression defaultValue);
+
     @NotNull UniField createField(@NotNull List<@NotNull UniAnnotation> annotations,
                                   @NotNull Set<@NotNull UniModifier> modifiers,
                                   @NotNull String name,
                                   @NotNull UniType type,
-                                  @NotNull UniExpression init);
+                                  @Nullable UniExpression init);
+
+    @NotNull UniField createField(@NotNull List<@NotNull UniAnnotation> annotations,
+                                  @NotNull Set<@NotNull UniModifier> modifiers,
+                                  @NotNull String name,
+                                  @NotNull Class<?> type,
+                                  @Nullable UniExpression init);
 
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,
@@ -213,25 +233,8 @@ public interface UniElementFactory {
     @NotNull UniExpression createLet(@NotNull List<@NotNull UniStatement> definitions,
                                      @NotNull UniExpression expression);
 
-    // types
-    @NotNull UniPrimitiveType asType(@NotNull TypeTag tag);
+    @NotNull UniTypeFactory getTypeFactory();
 
-    @NotNull UniArrayType createArrayType(@NotNull UniType elementType);
-
-    @NotNull UniParameterizedType createParameterizedType(@NotNull UniType elementType,
-                                                          @NotNull List<@NotNull UniType> argumentTypes);
-
-    @NotNull UniTypeParameter createTypeParameter(@NotNull String name,
-                                                  @NotNull List<@NotNull UniType> bounds);
-
-    @NotNull UniWildcard createWildcard(@NotNull UniTypeBound bound, @NotNull UniType type);
-
-    @NotNull UniTypeBound createTypeBound(@NotNull UniTypeBound.BoundKind kind);
-
-    // utilities methods
-    @NotNull UniClassType findClass(@NotNull String name);
-
-    @NotNull UniMethodSignature createSignature(@NotNull String name, @NotNull Class<?> returnType,
-                                                @NotNull Class<?>... parameterTypes);
+    @NotNull UniAnnotationFactory getAnnotationFactory();
 
 }

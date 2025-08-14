@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniTypeParameter extends UniType, UniAnnotationHolder {
 
-    @NotNull UniTypeName getName();
+    @NotNull String getName();
 
     @NotNull UniType getType();
 

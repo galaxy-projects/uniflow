@@ -6,7 +6,7 @@ public interface UniTypeParameterHolder {
 
     @NotNull UniTypeParameter @NotNull [] getTypeParameters();
 
-    boolean hasTypeParameter(@NotNull UniTypeName name);
+    boolean hasTypeParameter(@NotNull String name);
 
     void addTypeParameter(@NotNull UniTypeParameter typeParameter);
 
