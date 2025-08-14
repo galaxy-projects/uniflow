@@ -6,7 +6,7 @@ public interface UniTypeBound extends UniElement {
 
     void setKind(@NotNull BoundKind kind);
 
-    @NotNull BoundKind getKind();
+    @NotNull BoundKind getBoundKind();
 
     enum BoundKind {
         EXTENDS,

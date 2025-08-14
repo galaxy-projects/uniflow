@@ -10,7 +10,7 @@ public interface UniModule extends UniElement, UniAnnotationHolder {
 
     void setKind(@NotNull ModuleKind kind);
 
-    @NotNull ModuleKind getKind();
+    @NotNull ModuleKind getModuleKind();
 
     void setName(@NotNull UniExpression name);
 

@@ -9,7 +9,7 @@ public interface UniPrimitiveType extends UniElement {
 
     void setKind(@NotNull TypeKind kind);
 
-    @NotNull TypeKind getKind();
+    @NotNull TypeKind getTypeKind();
 
     enum TypeKind {
         BOOLEAN,

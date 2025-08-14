@@ -18,7 +18,7 @@ public interface UniCase extends UniElement {
 
     void setKind(@NotNull CaseKind caseKind);
 
-    @NotNull CaseKind getKind();
+    @NotNull CaseKind getCaseKind();
 
     enum CaseKind {
         STATEMENT,
