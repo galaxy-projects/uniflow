@@ -11,7 +11,6 @@ import org.galaxy.uniflow.api.expressions.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.expressions.pattern.UniPattern;
 import org.galaxy.uniflow.api.modifiers.UniModifier;
 import org.galaxy.uniflow.api.modules.UniModule;
-import org.galaxy.uniflow.api.modules.directives.*;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniType;
@@ -211,30 +210,7 @@ public interface UniElementFactory {
 
     @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors);
 
-    // modules
-    @NotNull UniModule createModule(@NotNull List<@NotNull UniAnnotation> annotations,
-                                    @NotNull UniModule.ModuleKind kind,
-                                    @NotNull String name,
-                                    @NotNull List<@NotNull UniDirective> directives);
-
-    @NotNull UniExports createExports(@NotNull String name,
-                                      @NotNull List<@NotNull String> moduleNames);
-
-    @NotNull UniOpens createOpens(@NotNull String name,
-                                  @NotNull List<@NotNull String> moduleNames);
-
-    @NotNull UniProvides createProvides(@NotNull String serviceName,
-                                        @NotNull List<@NotNull String> implementationNames);
-
-    @NotNull UniRequires createRequires(boolean isTransitive, boolean isStatic, @NotNull String name);
-
-    @NotNull UniUses createUses(@NotNull String serviceName);
-
     @NotNull UniExpression createLet(@NotNull List<@NotNull UniStatement> definitions,
                                      @NotNull UniExpression expression);
-
-    @NotNull UniTypeFactory getTypeFactory();
-
-    @NotNull UniAnnotationFactory getAnnotationFactory();
 
 }

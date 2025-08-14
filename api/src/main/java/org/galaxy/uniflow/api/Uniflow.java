@@ -1,9 +1,6 @@
 package org.galaxy.uniflow.api;
 
-import org.galaxy.uniflow.api.factories.UniAnnotationFactory;
-import org.galaxy.uniflow.api.factories.UniElementFactory;
-import org.galaxy.uniflow.api.factories.UniElementFinder;
-import org.galaxy.uniflow.api.factories.UniTypeFactory;
+import org.galaxy.uniflow.api.factories.*;
 
 import java.util.function.Supplier;
 
@@ -15,6 +12,7 @@ public abstract class Uniflow {
     private final Lazy<UniTypeFactory> typeFactory;
     private final Lazy<UniElementFactory> elementFactory;
     private final Lazy<UniAnnotationFactory> annotationFactory;
+    private final Lazy<UniModuleFactory> moduleFactory;
 
     protected Uniflow() {
         if (instance != null)
@@ -23,6 +21,7 @@ public abstract class Uniflow {
         typeFactory = new Lazy<>(this::createTypeFactory);
         elementFactory = new Lazy<>(this::createElementFactory);
         annotationFactory = new Lazy<>(this::createAnnotationFactory);
+        moduleFactory = new Lazy<>(this::createModuleFactory);
         instance = this;
     }
 
@@ -42,6 +41,10 @@ public abstract class Uniflow {
         return annotationFactory.get();
     }
 
+    public UniModuleFactory getModuleFactory() {
+        return moduleFactory.get();
+    }
+
     protected abstract UniElementFinder createFinder();
 
     protected abstract UniTypeFactory createTypeFactory();
@@ -49,6 +52,8 @@ public abstract class Uniflow {
     protected abstract UniElementFactory createElementFactory();
 
     protected abstract UniAnnotationFactory createAnnotationFactory();
+
+    protected abstract UniModuleFactory createModuleFactory();
 
     public static Uniflow getInstance() {
         return instance;
