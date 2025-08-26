@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    id("com.gradleup.shadow") version "9.0.1"
 }
 
 group = "org.galaxy"
@@ -12,17 +13,32 @@ allprojects {
     version = rootProject.version
 
     java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(8))
+            languageVersion.set(JavaLanguageVersion.of(17))
         }
     }
 
     tasks.withType<JavaCompile> {
-        options.release.set(8)
         options.encoding = "UTF-8"
     }
 
     repositories {
         mavenCentral()
     }
+}
+
+dependencies {
+    implementation(project(":api"))
+    implementation(project(":common"))
+    implementation(project(":javac"))
+}
+
+tasks.shadowJar {
+    archiveClassifier.set(null as String?)
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
 }

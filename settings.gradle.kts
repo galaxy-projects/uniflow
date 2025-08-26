@@ -8,3 +8,5 @@
 rootProject.name = "uniflow"
 
 include("api")
+include("javac")
+include("common")
