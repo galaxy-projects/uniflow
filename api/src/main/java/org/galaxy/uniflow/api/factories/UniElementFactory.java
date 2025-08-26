@@ -6,13 +6,14 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.expressions.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.expressions.pattern.UniPattern;
-import org.galaxy.uniflow.api.modifiers.UniModifier;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
+import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.jetbrains.annotations.NotNull;
@@ -137,9 +138,9 @@ public interface UniElementFactory {
 
     @NotNull UniCatch createCatch(@NotNull UniVariable variable, @NotNull UniBlock body);
 
-    @NotNull UniConditionalExpression createTernary(@NotNull UniExpression condition,
-                                                    @NotNull UniExpression thenBlock,
-                                                    @NotNull UniExpression elseBlock);
+    @NotNull UniConditional createTernary(@NotNull UniExpression condition,
+                                          @NotNull UniExpression thenBlock,
+                                          @NotNull UniExpression elseBlock);
 
     @NotNull UniIf createIf(@NotNull UniExpression condition,
                             @NotNull UniStatement thenBlock,
@@ -168,9 +169,11 @@ public interface UniElementFactory {
                                         @NotNull List<@NotNull UniExpression> args,
                                         @NotNull UniType classType);
 
-    @NotNull UniNewArray createNewArray(@NotNull UniType elementType,
-                                        @NotNull List<@NotNull UniExpression> dimensions,
-                                        @NotNull List<@NotNull UniExpression> elements);
+    @NotNull UniNewArray createNewArrayWithDimension(@NotNull UniType elementType,
+                                                     @NotNull List<@NotNull UniExpression> dimensions);
+
+    @NotNull UniNewArray createNewArrayWithElements(@NotNull UniType elementType,
+                                                    @NotNull List<@NotNull UniExpression> elements);
 
     @NotNull UniParenthesized createParenthesized(@NotNull UniExpression expression);
 
@@ -199,8 +202,6 @@ public interface UniElementFactory {
 
     @NotNull UniArrayAccess createArrayAccess(@NotNull UniExpression array, @NotNull UniExpression index);
 
-    @NotNull UniMemberSelect createMemberSelect(@NotNull UniExpression selected, @NotNull String selector);
-
     @NotNull UniIdentifier createIdentifier(@NotNull String name);
 
     @NotNull UniLiteral createLiteral(@NotNull TypeTag tag, @NotNull Object value);
@@ -212,5 +213,11 @@ public interface UniElementFactory {
 
     @NotNull UniExpression createLet(@NotNull List<@NotNull UniStatement> definitions,
                                      @NotNull UniExpression expression);
+
+    @NotNull UniFieldAccess createFieldAccess(@NotNull UniType selected, @NotNull String name);
+
+    @NotNull UniFieldAccess createClassLiteral(@NotNull UniClassType type);
+
+    @NotNull UniFieldAccess createClassLiteral(@NotNull Class<?> type);
 
 }

@@ -1,9 +1,10 @@
 package org.galaxy.uniflow.api.modules;
 
 import org.galaxy.uniflow.api.UniElement;
+import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.expressions.UniExpression;
-import org.galaxy.uniflow.api.lists.UniDirectiveList;
+import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.jetbrains.annotations.NotNull;
 
 public interface UniModule extends UniElement, UniAnnotationHolder {
@@ -16,7 +17,7 @@ public interface UniModule extends UniElement, UniAnnotationHolder {
 
     @NotNull UniExpression getName();
 
-    @NotNull UniDirectiveList getDirectives();
+    @NotNull UniList<UniDirective> getDirectives();
 
     enum ModuleKind {
         OPEN,

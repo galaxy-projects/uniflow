@@ -1,4 +1,4 @@
-package org.galaxy.uniflow.api.modifiers;
+package org.galaxy.uniflow.api.elements;
 
 public enum UniModifier {
 

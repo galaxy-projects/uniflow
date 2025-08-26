@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniElementFinder {
 
+    @NotNull UniClassType findClass(@NotNull Class<?> clazz);
+
     @NotNull UniClassType findClass(@NotNull String name);
 
     @NotNull UniMethodSignature findMethod(@NotNull UniClassType owner,

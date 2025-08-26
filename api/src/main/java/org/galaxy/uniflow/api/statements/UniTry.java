@@ -2,7 +2,7 @@ package org.galaxy.uniflow.api.statements;
 
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.lists.UniCatchList;
+import org.galaxy.uniflow.api.elements.UniCatch;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +12,7 @@ public interface UniTry extends UniStatement {
 
     @NotNull UniBlock getBody();
 
-    @NotNull UniCatchList getCatches();
+    @NotNull UniList<UniCatch> getCatches();
 
     void setFinally(@Nullable UniBlock finallyBody);
 

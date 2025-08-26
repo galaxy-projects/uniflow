@@ -11,8 +11,6 @@ public interface UniInstanceOf extends UniExpression {
 
     @NotNull UniExpression getExpression();
 
-    void setType(@NotNull UniElement type);
-
     @NotNull UniElement getType();
 
     void setPattern(@Nullable UniPattern pattern);

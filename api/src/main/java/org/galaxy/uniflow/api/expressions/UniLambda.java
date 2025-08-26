@@ -5,7 +5,7 @@ import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.jetbrains.annotations.NotNull;
 
-public interface UniLambdaExpression extends UniExpression {
+public interface UniLambda extends UniExpression {
 
     @NotNull UniList<UniVariable> getParameters();
 

@@ -5,11 +5,11 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniDefaultCaseLabel;
+import org.galaxy.uniflow.api.elements.UniModifierHolder;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.expressions.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.expressions.pattern.UniGuardedPattern;
 import org.galaxy.uniflow.api.expressions.pattern.UniParenthesizedPattern;
-import org.galaxy.uniflow.api.modifiers.UniModifierHolder;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.UniExports;
 import org.galaxy.uniflow.api.modules.directives.UniProvides;
@@ -452,7 +452,7 @@ public interface UniElement {
         COMPILATION_UNIT,
 
         /**
-         * Used for instances of {@link UniConditionalExpression}.
+         * Used for instances of {@link UniConditional}.
          */
         CONDITIONAL_EXPRESSION,
 
@@ -476,9 +476,6 @@ public interface UniElement {
          */
         EXPRESSION_STATEMENT,
 
-        /**
-         * Used for instances of {@link UniMemberSelect}.
-         */
         MEMBER_SELECT,
 
         MEMBER_REFERENCE,
@@ -539,7 +536,7 @@ public interface UniElement {
         NEW_CLASS,
 
         /**
-         * Used for instances of {@link UniLambdaExpression}.
+         * Used for instances of {@link UniLambda}.
          */
         LAMBDA_EXPRESSION,
 

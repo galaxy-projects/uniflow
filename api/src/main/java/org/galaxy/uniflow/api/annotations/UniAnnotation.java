@@ -5,7 +5,7 @@ import org.galaxy.uniflow.api.types.UniClassType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface UniAnnotation extends UniElement {
+public interface UniAnnotation extends UniAnnotationValue, UniElement {
 
     @NotNull UniClassType getType();
 

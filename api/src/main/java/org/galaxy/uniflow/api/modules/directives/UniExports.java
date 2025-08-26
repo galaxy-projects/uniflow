@@ -1,7 +1,7 @@
 package org.galaxy.uniflow.api.modules.directives;
 
+import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
-import org.galaxy.uniflow.api.lists.UniExpressionList;
 import org.jetbrains.annotations.NotNull;
 
 public interface UniExports extends UniDirective {
@@ -10,6 +10,6 @@ public interface UniExports extends UniDirective {
 
     @NotNull UniExpression getPackageName();
 
-    @NotNull UniExpressionList getModuleNames();
+    @NotNull UniList<@NotNull UniExpression> getModuleNames();
 
 }

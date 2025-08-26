@@ -2,18 +2,20 @@ package org.galaxy.uniflow.api;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface UniList<T extends UniElement> extends UniElement {
+public interface UniList<T extends UniElement> {
 
     @NotNull T @NotNull [] get();
 
-    void addFirst(@NotNull T statement);
+    void addFirst(@NotNull T value);
 
-    void addAfter(@NotNull T statement, @NotNull T target);
+    void addAfter(@NotNull T value, @NotNull T target);
 
-    void addBefore(@NotNull T statement, @NotNull T target);
+    void addBefore(@NotNull T value, @NotNull T target);
 
-    void addLast(@NotNull T statement);
+    void addLast(@NotNull T value);
 
-    void remove(@NotNull T statement);
+    void remove(@NotNull T value);
+
+    void clear();
 
 }

@@ -1,14 +1,15 @@
 package org.galaxy.uniflow.api.expressions;
 
-import org.galaxy.uniflow.api.lists.UniCaseList;
+import org.galaxy.uniflow.api.UniList;
+import org.galaxy.uniflow.api.elements.UniCase;
 import org.jetbrains.annotations.NotNull;
 
 public interface UniSwitchExpression extends UniExpression {
 
-    void setExpression(@NotNull UniExpression expression);
+    void setSelector(@NotNull UniExpression selector);
 
-    @NotNull UniExpression getExpression();
+    @NotNull UniExpression getSelector();
 
-    @NotNull UniCaseList getCases();
+    @NotNull UniList<UniCase> getCases();
 
 }

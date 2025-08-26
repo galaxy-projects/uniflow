@@ -2,7 +2,7 @@ package org.galaxy.uniflow.api.expressions;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface UniBinary extends UniExpression {
+public interface UniBinary extends UniOperatorExpression, UniExpression {
 
     void setLeftOperand(@NotNull UniExpression leftOperand);
 

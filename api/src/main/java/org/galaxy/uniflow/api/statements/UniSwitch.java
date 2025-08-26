@@ -1,6 +1,7 @@
 package org.galaxy.uniflow.api.statements;
 
-import org.galaxy.uniflow.api.lists.UniCaseList;
+import org.galaxy.uniflow.api.UniList;
+import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,6 +11,6 @@ public interface UniSwitch extends UniStatement {
 
     @NotNull UniExpression getExpression();
 
-    @NotNull UniCaseList getCases();
+    @NotNull UniList<UniCase> getCases();
 
 }

@@ -1,16 +1,17 @@
 package org.galaxy.uniflow.api.elements;
 
 import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.lists.UniExpressionList;
-import org.galaxy.uniflow.api.statements.UniStatementList;
+import org.galaxy.uniflow.api.UniList;
+import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.statements.UniStatement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface UniCase extends UniElement {
 
-    @NotNull UniExpressionList getExpressions();
+    @NotNull UniList<UniExpression> getExpressions();
 
-    @NotNull UniStatementList getStatements();
+    @NotNull UniList<UniStatement> getStatements();
 
     void setBody(@NotNull UniElement body);
 

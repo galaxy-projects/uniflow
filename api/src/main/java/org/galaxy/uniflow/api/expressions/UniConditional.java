@@ -2,7 +2,7 @@ package org.galaxy.uniflow.api.expressions;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface UniConditionalExpression extends UniExpression {
+public interface UniConditional extends UniExpression {
 
     void setCondition(@NotNull UniExpression condition);
 

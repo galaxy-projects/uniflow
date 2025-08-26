@@ -1,10 +1,9 @@
 package org.galaxy.uniflow.api;
 
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
-import org.galaxy.uniflow.api.lists.UniClassInitializerList;
+import org.galaxy.uniflow.api.elements.UniModifierHolder;
 import org.galaxy.uniflow.api.lists.UniFieldList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
-import org.galaxy.uniflow.api.modifiers.UniModifierHolder;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniTypeList;
 import org.galaxy.uniflow.api.types.UniTypeParameterHolder;
@@ -39,7 +38,7 @@ public interface UniClass extends UniAnnotationHolder, UniModifierHolder, UniTyp
 
     @NotNull UniMethodList getConstructors();
 
-    @NotNull UniClassInitializerList getInitializers();
+    @NotNull UniList<UniClassInitializer> getInitializers();
 
     @NotNull UniClass @NotNull [] getInnerClasses();
 

@@ -1,7 +1,7 @@
 package org.galaxy.uniflow.api.statements;
 
+import org.galaxy.uniflow.api.elements.UniModifierHolder;
 import org.galaxy.uniflow.api.expressions.UniExpression;
-import org.galaxy.uniflow.api.modifiers.UniModifierHolder;
 import org.galaxy.uniflow.api.types.UniType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
