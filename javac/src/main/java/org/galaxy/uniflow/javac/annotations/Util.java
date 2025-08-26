@@ -50,7 +50,7 @@ class Util {
             );
         } else if (value instanceof UniNewArray) {
             UniNewArray array = (UniNewArray) value;
-            @NotNull UniExpression[] values = array.getInitializers().getExpressions();
+            @NotNull UniExpression[] values = array.getInitializers().get();
             JCTree.JCExpression[] contents = new JCTree.JCExpression[values.length];
 
             for (int i = 0; i < values.length; i++) {
@@ -107,7 +107,7 @@ class Util {
             }
         } else if (value instanceof UniNewArray) {
             UniNewArray array = (UniNewArray) value;
-            @NotNull UniExpression[] values = array.getInitializers().getExpressions();
+            @NotNull UniExpression[] values = array.getInitializers().get();
             Attribute[] attributes = new Attribute[values.length];
 
             for (int i = 0; i < values.length; i++) {
