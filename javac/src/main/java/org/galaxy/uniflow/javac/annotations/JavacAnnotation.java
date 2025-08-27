@@ -56,15 +56,12 @@ public class JavacAnnotation extends JavacElement<JCTree.JCAnnotation> implement
         TreeMaker treeMaker = uniflow.treeMaker;
         Symbol.MethodSymbol method = SymbolUtils.findMethodByName(tree.type, name);
 
-        // convert 'value' to assign if present
+        // convert non-assigned 'value' (@Annotation("value") e.g) to assign if present
         tree.args.stream()
                 .filter(exp -> !(exp instanceof JCTree.JCAssign))
                 .findFirst().ifPresent(valueExpr -> {
                     removeAttribute("value");
-                    tree.args = tree.args.append(treeMaker.Assign(
-                            treeMaker.Ident(uniflow.names.value)
-                            , valueExpr
-                    ));
+                    tree.args = tree.args.append(treeMaker.Assign(treeMaker.Ident(uniflow.names.value), valueExpr));
                 });
 
         JCTree.JCAssign assign = treeMaker.Assign(
