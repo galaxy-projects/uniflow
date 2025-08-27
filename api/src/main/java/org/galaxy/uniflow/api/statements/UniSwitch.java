@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniSwitch extends UniStatement {
 
-    void setExpression(@NotNull UniExpression expression);
+    void setSelector(@NotNull UniExpression selector);
 
-    @NotNull UniExpression getExpression();
+    @NotNull UniExpression getSelector();
 
     @NotNull UniList<UniCase> getCases();
 

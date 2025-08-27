@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniReturn extends UniStatement {
 
-    void setExpression(@NotNull UniExpression value);
+    void setExpression(@NotNull UniExpression expression);
 
     @NotNull UniExpression getExpression();
 

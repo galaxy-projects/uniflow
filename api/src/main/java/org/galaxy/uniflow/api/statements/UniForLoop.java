@@ -12,7 +12,7 @@ public interface UniForLoop extends UniStatement {
 
     @NotNull UniExpression getCondition();
 
-    @NotNull UniList<@NotNull UniExpression> getUpdate();
+    @NotNull UniList<@NotNull UniExpressionStatement> getUpdate();
 
     void setBody(@NotNull UniStatement body);
 

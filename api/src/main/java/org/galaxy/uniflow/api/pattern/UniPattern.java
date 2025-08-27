@@ -1,4 +1,4 @@
-package org.galaxy.uniflow.api.expressions.pattern;
+package org.galaxy.uniflow.api.pattern;
 
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 

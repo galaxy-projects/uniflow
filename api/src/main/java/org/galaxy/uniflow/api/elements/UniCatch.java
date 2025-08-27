@@ -7,7 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniCatch extends UniElement {
 
+    void setParameter(@NotNull UniVariable parameter);
+
     @NotNull UniVariable getParameter();
+
+    void setBody(@NotNull UniBlock body);
 
     @NotNull UniBlock getBody();
 

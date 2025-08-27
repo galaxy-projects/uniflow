@@ -11,9 +11,15 @@ import java.util.function.Function;
 
 public class JavacList<T extends UniElement, R> implements UniList<T> {
 
-    private java.util.List<T> elements;
-    private final Consumer<List<R>> setter;
-    private final Function<T, R> converter;
+    protected final java.util.List<T> elements;
+    protected final Consumer<List<R>> setter;
+    protected final Function<T, R> converter;
+
+    private JavacList(java.util.List<T> elements, Consumer<List<R>> setter, Function<T, R> converter) {
+        this.elements = elements;
+        this.setter = setter;
+        this.converter = converter;
+    }
 
     public JavacList(List<R> elements,
                      Consumer<List<R>> setter,
@@ -76,7 +82,7 @@ public class JavacList<T extends UniElement, R> implements UniList<T> {
         setter.accept(List.nil());
     }
 
-    private void update() {
+    protected void update() {
         setter.accept(elements.stream().map(converter).collect(List.collector()));
     }
 }

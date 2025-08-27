@@ -4,7 +4,7 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniInstanceOf;
-import org.galaxy.uniflow.api.expressions.pattern.UniPattern;
+import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.javac.util.JavacUtils;
 import org.galaxy.uniflow.javac.util.UniUtils;
 import org.jetbrains.annotations.NotNull;

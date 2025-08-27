@@ -6,6 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniBlock extends UniElement {
 
+    void setStatic(boolean isStatic);
+
     boolean isStatic();
 
     @NotNull UniList<UniStatement> getStatements();

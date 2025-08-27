@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 public interface UniCase extends UniElement {
 
+    @NotNull UniList<UniCaseLabel> getLabels();
+
     @NotNull UniList<UniExpression> getExpressions();
 
     @NotNull UniList<UniStatement> getStatements();
@@ -16,8 +18,6 @@ public interface UniCase extends UniElement {
     void setBody(@NotNull UniElement body);
 
     @Nullable UniElement getBody();
-
-    void setKind(@NotNull CaseKind caseKind);
 
     @NotNull CaseKind getCaseKind();
 

@@ -8,9 +8,16 @@ import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCase;
+import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
+import org.galaxy.uniflow.api.modules.directives.UniDirective;
+import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
+import org.galaxy.uniflow.api.statements.UniBlock;
+import org.galaxy.uniflow.api.statements.UniExpressionStatement;
+import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniType;
@@ -41,6 +48,34 @@ public class UniUtils {
     }
 
     public static @NotNull UniCase uni(JCTree.JCCase jcCase) {
+        return null;
+    }
+
+    public static @NotNull UniPattern uni(JCTree.JCPattern pattern) {
+        return null;
+    }
+
+    public static @NotNull UniDirective uni(JCTree.JCDirective directive) {
+        return null;
+    }
+
+    public static @NotNull UniStatement uni(JCTree.JCStatement statement) {
+        return null;
+    }
+
+    public static @NotNull UniBlock uni(JCTree.JCBlock block) {
+        return null;
+    }
+
+    public static @NotNull UniExpressionStatement uni(JCTree.JCExpressionStatement statement) {
+        return null;
+    }
+
+    public static @NotNull UniCatch uni(JCTree.JCCatch catcher) {
+        return null;
+    }
+
+    public static @NotNull UniCaseLabel uni(JCTree.JCCaseLabel caseLabel) {
         return null;
     }
 

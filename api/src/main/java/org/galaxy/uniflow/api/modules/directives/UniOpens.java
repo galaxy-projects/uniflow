@@ -8,7 +8,7 @@ public interface UniOpens extends UniDirective {
 
     void setPackageName(@NotNull UniExpression packageName);
 
-    @NotNull UniList<@NotNull UniExpression> getPackageName();
+    @NotNull UniExpression getPackageName();
 
     @NotNull UniList<@NotNull UniExpression> getModuleNames();
 

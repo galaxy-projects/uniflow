@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniSynchronized extends UniStatement {
 
-    void setExpression(@NotNull UniExpression expression);
+    void setLock(@NotNull UniExpression lock);
 
-    @NotNull UniExpression getExpression();
+    @NotNull UniExpression getLock();
 
     void setBody(@NotNull UniBlock body);
 

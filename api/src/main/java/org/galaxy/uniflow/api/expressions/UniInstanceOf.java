@@ -1,7 +1,7 @@
 package org.galaxy.uniflow.api.expressions;
 
 import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.expressions.pattern.UniPattern;
+import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

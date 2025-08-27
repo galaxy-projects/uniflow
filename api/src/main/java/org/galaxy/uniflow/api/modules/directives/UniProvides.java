@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniProvides extends UniDirective {
 
-    void setServiceName(@NotNull UniExpression value);
+    void setServiceName(@NotNull UniExpression serviceName);
 
     @NotNull UniExpression getServiceName();
 
