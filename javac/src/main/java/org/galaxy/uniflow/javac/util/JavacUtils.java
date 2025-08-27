@@ -88,4 +88,56 @@ public class JavacUtils {
     public static @NotNull Symbol.OperatorSymbol javac(@NotNull UniOperatorSignature operator) {
         return null;
     }
+
+//    public static JCTree.JCExpression asExpression(TreeMaker treeMaker, UniAnnotationValue value) {
+//        if (value instanceof UniLiteral) {
+//            UniLiteral literal = (UniLiteral) value;
+//
+//            return treeMaker.Literal(literal.getValue());
+//        } else if (value instanceof UniFieldAccess) { // Class literal & enum
+//            UniFieldAccess fieldAccess = (UniFieldAccess) value;
+//
+//            return treeMaker.Select(
+//                    treeMaker.Type(JavacUtils.javac(fieldAccess.getSelected())),
+//                    NameUtils.name(fieldAccess.getName())
+//            );
+//        } else if (value instanceof UniNewArray) {
+//            UniNewArray array = (UniNewArray) value;
+//            @NotNull UniExpression[] values = array.getInitializers().get();
+//            JCTree.JCExpression[] contents = new JCTree.JCExpression[values.length];
+//
+//            for (int i = 0; i < values.length; i++) {
+//                if (values[i] instanceof UniAnnotationValue)
+//                    contents[i] = asExpression(treeMaker, (UniAnnotationValue) values[i]);
+//                else throw new IllegalArgumentException("Non annotation value in annotation");
+//            }
+//            return treeMaker.NewArray(
+//                    treeMaker.Type(JavacUtils.javac(array.getType())),
+//                    List.nil(),
+//                    List.from(contents)
+//            );
+//        } else if (value instanceof UniAnnotation) {
+//            UniAnnotation annotation = (UniAnnotation) value;
+//            @NotNull UniAnnotationAttribute[] attributes = annotation.getAttributes();
+//            List<JCTree.JCExpression> args;
+//
+//            if (attributes.length == 1 && attributes[0].getName().equals("value")) {
+//                // only 'value'
+//                args = List.of(asExpression(treeMaker, attributes[0].getValue()));
+//            } else {
+//                ListBuffer<JCTree.JCExpression> argsBuffer = new ListBuffer<>();
+//
+//                for (UniAnnotationAttribute attribute : attributes) {
+//                    argsBuffer.append(treeMaker.Assign(
+//                            treeMaker.Ident(NameUtils.name(attribute.getName())),
+//                            asExpression(treeMaker, attribute.getValue())
+//                    ));
+//                }
+//                args = argsBuffer.toList();
+//            }
+//
+//            return treeMaker.Annotation(treeMaker.Type(JavacUtils.javac(annotation.getType())), args);
+//        } else if (value instanceof UniErroneous) return treeMaker.Erroneous();
+//        throw new UnsupportedOperationException();
+//    }
 }

@@ -12,6 +12,7 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.JavacUniflow;
+import org.galaxy.uniflow.javac.util.JavacUtils;
 import org.galaxy.uniflow.javac.util.SymbolUtils;
 import org.galaxy.uniflow.javac.util.UniUtils;
 import org.jetbrains.annotations.NotNull;
@@ -64,9 +65,7 @@ public class JavacAnnotation extends JavacElement<JCTree.JCAnnotation> implement
                     tree.args = tree.args.append(treeMaker.Assign(treeMaker.Ident(uniflow.names.value), valueExpr));
                 });
 
-        JCTree.JCAssign assign = treeMaker.Assign(
-                treeMaker.Ident(method),
-                Util.asExpression(treeMaker, value));
+        JCTree.JCAssign assign = treeMaker.Assign(treeMaker.Ident(method), JavacUtils.javac(value));
 
         tree.args = tree.args.append(assign);
 
