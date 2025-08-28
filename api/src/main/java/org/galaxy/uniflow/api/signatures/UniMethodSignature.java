@@ -12,6 +12,10 @@ public interface UniMethodSignature {
 
     @NotNull UniType getReturnType();
 
+    @NotNull UniFieldSignature @NotNull [] getParameters();
+
     @NotNull UniType @NotNull [] getParameterTypes();
+
+    @NotNull UniType @NotNull [] getThrownTypes();
 
 }

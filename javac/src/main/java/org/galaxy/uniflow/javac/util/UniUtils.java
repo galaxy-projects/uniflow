@@ -20,6 +20,7 @@ import org.galaxy.uniflow.api.statements.UniExpressionStatement;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.TypeTag;
+import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.javac.JavacUniflow;
 import org.jetbrains.annotations.NotNull;
@@ -124,6 +125,10 @@ public class UniUtils {
     }
 
     public static @NotNull UniType typeFromTree(JCTree annotationType) {
+        return null;
+    }
+
+    public static @NotNull UniClassType symbolToType(Symbol owner) {
         return null;
     }
 }

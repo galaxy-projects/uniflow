@@ -13,6 +13,8 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.api.pattern.UniPattern;
+import org.galaxy.uniflow.api.signatures.UniFieldSignature;
+import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniExpressionStatement;
@@ -85,7 +87,15 @@ public class JavacUtils {
         return null;
     }
 
-    public static @NotNull Symbol.OperatorSymbol javac(@NotNull UniOperatorSignature operator) {
+    public static @NotNull Symbol.OperatorSymbol javac(@NotNull UniOperatorSignature signature) {
+        return null;
+    }
+
+    public static @NotNull Symbol.MethodSymbol javac(@NotNull UniMethodSignature signature) {
+        return null;
+    }
+
+    public static @NotNull Symbol.VarSymbol javac(@NotNull UniFieldSignature signature) {
         return null;
     }
 
