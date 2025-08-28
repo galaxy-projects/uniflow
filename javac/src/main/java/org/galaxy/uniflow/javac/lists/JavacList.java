@@ -1,7 +1,6 @@
 package org.galaxy.uniflow.javac.lists;
 
 import com.sun.tools.javac.util.List;
-import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class JavacList<T extends UniElement, R> implements UniList<T> {
+public class JavacList<T, R> implements UniList<T> {
 
     protected final java.util.List<T> elements;
     protected final Consumer<List<R>> setter;

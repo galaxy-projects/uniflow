@@ -2,7 +2,7 @@ package org.galaxy.uniflow.api;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface UniList<T extends UniElement> {
+public interface UniList<T> {
 
     @NotNull T @NotNull [] get();
 

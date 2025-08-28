@@ -5,7 +5,7 @@ import org.galaxy.uniflow.api.elements.UniModifierHolder;
 import org.galaxy.uniflow.api.lists.UniFieldList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
 import org.galaxy.uniflow.api.types.UniClassType;
-import org.galaxy.uniflow.api.types.UniTypeList;
+import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameterHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,9 +24,9 @@ public interface UniClass extends UniAnnotationHolder, UniModifierHolder, UniTyp
 
     boolean isRecord();
 
-    @NotNull UniTypeList getExtends();
+    @NotNull UniList<@NotNull UniType> getExtends();
 
-    @NotNull UniTypeList getImplements();
+    @NotNull UniList<@NotNull UniType> getImplements();
 
     @Nullable UniClass getSuperClass();
 

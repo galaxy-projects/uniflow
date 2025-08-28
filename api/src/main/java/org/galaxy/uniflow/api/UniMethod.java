@@ -4,7 +4,6 @@ import org.galaxy.uniflow.api.lists.UniParameterList;
 import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.types.UniType;
-import org.galaxy.uniflow.api.types.UniTypeList;
 import org.galaxy.uniflow.api.types.UniTypeParameterHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +15,7 @@ public interface UniMethod extends UniMember, UniTypeParameterHolder {
 
     @NotNull UniParameterList getParameters();
 
-    @NotNull UniTypeList getThrows();
+    @NotNull UniList<@NotNull UniType> getThrows();
 
     @NotNull UniBlock getBody();
 
