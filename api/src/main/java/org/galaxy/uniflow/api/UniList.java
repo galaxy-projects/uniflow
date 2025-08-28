@@ -2,9 +2,13 @@ package org.galaxy.uniflow.api;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.stream.Stream;
+
 public interface UniList<T> {
 
     @NotNull T @NotNull [] get();
+
+    @NotNull Stream<T> stream();
 
     void addFirst(@NotNull T value);
 

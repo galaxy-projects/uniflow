@@ -5,7 +5,6 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniDefaultCaseLabel;
-import org.galaxy.uniflow.api.elements.UniModifierHolder;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.UniExports;
@@ -521,7 +520,7 @@ public interface UniElement {
         METHOD_INVOCATION,
 
         /**
-         * Used for instances of {@link UniModifierHolder}.
+         * Used for instances of {@link UniModifiers}.
          */
         MODIFIERS,
 
@@ -622,9 +621,6 @@ public interface UniElement {
          */
         TRY,
 
-        /**
-         * Used for instances of {@link UniTypeParameterHolder}.
-         */
         PARAMETERIZED_TYPE,
 
         /**
@@ -934,19 +930,19 @@ public interface UniElement {
         NULL_LITERAL,
 
         /**
-         * Used for instances of {@link UniWildcard} representing
+         * Used for instances of {@link UniWildcardType} representing
          * an unbounded wildcard type argument.
          */
         UNBOUNDED_WILDCARD,
 
         /**
-         * Used for instances of {@link UniWildcard} representing
+         * Used for instances of {@link UniWildcardType} representing
          * an extends bounded wildcard type argument.
          */
         EXTENDS_WILDCARD,
 
         /**
-         * Used for instances of {@link UniWildcard} representing
+         * Used for instances of {@link UniWildcardType} representing
          * a super bounded wildcard type argument.
          */
         SUPER_WILDCARD,

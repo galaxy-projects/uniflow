@@ -2,13 +2,14 @@ package org.galaxy.uniflow.api.modules;
 
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
-import org.galaxy.uniflow.api.elements.UniModifierHolder;
+import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.jetbrains.annotations.NotNull;
 
-public interface UniModule extends UniElement, UniModifierHolder, UniAnnotationHolder {
+public interface UniModule extends UniElement {
+
+    @NotNull UniModifiers getModifiers();
 
     @NotNull ModuleKind getModuleKind();
 

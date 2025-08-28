@@ -22,6 +22,7 @@ import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniType;
+import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.jetbrains.annotations.NotNull;
 
 // TODO
@@ -83,6 +84,10 @@ public class JavacUtils {
         return null;
     }
 
+    public static @NotNull JCTree.JCTypeParameter javac(UniTypeParameter typeParameter) {
+        return null;
+    }
+
     public static @NotNull Type tagToType(@NotNull TypeTag typeTag) {
         return null;
     }
@@ -96,6 +101,10 @@ public class JavacUtils {
     }
 
     public static @NotNull Symbol.VarSymbol javac(@NotNull UniFieldSignature signature) {
+        return null;
+    }
+
+    public static JCTree.JCExpression typeToTree(@NotNull UniType type) {
         return null;
     }
 

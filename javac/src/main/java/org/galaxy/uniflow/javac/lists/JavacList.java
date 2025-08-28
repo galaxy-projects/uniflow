@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class JavacList<T, R> implements UniList<T> {
 
@@ -33,6 +34,11 @@ public class JavacList<T, R> implements UniList<T> {
     @SuppressWarnings("unchecked")
     public @NotNull T @NotNull [] get() {
         return (T[]) elements.toArray(new Object[0]);
+    }
+
+    @Override
+    public @NotNull Stream<T> stream() {
+        return elements.stream();
     }
 
     @Override

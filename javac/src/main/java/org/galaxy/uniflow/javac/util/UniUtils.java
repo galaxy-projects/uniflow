@@ -22,6 +22,7 @@ import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
+import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.javac.JavacUniflow;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,6 +78,10 @@ public class UniUtils {
     }
 
     public static @NotNull UniCaseLabel uni(JCTree.JCCaseLabel caseLabel) {
+        return null;
+    }
+
+    public static @NotNull UniTypeParameter uni(JCTree.JCTypeParameter typeParameter) {
         return null;
     }
 

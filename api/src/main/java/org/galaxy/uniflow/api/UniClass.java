@@ -1,16 +1,17 @@
 package org.galaxy.uniflow.api;
 
-import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
-import org.galaxy.uniflow.api.elements.UniModifierHolder;
 import org.galaxy.uniflow.api.lists.UniFieldList;
+import org.galaxy.uniflow.api.lists.UniIndexedList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
-import org.galaxy.uniflow.api.types.UniTypeParameterHolder;
+import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface UniClass extends UniAnnotationHolder, UniModifierHolder, UniTypeParameterHolder {
+public interface UniClass {
+
+    @NotNull UniModifiers getModifiers();
 
     @NotNull UniClassType asType();
 
@@ -29,6 +30,8 @@ public interface UniClass extends UniAnnotationHolder, UniModifierHolder, UniTyp
     @NotNull UniList<@NotNull UniType> getImplements();
 
     @Nullable UniClass getSuperClass();
+
+    @NotNull UniIndexedList<@NotNull UniTypeParameter> getTypeParameters();
 
     @NotNull UniClass @NotNull [] getInterfaces();
 
