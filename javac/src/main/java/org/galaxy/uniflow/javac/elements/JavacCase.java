@@ -1,8 +1,6 @@
 package org.galaxy.uniflow.javac.elements;
 
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.util.List;
-import com.sun.tools.javac.util.ListBuffer;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.elements.UniCase;
@@ -17,7 +15,7 @@ import org.galaxy.uniflow.javac.util.UniUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
 
@@ -37,24 +35,35 @@ public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
 
     @Override
     public @NotNull UniList<UniExpression> getExpressions() {
-        List<JCTree.JCExpression> affected = tree.labels.stream()
-                .filter(p -> p instanceof JCTree.JCExpression)
-                .map(p -> (JCTree.JCExpression) p)
-                .collect(List.collector());
-        java.util.List<JCTree.JCCaseLabel> notAffected = tree.labels.stream()
-                .filter(p -> !(p instanceof JCTree.JCExpression))
-                .collect(Collectors.toList());
-
+//        List<JCTree.JCExpression> affected = tree.labels.stream()
+//                .filter(p -> p instanceof JCTree.JCExpression)
+//                .map(p -> (JCTree.JCExpression) p)
+//                .collect(List.collector());
+//        java.util.List<JCTree.JCCaseLabel> notAffected = tree.labels.stream()
+//                .filter(p -> !(p instanceof JCTree.JCExpression))
+//                .collect(Collectors.toList());
+//
+//        return new JavacList<>(
+//                affected,
+//                newList -> {
+//                    ListBuffer<JCTree.JCCaseLabel> result = new ListBuffer<>();
+//
+//                    result.addAll(notAffected);
+//                    result.addAll(newList);
+//                    tree.labels = result.toList();
+//                },
+//                UniUtils::uni,
+//                JavacUtils::javac
+//        );
         return new JavacList<>(
-                affected,
-                newList -> {
-                    ListBuffer<JCTree.JCCaseLabel> result = new ListBuffer<>();
-
-                    result.addAll(notAffected);
-                    result.addAll(newList);
-                    tree.labels = result.toList();
-                },
+                tree.labels,
+                newList -> tree.labels = newList,
                 UniUtils::uni,
+                JavacUtils::javac
+        ).partial(
+                UniExpression.class::isInstance,
+                label -> (UniExpression) label,
+                Function.identity(),
                 JavacUtils::javac
         );
     }

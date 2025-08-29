@@ -5,6 +5,7 @@ import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.UniElement;
+import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCase;
@@ -105,6 +106,10 @@ public class JavacUtils {
     }
 
     public static JCTree.JCExpression typeToTree(@NotNull UniType type) {
+        return null;
+    }
+
+    public static JCTree.JCMethodDecl javac(UniMethod uniMethod) {
         return null;
     }
 

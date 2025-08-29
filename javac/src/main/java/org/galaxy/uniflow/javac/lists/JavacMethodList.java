@@ -13,15 +13,10 @@ import java.util.function.Function;
 
 public class JavacMethodList extends JavacList<UniMethod, JCTree.JCMethodDecl> implements UniMethodList {
 
-    private final Function<UniMethodSignature, UniMethod> methodFinder;
-
-    public JavacMethodList(List<JCTree.JCMethodDecl> elements,
+    public JavacMethodList(java.util.List<UniMethod> elements,
                            Consumer<List<JCTree.JCMethodDecl>> setter,
-                           Function<JCTree.JCMethodDecl, UniMethod> invertConverter,
-                           Function<UniMethod, JCTree.JCMethodDecl> converter,
-                           Function<UniMethodSignature, UniMethod> methodFinder) {
-        super(elements, setter, invertConverter, converter);
-        this.methodFinder = methodFinder;
+                           Function<UniMethod, JCTree.JCMethodDecl> converter) {
+        super(elements, setter, converter);
     }
 
     @Override
@@ -39,6 +34,14 @@ public class JavacMethodList extends JavacList<UniMethod, JCTree.JCMethodDecl> i
 
     @Override
     public @Nullable UniMethod getMethod(@NotNull UniMethodSignature signature) {
-        return methodFinder.apply(signature);
+        return elements.stream().filter(method -> method.asSignature().equals(signature)).findFirst().orElse(null);
+    }
+
+    public static JavacMethodList from(JavacList<UniMethod, JCTree.JCMethodDecl> methods) {
+        return new JavacMethodList(
+                methods.elements,
+                methods.setter,
+                methods.converter
+        );
     }
 }

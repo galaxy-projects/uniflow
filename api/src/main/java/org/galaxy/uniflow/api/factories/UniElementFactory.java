@@ -42,7 +42,7 @@ public interface UniElementFactory {
                                   @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                   @Nullable UniType extending,
                                   @NotNull List<@NotNull UniType> implementing,
-                                  @NotNull List<@NotNull UniField> fields,
+                                  @NotNull List<@NotNull UniVariable> fields,
                                   @NotNull List<@NotNull UniMethod> methods);
 
     @NotNull UniClass createClass(@NotNull List<@NotNull UniAnnotation> annotations,
@@ -53,7 +53,7 @@ public interface UniElementFactory {
                                   @NotNull List<@NotNull UniType> implementing,
                                   @NotNull List<@NotNull UniExpression> permitting,
                                   @NotNull List<@NotNull UniMethod> methods,
-                                  @NotNull List<@NotNull UniField> fields);
+                                  @NotNull List<@NotNull UniVariable> fields);
 
     @NotNull UniMethod createMethod(@NotNull List<@NotNull UniAnnotation> annotations,
                                     @NotNull Set<@NotNull UniModifier> modifiers,
@@ -77,17 +77,17 @@ public interface UniElementFactory {
                                     @NotNull UniBlock body,
                                     @NotNull UniExpression defaultValue);
 
-    @NotNull UniField createField(@NotNull List<@NotNull UniAnnotation> annotations,
-                                  @NotNull Set<@NotNull UniModifier> modifiers,
-                                  @NotNull String name,
-                                  @NotNull UniType type,
-                                  @Nullable UniExpression init);
+    @NotNull UniVariable createField(@NotNull List<@NotNull UniAnnotation> annotations,
+                                     @NotNull Set<@NotNull UniModifier> modifiers,
+                                     @NotNull String name,
+                                     @NotNull UniType type,
+                                     @Nullable UniExpression init);
 
-    @NotNull UniField createField(@NotNull List<@NotNull UniAnnotation> annotations,
-                                  @NotNull Set<@NotNull UniModifier> modifiers,
-                                  @NotNull String name,
-                                  @NotNull Class<?> type,
-                                  @Nullable UniExpression init);
+    @NotNull UniVariable createField(@NotNull List<@NotNull UniAnnotation> annotations,
+                                     @NotNull Set<@NotNull UniModifier> modifiers,
+                                     @NotNull String name,
+                                     @NotNull Class<?> type,
+                                     @Nullable UniExpression init);
 
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,

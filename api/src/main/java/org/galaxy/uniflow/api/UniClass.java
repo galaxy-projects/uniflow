@@ -7,7 +7,6 @@ import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface UniClass {
 
@@ -25,15 +24,11 @@ public interface UniClass {
 
     boolean isRecord();
 
-    @NotNull UniList<@NotNull UniType> getExtends();
+    @NotNull UniType getExtends();
 
     @NotNull UniList<@NotNull UniType> getImplements();
 
-    @Nullable UniClass getSuperClass();
-
     @NotNull UniIndexedList<@NotNull UniTypeParameter> getTypeParameters();
-
-    @NotNull UniClass @NotNull [] getInterfaces();
 
     @NotNull UniFieldList getFields();
 

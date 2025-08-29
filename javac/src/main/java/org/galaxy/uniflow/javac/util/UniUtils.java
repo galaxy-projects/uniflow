@@ -129,8 +129,8 @@ public class UniUtils {
         return null;
     }
 
-    public static @NotNull UniType typeFromTree(JCTree annotationType) {
-        return null;
+    public static @NotNull UniType typeFromTree(JCTree tree) {
+        return type(tree.type);
     }
 
     public static @NotNull UniClassType symbolToType(Symbol owner) {
