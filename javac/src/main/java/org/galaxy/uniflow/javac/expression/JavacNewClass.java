@@ -11,16 +11,10 @@ import org.galaxy.uniflow.javac.util.UniUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-// TODO: update sub values (def, constructor)
 public class JavacNewClass extends JavacExpression<JCTree.JCNewClass> implements UniNewClass {
 
     public JavacNewClass(JCTree.@NotNull JCNewClass tree) {
         super(tree);
-    }
-
-    @Override
-    public void setEnclosingExpression(@Nullable UniExpression enclosingExpression) {
-        tree.encl = JavacUtils.javac(enclosingExpression);
     }
 
     @Override
@@ -36,11 +30,6 @@ public class JavacNewClass extends JavacExpression<JCTree.JCNewClass> implements
                 UniUtils::uni,
                 JavacUtils::javac
         );
-    }
-
-    @Override
-    public void setIdentifier(@NotNull UniExpression identifier) {
-        tree.clazz = JavacUtils.javac(identifier);
     }
 
     @Override
