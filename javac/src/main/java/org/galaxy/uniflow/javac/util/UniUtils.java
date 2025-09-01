@@ -6,6 +6,7 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.UniClassInitializer;
 import org.galaxy.uniflow.api.UniElement;
+import org.galaxy.uniflow.api.UniPackage;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCase;
@@ -13,6 +14,7 @@ import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
+import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -83,6 +85,14 @@ public class UniUtils {
     }
 
     public static @NotNull UniTypeParameter uni(JCTree.JCTypeParameter typeParameter) {
+        return null;
+    }
+
+    public static @NotNull UniModule uni(JCTree.JCModuleDecl module) {
+        return null;
+    }
+
+    public static @NotNull UniPackage uni(JCTree.JCPackageDecl packageDecl) {
         return null;
     }
 

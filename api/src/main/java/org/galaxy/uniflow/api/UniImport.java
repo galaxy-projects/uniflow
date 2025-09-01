@@ -8,6 +8,8 @@ public interface UniImport extends UniElement {
 
     boolean isStatic();
 
+    void setQualifiedElement(@NotNull UniElement qualifiedElement);
+
     @NotNull UniElement getQualifiedElement();
 
 }
