@@ -4,6 +4,7 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
+import org.galaxy.uniflow.api.UniClassInitializer;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
@@ -134,6 +135,10 @@ public class UniUtils {
     }
 
     public static @NotNull UniClassType symbolToType(Symbol owner) {
+        return null;
+    }
+
+    public static @NotNull UniClassInitializer blockToInitializer(UniBlock element) {
         return null;
     }
 }

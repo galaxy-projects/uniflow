@@ -36,12 +36,8 @@ public interface UniClass {
 
     @NotNull UniMethodList getConstructors();
 
-    @NotNull UniList<UniClassInitializer> getInitializers();
+    @NotNull UniList<@NotNull UniClassInitializer> getInitializers();
 
-    @NotNull UniClass @NotNull [] getInnerClasses();
-
-    void addInnerClass(@NotNull UniClass innerClass);
-
-    void removeInnerClass(@NotNull UniClass innerClass);
+    @NotNull UniList<@NotNull UniClass> getInnerClasses();
 
 }

@@ -4,6 +4,8 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
+import org.galaxy.uniflow.api.UniClass;
+import org.galaxy.uniflow.api.UniClassInitializer;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
@@ -110,6 +112,14 @@ public class JavacUtils {
     }
 
     public static JCTree.JCMethodDecl javac(UniMethod uniMethod) {
+        return null;
+    }
+
+    public static JCTree.JCBlock javac(UniClassInitializer block) {
+        return null;
+    }
+
+    public static JCTree.JCClassDecl javac(UniClass uniClass) {
         return null;
     }
 

@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniClassInitializer extends UniMember {
 
+    boolean isStatic();
+
     @NotNull UniBlock getBody();
 
 }

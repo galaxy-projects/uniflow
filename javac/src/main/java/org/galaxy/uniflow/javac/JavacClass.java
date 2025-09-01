@@ -6,6 +6,7 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.lists.UniFieldList;
 import org.galaxy.uniflow.api.lists.UniIndexedList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
+import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
@@ -92,12 +93,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public @NotNull UniFieldList getFields() {
-        JavacList<UniVariable, JCTree.JCVariableDecl> fields = new JavacList<>(
-                tree.defs,
-                newList -> tree.defs = newList,
-                UniUtils::uni,
-                JavacUtils::javac
-        ).partial(
+        JavacList<UniVariable, JCTree.JCVariableDecl> fields = elements().partial(
                 UniVariable.class::isInstance,
                 element -> (UniVariable) element,
                 var -> var,
@@ -108,12 +104,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public @NotNull UniMethodList getMethods() {
-        JavacList<UniMethod, JCTree.JCMethodDecl> methods = new JavacList<>(
-                tree.defs,
-                newList -> tree.defs = newList,
-                UniUtils::uni,
-                JavacUtils::javac
-        ).partial(
+        JavacList<UniMethod, JCTree.JCMethodDecl> methods = elements().partial(
                 method -> method instanceof UniMethod && !((UniMethod) method).isConstructor(),
                 element -> (UniMethod) element,
                 var -> var,
@@ -124,12 +115,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public @NotNull UniMethodList getConstructors() {
-        JavacList<UniMethod, JCTree.JCMethodDecl> methods = new JavacList<>(
-                tree.defs,
-                newList -> tree.defs = newList,
-                UniUtils::uni,
-                JavacUtils::javac
-        ).partial(
+        JavacList<UniMethod, JCTree.JCMethodDecl> methods = elements().partial(
                 method -> method instanceof UniMethod && ((UniMethod) method).isConstructor(),
                 element -> (UniMethod) element,
                 var -> var,
@@ -140,25 +126,34 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public @NotNull UniList<UniClassInitializer> getInitializers() {
-        return null; // TODO: find javac class initializers: methods ?
+        return elements().partial(
+                UniBlock.class::isInstance,
+                element -> UniUtils.blockToInitializer((UniBlock) element),
+                var -> var,
+                JavacUtils::javac
+        );
     }
 
     @Override
-    public @NotNull UniClass @NotNull [] getInnerClasses() {
-        return new UniClass[0];
-    }
-
-    @Override
-    public void addInnerClass(@NotNull UniClass innerClass) {
-
-    }
-
-    @Override
-    public void removeInnerClass(@NotNull UniClass innerClass) {
-
+    public @NotNull UniList<@NotNull UniClass> getInnerClasses() {
+        return elements().partial(
+                UniClass.class::isInstance,
+                element -> (UniClass) element,
+                var -> var,
+                JavacUtils::javac
+        );
     }
 
     private void updateType(Consumer<Type.ClassType> consumer) {
         consumer.accept((Type.ClassType) tree.sym.type);
+    }
+
+    private JavacList<UniElement, JCTree> elements() {
+        return new JavacList<>(
+                tree.defs,
+                newList -> tree.defs = newList,
+                UniUtils::uni,
+                JavacUtils::javac
+        );
     }
 }
