@@ -14,9 +14,10 @@ public interface UniCompilationUnit extends UniElement {
 
     @Nullable UniPackage getPackage();
 
-    @NotNull UniList<UniImport> getImports();
+    @NotNull UniList<@NotNull UniImport> getImports();
 
-    @NotNull UniList<UniElement> getDeclaredTypes();
+    @NotNull UniList<@NotNull UniClass> getClasses();
 
-    
+    @NotNull UniList<@NotNull UniElement> getOtherElements();
+
 }

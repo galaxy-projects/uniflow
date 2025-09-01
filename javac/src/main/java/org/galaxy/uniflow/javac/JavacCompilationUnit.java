@@ -49,30 +49,39 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
 
     @Override
     public @NotNull UniList<UniImport> getImports() {
-        return new JavacList<>(
-                tree.defs,
-                newList -> tree.defs = newList,
-                UniUtils::uni,
-                JavacUtils::javac
-        ).partial(
+        return elements().partial(
                 UniImport.class::isInstance,
                 UniImport.class::cast,
-                var -> var,
+                Function.identity(),
                 JavacUtils::javac
         );
     }
 
     @Override
-    public @NotNull UniList<UniElement> getDeclaredTypes() {
+    public @NotNull UniList<@NotNull UniClass> getClasses() {
+        return elements().partial(
+                UniClass.class::isInstance,
+                UniClass.class::cast,
+                Function.identity(),
+                JavacUtils::javac
+        );
+    }
+
+    @Override
+    public @NotNull UniList<UniElement> getOtherElements() {
+        return elements().partial(
+                e -> !(e instanceof UniModule) && !(e instanceof UniPackage) && !(e instanceof UniImport) && !(e instanceof UniClass),
+                Function.identity(),
+                Function.identity(),
+                JavacUtils::javac
+        );
+    }
+
+    private JavacList<UniElement, JCTree> elements() {
         return new JavacList<>(
                 tree.defs,
                 newList -> tree.defs = newList,
                 UniUtils::uni,
-                JavacUtils::javac
-        ).partial(
-                e -> !(e instanceof UniModule) && !(e instanceof UniPackage) && !(e instanceof UniImport),
-                Function.identity(),
-                Function.identity(),
                 JavacUtils::javac
         );
     }
