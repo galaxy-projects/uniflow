@@ -29,7 +29,7 @@ public class JavacBlock extends JavacElement<JCTree.JCBlock> implements UniBlock
 
     @Override
     public @NotNull UniList<UniStatement> getStatements() {
-        return new JavacList<UniStatement, JCTree.JCStatement>(
+        return new JavacList<>(
                 tree.stats,
                 newList -> tree.stats = newList,
                 UniUtils::uni,
