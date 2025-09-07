@@ -37,4 +37,9 @@ public enum TypeTag {
      * The tag of the basic type `boolean'.
      */
     BOOLEAN,
+
+    /**
+     * The tag of the basic type 'void'
+     */
+    VOID
 }

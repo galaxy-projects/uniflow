@@ -5,8 +5,8 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniSynchronized;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacSynchronized extends JavacElement<JCTree.JCSynchronized> implements UniSynchronized {
@@ -17,21 +17,21 @@ public class JavacSynchronized extends JavacElement<JCTree.JCSynchronized> imple
 
     @Override
     public void setLock(@NotNull UniExpression lock) {
-        tree.lock = JavacUtils.javac(lock);
+        tree.lock = JavacUnwrapper.unwrap(lock);
     }
 
     @Override
     public @NotNull UniExpression getLock() {
-        return UniUtils.uni(tree.lock);
+        return UniflowWrapper.wrap(tree.lock);
     }
 
     @Override
     public void setBody(@NotNull UniBlock body) {
-        tree.body = JavacUtils.javac(body);
+        tree.body = JavacUnwrapper.unwrap(body);
     }
 
     @Override
     public @NotNull UniBlock getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 }

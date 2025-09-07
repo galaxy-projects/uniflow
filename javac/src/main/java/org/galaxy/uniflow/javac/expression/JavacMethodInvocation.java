@@ -5,8 +5,8 @@ import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniMethodInvocation;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacMethodInvocation extends JavacExpression<JCTree.JCMethodInvocation> implements UniMethodInvocation {
@@ -20,19 +20,19 @@ public class JavacMethodInvocation extends JavacExpression<JCTree.JCMethodInvoca
         return new JavacList<>(
                 tree.typeargs,
                 newList -> tree.typeargs = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
     @Override
     public void setMethodSelect(@NotNull UniExpression methodSelect) {
-        tree.meth = JavacUtils.javac(methodSelect);
+        tree.meth = JavacUnwrapper.unwrap(methodSelect);
     }
 
     @Override
     public @NotNull UniExpression getMethodSelect() {
-        return UniUtils.uni(tree.meth);
+        return UniflowWrapper.wrap(tree.meth);
     }
 
     @Override
@@ -40,8 +40,8 @@ public class JavacMethodInvocation extends JavacExpression<JCTree.JCMethodInvoca
         return new JavacList<>(
                 tree.args,
                 newList -> tree.args = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 }

@@ -1,4 +1,4 @@
-package org.galaxy.uniflow.javac.elements;
+package org.galaxy.uniflow.javac.statements;
 
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniElement;
@@ -10,8 +10,8 @@ import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.common.EnumUtils;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,8 +28,8 @@ public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
         return new JavacList<>(
                 tree.labels,
                 newList -> tree.labels = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
@@ -58,13 +58,13 @@ public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
         return new JavacList<>(
                 tree.labels,
                 newList -> tree.labels = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         ).partial(
                 UniExpression.class::isInstance,
                 label -> (UniExpression) label,
                 Function.identity(),
-                JavacUtils::javac
+                JavacUnwrapper::unwrap
         );
     }
 
@@ -73,19 +73,19 @@ public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
         return new JavacList<>(
                 tree.getStatements(),
                 newList -> tree.stats = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
     @Override
     public void setBody(@NotNull UniElement body) {
-        tree.body = JavacUtils.javac(body);
+        tree.body = JavacUnwrapper.unwrap(body);
     }
 
     @Override
     public @Nullable UniElement getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 
     @Override

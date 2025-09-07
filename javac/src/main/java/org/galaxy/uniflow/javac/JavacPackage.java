@@ -2,43 +2,24 @@ package org.galaxy.uniflow.javac;
 
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.UniModifiers;
+import org.galaxy.uniflow.api.UniPackage;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
-import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.types.UniClassType;
-import org.galaxy.uniflow.common.EnumUtils;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class JavacModifiers extends JavacElement<JCTree.JCModifiers> implements UniModifiers {
+public class JavacPackage extends JavacElement<JCTree.JCPackageDecl> implements UniPackage {
 
-    public JavacModifiers(JCTree.@NotNull JCModifiers tree) {
+    public JavacPackage(JCTree.@NotNull JCPackageDecl tree) {
         super(tree);
     }
 
     @Override
-    public @NotNull UniModifier @NotNull [] getModifiers() {
-        return tree.getFlags().stream()
-                .map(flag -> EnumUtils.convert(UniModifier.class, flag))
-                .toArray(UniModifier[]::new);
-    }
-
-    @Override
-    public boolean hasModifier(@NotNull UniModifier modifier) {
-        return modifier.hasModifier(tree.flags);
-    }
-
-    @Override
-    public void addModifier(@NotNull UniModifier modifier) {
-        tree.flags |= modifier.getMask();
-    }
-
-    @Override
-    public void removeModifier(@NotNull UniModifier modifier) {
-        tree.flags &= ~modifier.getMask();
+    public @NotNull String getPackageName() {
+        return UniflowWrapper.expressionToString(tree.pid);
     }
 
     @Override
@@ -55,9 +36,7 @@ public class JavacModifiers extends JavacElement<JCTree.JCModifiers> implements 
     public @Nullable UniAnnotation getAnnotation(@NotNull UniClassType type) {
         return tree.annotations.stream()
                 .filter(annotation -> UniflowWrapper.typeFromTree(annotation.annotationType).equals(type))
-                .findFirst()
-                .map(UniflowWrapper::wrap)
-                .orElse(null);
+                .findFirst().map(UniflowWrapper::wrap).orElse(null);
     }
 
     @Override

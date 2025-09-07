@@ -15,9 +15,9 @@ import org.galaxy.uniflow.javac.lists.JavacIndexedList;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.lists.JavacParameterList;
 import org.galaxy.uniflow.javac.signatures.JavacMethodSignature;
-import org.galaxy.uniflow.javac.util.JavacUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements UniMethod {
@@ -38,22 +38,22 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
 
     @Override
     public void setReturnType(@NotNull UniType type) {
-        tree.restype = JavacUtils.typeToTree(type);
+        tree.restype = JavacUnwrapper.typeToTree(type);
         tree.sym.type.asMethodType().restype = tree.restype.type;
     }
 
     @Override
     public @NotNull UniType getReturnType() {
-        return UniUtils.typeFromTree(tree.restype);
+        return UniflowWrapper.typeFromTree(tree.restype);
     }
 
     @Override
     public @NotNull UniIndexedList<@NotNull UniTypeParameter> getTypeParameters() {
-        return new JavacIndexedList<>(
+        return JavacIndexedList.of(
                 tree.typarams,
                 newList -> tree.typarams = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
@@ -66,8 +66,8 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
                     tree.sym.params = newList.map(var -> var.sym);
                     tree.sym.type.asMethodType().argtypes = newList.map(var -> var.type);
                 },
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         ));
     }
 
@@ -79,19 +79,19 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
                     tree.thrown = newList;
                     tree.sym.type.asMethodType().thrown = newList.map(exp -> exp.type);
                 },
-                UniUtils::typeFromTree,
-                JavacUtils::typeToTree
+                UniflowWrapper::typeFromTree,
+                JavacUnwrapper::typeToTree
         );
     }
 
     @Override
     public void setBody(@NotNull UniBlock body) {
-        tree.body = JavacUtils.javac(body);
+        tree.body = JavacUnwrapper.unwrap(body);
     }
 
     @Override
     public @NotNull UniBlock getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 
     @Override
@@ -111,6 +111,6 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
 
     @Override
     public @NotNull UniClassType getContainingClass() {
-        return UniUtils.symbolToType(tree.sym.owner);
+        return UniflowWrapper.symbolToType(tree.sym.owner);
     }
 }

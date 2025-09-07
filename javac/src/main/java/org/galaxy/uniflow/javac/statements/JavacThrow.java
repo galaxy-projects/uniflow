@@ -4,8 +4,8 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniThrow;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacThrow extends JavacElement<JCTree.JCThrow> implements UniThrow {
@@ -16,11 +16,11 @@ public class JavacThrow extends JavacElement<JCTree.JCThrow> implements UniThrow
 
     @Override
     public void setExpression(@NotNull UniExpression expression) {
-        tree.expr = JavacUtils.javac(expression);
+        tree.expr = JavacUnwrapper.unwrap(expression);
     }
 
     @Override
     public @NotNull UniExpression getExpression() {
-        return UniUtils.uni(tree.expr);
+        return UniflowWrapper.wrap(tree.expr);
     }
 }

@@ -4,7 +4,7 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.jetbrains.annotations.NotNull;
 
-public interface UniModifiers extends UniAnnotationHolder {
+public interface UniModifiers extends UniAnnotationHolder, UniElement {
 
     @NotNull UniModifier @NotNull [] getModifiers();
 

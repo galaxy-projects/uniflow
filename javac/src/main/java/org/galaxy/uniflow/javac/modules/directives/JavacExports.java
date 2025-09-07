@@ -6,8 +6,8 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniExports;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacExports extends JavacElement<JCTree.JCExports> implements UniExports {
@@ -18,12 +18,12 @@ public class JavacExports extends JavacElement<JCTree.JCExports> implements UniE
 
     @Override
     public void setPackageName(@NotNull UniExpression packageName) {
-        tree.qualid = JavacUtils.javac(packageName);
+        tree.qualid = JavacUnwrapper.unwrap(packageName);
     }
 
     @Override
     public @NotNull UniExpression getPackageName() {
-        return UniUtils.uni(tree.qualid);
+        return UniflowWrapper.wrap(tree.qualid);
     }
 
     @Override
@@ -31,8 +31,8 @@ public class JavacExports extends JavacElement<JCTree.JCExports> implements UniE
         return new JavacList<>(
                 tree.moduleNames,
                 newList -> tree.moduleNames = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 }

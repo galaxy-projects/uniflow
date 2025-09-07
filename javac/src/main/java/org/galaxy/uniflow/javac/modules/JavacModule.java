@@ -10,8 +10,8 @@ import org.galaxy.uniflow.common.EnumUtils;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.JavacModifiers;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacModule extends JavacElement<JCTree.JCModuleDecl> implements UniModule {
@@ -32,12 +32,12 @@ public class JavacModule extends JavacElement<JCTree.JCModuleDecl> implements Un
 
     @Override
     public void setName(@NotNull UniExpression name) {
-        tree.qualId = JavacUtils.javac(name);
+        tree.qualId = JavacUnwrapper.unwrap(name);
     }
 
     @Override
     public @NotNull UniExpression getName() {
-        return UniUtils.uni(tree.qualId);
+        return UniflowWrapper.wrap(tree.qualId);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class JavacModule extends JavacElement<JCTree.JCModuleDecl> implements Un
         return new JavacList<>(
                 tree.directives,
                 newList -> tree.directives = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 }

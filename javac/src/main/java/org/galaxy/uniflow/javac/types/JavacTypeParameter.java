@@ -1,44 +1,66 @@
-package org.galaxy.uniflow.javac;
+package org.galaxy.uniflow.javac.types;
 
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
-import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.types.UniClassType;
-import org.galaxy.uniflow.common.EnumUtils;
+import org.galaxy.uniflow.api.types.UniType;
+import org.galaxy.uniflow.api.types.UniTypeParameter;
+import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class JavacModifiers extends JavacElement<JCTree.JCModifiers> implements UniModifiers {
+public class JavacTypeParameter extends JavacElement<JCTree.JCTypeParameter> implements UniTypeParameter {
 
-    public JavacModifiers(JCTree.@NotNull JCModifiers tree) {
+    private int index;
+
+    public JavacTypeParameter(JCTree.@NotNull JCTypeParameter tree, int index) {
         super(tree);
+        this.index = index;
     }
 
     @Override
-    public @NotNull UniModifier @NotNull [] getModifiers() {
-        return tree.getFlags().stream()
-                .map(flag -> EnumUtils.convert(UniModifier.class, flag))
-                .toArray(UniModifier[]::new);
+    public void setName(@NotNull String name) {
+        tree.name = NameUtils.name(name);
     }
 
     @Override
-    public boolean hasModifier(@NotNull UniModifier modifier) {
-        return modifier.hasModifier(tree.flags);
+    public @NotNull String getName() {
+        return NameUtils.nameToString(tree.name);
     }
 
     @Override
-    public void addModifier(@NotNull UniModifier modifier) {
-        tree.flags |= modifier.getMask();
+    public void setType(@NotNull UniType type) {
+        tree.type = JavacUnwrapper.unwrap(type);
     }
 
     @Override
-    public void removeModifier(@NotNull UniModifier modifier) {
-        tree.flags &= ~modifier.getMask();
+    public @NotNull UniType getType() {
+        return UniflowWrapper.type(tree.type);
+    }
+
+    @Override
+    public @NotNull UniList<@NotNull UniType> getExtends() {
+        return new JavacList<>(
+                tree.bounds,
+                newList -> tree.bounds = newList,
+                UniflowWrapper::typeFromTree,
+                JavacUnwrapper::typeToTree
+        );
+    }
+
+    @Override
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    @Override
+    public int getIndex() {
+        return index;
     }
 
     @Override
@@ -55,17 +77,14 @@ public class JavacModifiers extends JavacElement<JCTree.JCModifiers> implements 
     public @Nullable UniAnnotation getAnnotation(@NotNull UniClassType type) {
         return tree.annotations.stream()
                 .filter(annotation -> UniflowWrapper.typeFromTree(annotation.annotationType).equals(type))
-                .findFirst()
-                .map(UniflowWrapper::wrap)
-                .orElse(null);
+                .findFirst().map(UniflowWrapper::wrap).orElse(null);
     }
 
     @Override
     public @Nullable UniAnnotation @NotNull [] getAllAnnotations(@NotNull UniClassType type) {
         return tree.annotations.stream()
                 .filter(annotation -> UniflowWrapper.typeFromTree(annotation.annotationType).equals(type))
-                .map(UniflowWrapper::wrap)
-                .toArray(UniAnnotation[]::new);
+                .map(UniflowWrapper::wrap).toArray(UniAnnotation[]::new);
     }
 
     @Override

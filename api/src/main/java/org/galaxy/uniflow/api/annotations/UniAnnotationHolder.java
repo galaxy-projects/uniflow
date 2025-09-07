@@ -1,12 +1,11 @@
 package org.galaxy.uniflow.api.annotations;
 
-import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface UniAnnotationHolder extends UniElement {
+public interface UniAnnotationHolder {
 
     @NotNull UniList<@NotNull UniAnnotation> getAnnotations();
 

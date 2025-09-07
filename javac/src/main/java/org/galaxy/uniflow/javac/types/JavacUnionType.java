@@ -1,23 +1,24 @@
 package org.galaxy.uniflow.javac.types;
 
 import com.sun.tools.javac.code.Type;
+import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniUnionType;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 
-public class JavacUnionType extends JavacType<Type.UnionClassType> implements UniUnionType {
+public class JavacUnionType extends JavacType<JCTree.JCExpression, Type.UnionClassType> implements UniUnionType {
 
     private static final Field ALTERNATIVES;
 
     public JavacUnionType(Type.UnionClassType type) {
-        super(type);
+        super(null, type);
     }
 
     @Override
@@ -40,8 +41,8 @@ public class JavacUnionType extends JavacType<Type.UnionClassType> implements Un
                         throw new RuntimeException(e);
                     }
                 },
-                UniUtils::type,
-                JavacUtils::javac
+                UniflowWrapper::type,
+                JavacUnwrapper::unwrap
         );
     }
 

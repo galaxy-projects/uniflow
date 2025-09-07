@@ -25,10 +25,10 @@ public class JavacList<T, R> implements UniList<T> {
 
     public JavacList(List<R> elements,
                      Consumer<List<R>> setter,
-                     Function<R, T> invertConverter,
+                     Function<R, T> inverterConverter,
                      Function<T, R> converter) {
         this.setter = setter;
-        this.elements = new ArrayList<>(elements.map(invertConverter));
+        this.elements = new ArrayList<>(elements.map(inverterConverter));
         this.converter = converter;
     }
 

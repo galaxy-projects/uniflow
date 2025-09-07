@@ -3,8 +3,8 @@ package org.galaxy.uniflow.javac.expression;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniParenthesized;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacParenthesized extends JavacExpression<JCTree.JCParens> implements UniParenthesized {
@@ -15,11 +15,11 @@ public class JavacParenthesized extends JavacExpression<JCTree.JCParens> impleme
 
     @Override
     public void setExpression(@NotNull UniExpression expression) {
-        tree.expr = JavacUtils.javac(expression);
+        tree.expr = JavacUnwrapper.unwrap(expression);
     }
 
     @Override
     public @NotNull UniExpression getExpression() {
-        return UniUtils.uni(tree.expr);
+        return UniflowWrapper.wrap(tree.expr);
     }
 }

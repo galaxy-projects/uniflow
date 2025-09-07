@@ -4,8 +4,8 @@ import com.sun.tools.javac.code.Scope;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniImport;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacImport extends JavacElement<JCTree.JCImport> implements UniImport {
@@ -26,11 +26,11 @@ public class JavacImport extends JavacElement<JCTree.JCImport> implements UniImp
 
     @Override
     public void setQualifiedElement(@NotNull UniElement qualifiedElement) {
-        tree.qualid = JavacUtils.javac(qualifiedElement);
+        tree.qualid = JavacUnwrapper.unwrap(qualifiedElement);
     }
 
     @Override
     public @NotNull UniElement getQualifiedElement() {
-        return UniUtils.uni(tree.qualid);
+        return UniflowWrapper.wrap(tree.qualid);
     }
 }

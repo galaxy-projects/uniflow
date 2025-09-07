@@ -8,8 +8,8 @@ import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniTry;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,12 +21,12 @@ public class JavacTry extends JavacElement<JCTree.JCTry> implements UniTry {
 
     @Override
     public void setBody(@NotNull UniBlock body) {
-        tree.body = JavacUtils.javac(body);
+        tree.body = JavacUnwrapper.unwrap(body);
     }
 
     @Override
     public @NotNull UniBlock getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 
     @Override
@@ -34,19 +34,19 @@ public class JavacTry extends JavacElement<JCTree.JCTry> implements UniTry {
         return new JavacList<>(
                 tree.catchers,
                 newList -> tree.catchers = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
     @Override
     public void setFinally(@Nullable UniBlock finallyBody) {
-        tree.finalizer = JavacUtils.javac(finallyBody);
+        tree.finalizer = JavacUnwrapper.unwrap(finallyBody);
     }
 
     @Override
     public @Nullable UniBlock getFinallyBody() {
-        return UniUtils.uni(tree.finalizer);
+        return UniflowWrapper.wrap(tree.finalizer);
     }
 
     @Override
@@ -54,8 +54,8 @@ public class JavacTry extends JavacElement<JCTree.JCTry> implements UniTry {
         return new JavacList<>(
                 tree.resources,
                 newList -> tree.resources = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 }

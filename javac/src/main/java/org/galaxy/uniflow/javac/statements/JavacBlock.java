@@ -7,8 +7,8 @@ import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacBlock extends JavacElement<JCTree.JCBlock> implements UniBlock {
@@ -32,8 +32,8 @@ public class JavacBlock extends JavacElement<JCTree.JCBlock> implements UniBlock
         return new JavacList<>(
                 tree.stats,
                 newList -> tree.stats = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 }

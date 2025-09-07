@@ -8,8 +8,8 @@ import org.galaxy.uniflow.api.statements.UniForLoop;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacForLoop extends JavacElement<JCTree.JCForLoop> implements UniForLoop {
@@ -23,19 +23,19 @@ public class JavacForLoop extends JavacElement<JCTree.JCForLoop> implements UniF
         return new JavacList<>(
                 tree.init,
                 newList -> tree.init = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
     @Override
     public void setCondition(@NotNull UniExpression condition) {
-        tree.cond = JavacUtils.javac(condition);
+        tree.cond = JavacUnwrapper.unwrap(condition);
     }
 
     @Override
     public @NotNull UniExpression getCondition() {
-        return UniUtils.uni(tree.cond);
+        return UniflowWrapper.wrap(tree.cond);
     }
 
     @Override
@@ -43,18 +43,18 @@ public class JavacForLoop extends JavacElement<JCTree.JCForLoop> implements UniF
         return new JavacList<>(
                 tree.step,
                 newList -> tree.step = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
     @Override
     public void setBody(@NotNull UniStatement body) {
-        tree.body = JavacUtils.javac(body);
+        tree.body = JavacUnwrapper.unwrap(body);
     }
 
     @Override
     public @NotNull UniStatement getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 }

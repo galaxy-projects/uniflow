@@ -4,8 +4,8 @@ import com.sun.tools.javac.tree.JCTree.JCParenthesizedPattern;
 import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacParenthesizedPattern extends JavacElement<JCParenthesizedPattern>
@@ -17,11 +17,11 @@ public class JavacParenthesizedPattern extends JavacElement<JCParenthesizedPatte
 
     @Override
     public void setPattern(@NotNull UniPattern pattern) {
-        tree.pattern = JavacUtils.javac(pattern);
+        tree.pattern = JavacUnwrapper.unwrap(pattern);
     }
 
     @Override
     public @NotNull UniPattern getPattern() {
-        return UniUtils.uni(tree.pattern);
+        return UniflowWrapper.wrap(tree.pattern);
     }
 }

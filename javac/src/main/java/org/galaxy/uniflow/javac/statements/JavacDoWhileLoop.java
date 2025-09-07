@@ -5,8 +5,8 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniDoWhileLoop;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacDoWhileLoop extends JavacElement<JCTree.JCDoWhileLoop> implements UniDoWhileLoop {
@@ -17,21 +17,21 @@ public class JavacDoWhileLoop extends JavacElement<JCTree.JCDoWhileLoop> impleme
 
     @Override
     public void setCondition(@NotNull UniExpression condition) {
-        tree.cond = JavacUtils.javac(condition);
+        tree.cond = JavacUnwrapper.unwrap(condition);
     }
 
     @Override
     public @NotNull UniExpression getCondition() {
-        return UniUtils.uni(tree.cond);
+        return UniflowWrapper.wrap(tree.cond);
     }
 
     @Override
     public void setBody(@NotNull UniStatement body) {
-        tree.body = JavacUtils.javac(body);
+        tree.body = JavacUnwrapper.unwrap(body);
     }
 
     @Override
     public @NotNull UniStatement getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 }

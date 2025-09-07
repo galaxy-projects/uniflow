@@ -3,8 +3,8 @@ package org.galaxy.uniflow.javac.expression;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniOperatorExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacOperator<T extends JCTree.JCOperatorExpression> extends JavacExpression<T>
@@ -16,11 +16,11 @@ public class JavacOperator<T extends JCTree.JCOperatorExpression> extends JavacE
 
     @Override
     public void setOperator(@NotNull UniOperatorSignature operator) {
-        tree.operator = JavacUtils.javac(operator);
+        tree.operator = JavacUnwrapper.unwrap(operator);
     }
 
     @Override
     public @NotNull UniOperatorSignature getOperator() {
-        return UniUtils.uni(tree.operator);
+        return UniflowWrapper.wrap(tree.operator);
     }
 }

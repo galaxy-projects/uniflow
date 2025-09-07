@@ -3,8 +3,8 @@ package org.galaxy.uniflow.javac.expression;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniArrayAccess;
 import org.galaxy.uniflow.api.expressions.UniExpression;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacArrayAccess extends JavacExpression<JCTree.JCArrayAccess> implements UniArrayAccess {
@@ -15,21 +15,21 @@ public class JavacArrayAccess extends JavacExpression<JCTree.JCArrayAccess> impl
 
     @Override
     public void setExpression(@NotNull UniExpression expression) {
-        tree.indexed = JavacUtils.javac(expression);
+        tree.indexed = JavacUnwrapper.unwrap(expression);
     }
 
     @Override
     public @NotNull UniExpression getExpression() {
-        return UniUtils.uni(tree.indexed);
+        return UniflowWrapper.wrap(tree.indexed);
     }
 
     @Override
     public void setIndex(@NotNull UniExpression index) {
-        tree.index = JavacUtils.javac(index);
+        tree.index = JavacUnwrapper.unwrap(index);
     }
 
     @Override
     public @NotNull UniExpression getIndex() {
-        return UniUtils.uni(tree.index);
+        return UniflowWrapper.wrap(tree.index);
     }
 }

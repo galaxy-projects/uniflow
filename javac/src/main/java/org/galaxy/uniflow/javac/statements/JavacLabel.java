@@ -4,9 +4,9 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.statements.UniLabel;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacLabel extends JavacElement<JCTree.JCLabeledStatement> implements UniLabel {
@@ -27,11 +27,11 @@ public class JavacLabel extends JavacElement<JCTree.JCLabeledStatement> implemen
 
     @Override
     public void setBody(@NotNull UniStatement body) {
-        tree.body = JavacUtils.javac(body);
+        tree.body = JavacUnwrapper.unwrap(body);
     }
 
     @Override
     public @NotNull UniStatement getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 }

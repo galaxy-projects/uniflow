@@ -4,8 +4,8 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacBindingPattern extends JavacElement<JCTree.JCBindingPattern> implements UniBindingPattern {
@@ -16,11 +16,11 @@ public class JavacBindingPattern extends JavacElement<JCTree.JCBindingPattern> i
 
     @Override
     public void setVariable(@NotNull UniVariable variable) {
-        tree.var = JavacUtils.javac(variable);
+        tree.var = JavacUnwrapper.unwrap(variable);
     }
 
     @Override
     public @NotNull UniVariable getVariable() {
-        return UniUtils.uni(tree.var);
+        return UniflowWrapper.wrap(tree.var);
     }
 }

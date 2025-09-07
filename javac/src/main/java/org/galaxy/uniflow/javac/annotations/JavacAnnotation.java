@@ -12,9 +12,9 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.JavacUniflow;
-import org.galaxy.uniflow.javac.util.JavacUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.SymbolUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +29,7 @@ public class JavacAnnotation extends JavacElement<JCTree.JCAnnotation> implement
 
     @Override
     public @NotNull UniClassType getType() {
-        return (UniClassType) UniUtils.typeFromTree(tree.annotationType);
+        return (UniClassType) UniflowWrapper.typeFromTree(tree.annotationType);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class JavacAnnotation extends JavacElement<JCTree.JCAnnotation> implement
                     tree.args = tree.args.append(treeMaker.Assign(treeMaker.Ident(uniflow.names.value), valueExpr));
                 });
 
-        JCTree.JCAssign assign = treeMaker.Assign(treeMaker.Ident(method), JavacUtils.javac(value));
+        JCTree.JCAssign assign = treeMaker.Assign(treeMaker.Ident(method), JavacUnwrapper.unwrap(value));
 
         tree.args = tree.args.append(assign);
 

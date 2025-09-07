@@ -7,9 +7,9 @@ import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.JavacModifiers;
-import org.galaxy.uniflow.javac.util.JavacUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,16 +31,16 @@ public class JavacVariable extends JavacElement<JCTree.JCVariableDecl> implement
 
     @Override
     public @NotNull UniType getType() {
-        return UniUtils.typeFromTree(tree.vartype);
+        return UniflowWrapper.typeFromTree(tree.vartype);
     }
 
     @Override
     public void setInitializer(@Nullable UniExpression expression) {
-        tree.init = JavacUtils.javac(expression);
+        tree.init = JavacUnwrapper.unwrap(expression);
     }
 
     @Override
     public @Nullable UniExpression getInitializer() {
-        return UniUtils.uni(tree.init);
+        return UniflowWrapper.wrap(tree.init);
     }
 }

@@ -3,12 +3,13 @@ package org.galaxy.uniflow.api;
 import org.galaxy.uniflow.api.lists.UniFieldList;
 import org.galaxy.uniflow.api.lists.UniIndexedList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
+import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.jetbrains.annotations.NotNull;
 
-public interface UniClass {
+public interface UniClass extends UniStatement {
 
     @NotNull UniModifiers getModifiers();
 

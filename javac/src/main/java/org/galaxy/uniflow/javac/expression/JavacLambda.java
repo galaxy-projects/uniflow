@@ -7,8 +7,8 @@ import org.galaxy.uniflow.api.expressions.UniLambda;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.common.EnumUtils;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacLambda extends JavacExpression<JCTree.JCLambda> implements UniLambda {
@@ -22,14 +22,14 @@ public class JavacLambda extends JavacExpression<JCTree.JCLambda> implements Uni
         return new JavacList<>(
                 tree.params,
                 newList -> tree.params = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
     @Override
     public @NotNull UniElement getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 
     @Override

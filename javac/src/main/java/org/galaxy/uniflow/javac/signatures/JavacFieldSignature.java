@@ -5,7 +5,7 @@ import org.galaxy.uniflow.api.signatures.UniFieldSignature;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacFieldSignature extends JavacSignature<Symbol.VarSymbol> implements UniFieldSignature {
@@ -16,12 +16,12 @@ public class JavacFieldSignature extends JavacSignature<Symbol.VarSymbol> implem
 
     @Override
     public @NotNull UniClassType getOwner() {
-        return UniUtils.symbolToType(symbol.owner);
+        return UniflowWrapper.symbolToType(symbol.owner);
     }
 
     @Override
     public @NotNull UniType getType() {
-        return UniUtils.type(symbol.type);
+        return UniflowWrapper.type(symbol.type);
     }
 
     @Override

@@ -6,8 +6,8 @@ import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniErroneous;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacErroneous extends JavacExpression<JCTree.JCErroneous> implements UniErroneous {
@@ -21,7 +21,7 @@ public class JavacErroneous extends JavacExpression<JCTree.JCErroneous> implemen
     public @NotNull UniList<UniElement> getErrors() {
         return new JavacList<>((List<JCTree>) tree.errs,
                 newList -> tree.errs = newList,
-                UniUtils::uni,
-                JavacUtils::javac);
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap);
     }
 }

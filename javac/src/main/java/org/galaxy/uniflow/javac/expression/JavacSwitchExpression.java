@@ -6,8 +6,8 @@ import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniSwitchExpression;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacSwitchExpression extends JavacExpression<JCTree.JCSwitchExpression> implements UniSwitchExpression {
@@ -18,12 +18,12 @@ public class JavacSwitchExpression extends JavacExpression<JCTree.JCSwitchExpres
 
     @Override
     public void setSelector(@NotNull UniExpression selector) {
-        tree.selector = JavacUtils.javac(selector);
+        tree.selector = JavacUnwrapper.unwrap(selector);
     }
 
     @Override
     public @NotNull UniExpression getSelector() {
-        return UniUtils.uni(tree.selector);
+        return UniflowWrapper.wrap(tree.selector);
     }
 
     @Override
@@ -31,8 +31,8 @@ public class JavacSwitchExpression extends JavacExpression<JCTree.JCSwitchExpres
         return new JavacList<>(
                 tree.cases,
                 newList -> tree.cases = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 }

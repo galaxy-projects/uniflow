@@ -6,8 +6,8 @@ import org.galaxy.uniflow.api.statements.UniEnhancedForLoop;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacEnhancedForLoop extends JavacElement<JCTree.JCEnhancedForLoop> implements UniEnhancedForLoop {
@@ -18,31 +18,31 @@ public class JavacEnhancedForLoop extends JavacElement<JCTree.JCEnhancedForLoop>
 
     @Override
     public void setVariable(@NotNull UniVariable variable) {
-        tree.var = JavacUtils.javac(variable);
+        tree.var = JavacUnwrapper.unwrap(variable);
     }
 
     @Override
     public @NotNull UniVariable getVariable() {
-        return UniUtils.uni(tree.var);
+        return UniflowWrapper.wrap(tree.var);
     }
 
     @Override
     public void setExpression(@NotNull UniExpression expression) {
-        tree.expr = JavacUtils.javac(expression);
+        tree.expr = JavacUnwrapper.unwrap(expression);
     }
 
     @Override
     public @NotNull UniExpression getExpression() {
-        return UniUtils.uni(tree.expr);
+        return UniflowWrapper.wrap(tree.expr);
     }
 
     @Override
     public void setBody(@NotNull UniStatement body) {
-        tree.body = JavacUtils.javac(body);
+        tree.body = JavacUnwrapper.unwrap(body);
     }
 
     @Override
     public @NotNull UniStatement getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 }

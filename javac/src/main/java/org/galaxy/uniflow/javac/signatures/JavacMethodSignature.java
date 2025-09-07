@@ -6,7 +6,7 @@ import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacMethodSignature extends JavacSignature<Symbol.MethodSymbol> implements UniMethodSignature {
@@ -17,7 +17,7 @@ public class JavacMethodSignature extends JavacSignature<Symbol.MethodSymbol> im
 
     @Override
     public @NotNull UniClassType getOwner() {
-        return UniUtils.symbolToType(symbol.owner);
+        return UniflowWrapper.symbolToType(symbol.owner);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class JavacMethodSignature extends JavacSignature<Symbol.MethodSymbol> im
 
     @Override
     public @NotNull UniType getReturnType() {
-        return UniUtils.type(symbol.getReturnType());
+        return UniflowWrapper.type(symbol.getReturnType());
     }
 
     @Override
@@ -37,11 +37,11 @@ public class JavacMethodSignature extends JavacSignature<Symbol.MethodSymbol> im
 
     @Override
     public @NotNull UniType @NotNull [] getParameterTypes() {
-        return symbol.getParameters().map(symbol -> UniUtils.type(symbol.type)).toArray(new UniType[0]);
+        return symbol.getParameters().map(symbol -> UniflowWrapper.type(symbol.type)).toArray(new UniType[0]);
     }
 
     @Override
     public @NotNull UniType @NotNull [] getThrownTypes() {
-        return symbol.getThrownTypes().map(UniUtils::type).toArray(new UniType[0]);
+        return symbol.getThrownTypes().map(UniflowWrapper::type).toArray(new UniType[0]);
     }
 }

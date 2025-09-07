@@ -5,8 +5,8 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniIf;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacIf extends JavacElement<JCTree.JCIf> implements UniIf {
@@ -17,31 +17,31 @@ public class JavacIf extends JavacElement<JCTree.JCIf> implements UniIf {
 
     @Override
     public void setCondition(@NotNull UniExpression condition) {
-        tree.cond = JavacUtils.javac(condition);
+        tree.cond = JavacUnwrapper.unwrap(condition);
     }
 
     @Override
     public @NotNull UniExpression getCondition() {
-        return UniUtils.uni(tree.cond);
+        return UniflowWrapper.wrap(tree.cond);
     }
 
     @Override
     public void setThenStatement(@NotNull UniStatement thenStatement) {
-        tree.thenpart = JavacUtils.javac(thenStatement);
+        tree.thenpart = JavacUnwrapper.unwrap(thenStatement);
     }
 
     @Override
     public @NotNull UniStatement getThenStatement() {
-        return UniUtils.uni(tree.thenpart);
+        return UniflowWrapper.wrap(tree.thenpart);
     }
 
     @Override
     public void setElseStatement(@NotNull UniStatement elseStatement) {
-        tree.elsepart = JavacUtils.javac(elseStatement);
+        tree.elsepart = JavacUnwrapper.unwrap(elseStatement);
     }
 
     @Override
     public @NotNull UniStatement getElseStatement() {
-        return UniUtils.uni(tree.elsepart);
+        return UniflowWrapper.wrap(tree.elsepart);
     }
 }

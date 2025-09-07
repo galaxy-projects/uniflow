@@ -6,8 +6,8 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniNewClass;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +19,7 @@ public class JavacNewClass extends JavacExpression<JCTree.JCNewClass> implements
 
     @Override
     public @Nullable UniExpression getEnclosingExpression() {
-        return UniUtils.uni(tree.encl);
+        return UniflowWrapper.wrap(tree.encl);
     }
 
     @Override
@@ -27,14 +27,14 @@ public class JavacNewClass extends JavacExpression<JCTree.JCNewClass> implements
         return new JavacList<>(
                 tree.typeargs,
                 newList -> tree.typeargs = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
     @Override
     public @NotNull UniExpression getIdentifier() {
-        return UniUtils.uni(tree.clazz);
+        return UniflowWrapper.wrap(tree.clazz);
     }
 
     @Override
@@ -42,13 +42,13 @@ public class JavacNewClass extends JavacExpression<JCTree.JCNewClass> implements
         return new JavacList<>(
                 tree.args,
                 newList -> tree.args = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
     @Override
     public @NotNull UniClassType getClassName() {
-        return (UniClassType) UniUtils.typeFromTree(tree.clazz);
+        return (UniClassType) UniflowWrapper.typeFromTree(tree.clazz);
     }
 }

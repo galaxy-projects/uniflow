@@ -14,10 +14,10 @@ import org.galaxy.uniflow.api.expressions.UniFieldAccess;
 import org.galaxy.uniflow.api.expressions.UniLiteral;
 import org.galaxy.uniflow.api.expressions.UniNewArray;
 import org.galaxy.uniflow.javac.JavacUniflow;
-import org.galaxy.uniflow.javac.util.JavacUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac.util.SymbolUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 class Util {
@@ -26,12 +26,12 @@ class Util {
         if (expression instanceof JCTree.JCAssign) {
             JCTree.JCAssign assign = (JCTree.JCAssign) expression;
             JCTree.JCIdent key = (JCTree.JCIdent) assign.lhs;
-            UniAnnotationValue value = (UniAnnotationValue) UniUtils.uni(assign.rhs);
+            UniAnnotationValue value = (UniAnnotationValue) UniflowWrapper.wrap(assign.rhs);
 
             return new JavacAnnotationAttribute(expression, NameUtils.nameToString(key.name), value);
         } else {
             // @Annotation(...) default uses 'value'
-            UniAnnotationValue value = (UniAnnotationValue) UniUtils.uni(expression);
+            UniAnnotationValue value = (UniAnnotationValue) UniflowWrapper.wrap(expression);
 
             return new JavacAnnotationAttribute(expression, "value", value);
         }
@@ -41,15 +41,15 @@ class Util {
         if (value instanceof UniLiteral) {
             UniLiteral literal = (UniLiteral) value;
 
-            return new Attribute.Constant(JavacUtils.tagToType(literal.getTypeTag()), literal.getValue());
+            return new Attribute.Constant(JavacUnwrapper.tagToType(literal.getTypeTag()), literal.getValue());
         } else if (value instanceof UniFieldAccess) { // Class literal & enum
             UniFieldAccess fieldAccess = (UniFieldAccess) value;
 
             if (fieldAccess.getName().equals("class")) {
                 return new Attribute.Class(JavacUniflow.getInstance().types,
-                        JavacUtils.javac(fieldAccess.getSelected()));
+                        JavacUnwrapper.unwrap(fieldAccess.getSelected()));
             } else {
-                Type type = JavacUtils.javac(fieldAccess.getSelected());
+                Type type = JavacUnwrapper.unwrap(fieldAccess.getSelected());
                 Symbol.VarSymbol element = SymbolUtils.findFieldByName(type, fieldAccess.getName());
 
                 return new Attribute.Enum(type, element);
@@ -64,11 +64,11 @@ class Util {
                     attributes[i] = asAttribute((UniAnnotationValue) values[i]);
                 else throw new IllegalArgumentException("Non annotation value in annotation");
             }
-            return new Attribute.Array(JavacUtils.javac(array.getType()), attributes);
+            return new Attribute.Array(JavacUnwrapper.unwrap(array.getType()), attributes);
         } else if (value instanceof UniAnnotation) {
             UniAnnotation annotation = (UniAnnotation) value;
             ListBuffer<Pair<Symbol.MethodSymbol, Attribute>> argsBuffer = new ListBuffer<>();
-            Type type = JavacUtils.javac(annotation.getType());
+            Type type = JavacUnwrapper.unwrap(annotation.getType());
 
             for (UniAnnotationAttribute attribute : annotation.getAttributes()) {
                 // annotation = methods with 0 params

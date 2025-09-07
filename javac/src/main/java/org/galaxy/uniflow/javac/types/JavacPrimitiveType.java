@@ -1,6 +1,7 @@
 package org.galaxy.uniflow.javac.types;
 
 import com.sun.tools.javac.code.Type;
+import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniPrimitiveType;
 import org.galaxy.uniflow.common.EnumUtils;
@@ -8,12 +9,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 
-public class JavacPrimitiveType extends JavacType<Type.JCPrimitiveType> implements UniPrimitiveType {
+public class JavacPrimitiveType extends JavacType<JCTree.JCPrimitiveTypeTree, Type.JCPrimitiveType>
+        implements UniPrimitiveType {
 
     private static final Field TAG;
 
-    public JavacPrimitiveType(Type.JCPrimitiveType type) {
-        super(type);
+    public JavacPrimitiveType(JCTree.JCPrimitiveTypeTree expression, Type.JCPrimitiveType type) {
+        super(expression, type);
     }
 
     @Override

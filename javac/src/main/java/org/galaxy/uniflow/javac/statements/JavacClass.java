@@ -1,4 +1,4 @@
-package org.galaxy.uniflow.javac;
+package org.galaxy.uniflow.javac.statements;
 
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
@@ -11,13 +11,15 @@ import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
+import org.galaxy.uniflow.javac.JavacElement;
+import org.galaxy.uniflow.javac.JavacModifiers;
 import org.galaxy.uniflow.javac.lists.JavacFieldList;
 import org.galaxy.uniflow.javac.lists.JavacIndexedList;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.lists.JavacMethodList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -35,7 +37,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public @NotNull UniClassType asType() {
-        return (UniClassType) UniUtils.type(tree.type);
+        return (UniClassType) UniflowWrapper.type(tree.type);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public @NotNull UniType getExtends() {
-        return UniUtils.typeFromTree(tree.extending);
+        return UniflowWrapper.typeFromTree(tree.extending);
     }
 
     @Override
@@ -73,21 +75,21 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
         return new JavacList<>(
                 tree.implementing,
                 newList -> tree.implementing = newList,
-                UniUtils::typeFromTree,
-                JavacUtils::typeToTree
+                UniflowWrapper::typeFromTree,
+                JavacUnwrapper::typeToTree
         );
     }
 
     @Override
     public @NotNull UniIndexedList<@NotNull UniTypeParameter> getTypeParameters() {
-        return new JavacIndexedList<>(
+        return JavacIndexedList.of(
                 tree.typarams,
                 newList -> {
                     tree.typarams = newList;
                     updateType(type -> type.typarams_field = newList.map(param -> param.type));
                 },
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 
@@ -97,7 +99,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
                 UniVariable.class::isInstance,
                 element -> (UniVariable) element,
                 var -> var,
-                JavacUtils::javac
+                JavacUnwrapper::unwrap
         );
         return JavacFieldList.from(fields);
     }
@@ -108,7 +110,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
                 method -> method instanceof UniMethod && !((UniMethod) method).isConstructor(),
                 element -> (UniMethod) element,
                 var -> var,
-                JavacUtils::javac
+                JavacUnwrapper::unwrap
         );
         return JavacMethodList.from(methods);
     }
@@ -119,7 +121,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
                 method -> method instanceof UniMethod && ((UniMethod) method).isConstructor(),
                 element -> (UniMethod) element,
                 var -> var,
-                JavacUtils::javac
+                JavacUnwrapper::unwrap
         );
         return JavacMethodList.from(methods);
     }
@@ -128,9 +130,9 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
     public @NotNull UniList<UniClassInitializer> getInitializers() {
         return elements().partial(
                 UniBlock.class::isInstance,
-                element -> UniUtils.blockToInitializer((UniBlock) element),
+                element -> UniflowWrapper.blockToInitializer((UniBlock) element),
                 var -> var,
-                JavacUtils::javac
+                JavacUnwrapper::unwrap
         );
     }
 
@@ -140,7 +142,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
                 UniClass.class::isInstance,
                 element -> (UniClass) element,
                 var -> var,
-                JavacUtils::javac
+                JavacUnwrapper::unwrap
         );
     }
 
@@ -152,8 +154,8 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
         return new JavacList<>(
                 tree.defs,
                 newList -> tree.defs = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 }

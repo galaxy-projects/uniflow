@@ -5,9 +5,9 @@ import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,14 +25,14 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
 
         if (current != null)
             tree.defs = tree.defs.stream().filter(e -> e != current).collect(List.collector());
-        tree.defs = tree.defs.append(JavacUtils.javac(module));
+        tree.defs = tree.defs.append(JavacUnwrapper.unwrap(module));
     }
 
     @Override
     public @Nullable UniModule getModule() {
         JCTree.JCModuleDecl module = tree.getModuleDecl();
 
-        return module != null ? UniUtils.uni(module) : null;
+        return module != null ? UniflowWrapper.wrap(module) : null;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
     @Override
     public @Nullable UniPackage getPackage() {
         if (!tree.defs.isEmpty() && tree.defs.head.hasTag(JCTree.Tag.PACKAGEDEF))
-            return UniUtils.uni((JCTree.JCPackageDecl) tree.defs.head);
+            return UniflowWrapper.wrap((JCTree.JCPackageDecl) tree.defs.head);
         return null;
     }
 
@@ -53,7 +53,7 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
                 UniImport.class::isInstance,
                 UniImport.class::cast,
                 Function.identity(),
-                JavacUtils::javac
+                JavacUnwrapper::unwrap
         );
     }
 
@@ -63,7 +63,7 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
                 UniClass.class::isInstance,
                 UniClass.class::cast,
                 Function.identity(),
-                JavacUtils::javac
+                JavacUnwrapper::unwrap
         );
     }
 
@@ -73,7 +73,7 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
                 e -> !(e instanceof UniModule) && !(e instanceof UniPackage) && !(e instanceof UniImport) && !(e instanceof UniClass),
                 Function.identity(),
                 Function.identity(),
-                JavacUtils::javac
+                JavacUnwrapper::unwrap
         );
     }
 
@@ -81,8 +81,8 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
         return new JavacList<>(
                 tree.defs,
                 newList -> tree.defs = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 }

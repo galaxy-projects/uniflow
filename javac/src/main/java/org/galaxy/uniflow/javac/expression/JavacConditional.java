@@ -3,8 +3,8 @@ package org.galaxy.uniflow.javac.expression;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniConditional;
 import org.galaxy.uniflow.api.expressions.UniExpression;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacConditional extends JavacExpression<JCTree.JCConditional> implements UniConditional {
@@ -15,31 +15,31 @@ public class JavacConditional extends JavacExpression<JCTree.JCConditional> impl
 
     @Override
     public void setCondition(@NotNull UniExpression condition) {
-        tree.cond = JavacUtils.javac(condition);
+        tree.cond = JavacUnwrapper.unwrap(condition);
     }
 
     @Override
     public @NotNull UniExpression getCondition() {
-        return UniUtils.uni(tree.cond);
+        return UniflowWrapper.wrap(tree.cond);
     }
 
     @Override
     public void setTrueExpression(@NotNull UniExpression expression) {
-        tree.truepart = JavacUtils.javac(expression);
+        tree.truepart = JavacUnwrapper.unwrap(expression);
     }
 
     @Override
     public @NotNull UniExpression getTrueExpression() {
-        return UniUtils.uni(tree.truepart);
+        return UniflowWrapper.wrap(tree.truepart);
     }
 
     @Override
     public void setFalseExpression(@NotNull UniExpression expression) {
-        tree.falsepart = JavacUtils.javac(expression);
+        tree.falsepart = JavacUnwrapper.unwrap(expression);
     }
 
     @Override
     public @NotNull UniExpression getFalseExpression() {
-        return UniUtils.uni(tree.falsepart);
+        return UniflowWrapper.wrap(tree.falsepart);
     }
 }

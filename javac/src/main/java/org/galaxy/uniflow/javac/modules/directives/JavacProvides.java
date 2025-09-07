@@ -6,8 +6,8 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniProvides;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacProvides extends JavacElement<JCTree.JCProvides> implements UniProvides {
@@ -18,12 +18,12 @@ public class JavacProvides extends JavacElement<JCTree.JCProvides> implements Un
 
     @Override
     public void setServiceName(@NotNull UniExpression serviceName) {
-        tree.serviceName = JavacUtils.javac(serviceName);
+        tree.serviceName = JavacUnwrapper.unwrap(serviceName);
     }
 
     @Override
     public @NotNull UniExpression getServiceName() {
-        return UniUtils.uni(tree.serviceName);
+        return UniflowWrapper.wrap(tree.serviceName);
     }
 
     @Override
@@ -31,8 +31,8 @@ public class JavacProvides extends JavacElement<JCTree.JCProvides> implements Un
         return new JavacList<>(
                 tree.implNames,
                 newList -> tree.implNames = newList,
-                UniUtils::uni,
-                JavacUtils::javac
+                UniflowWrapper::wrap,
+                JavacUnwrapper::unwrap
         );
     }
 }

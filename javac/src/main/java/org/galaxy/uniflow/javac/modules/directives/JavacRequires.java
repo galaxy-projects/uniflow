@@ -4,8 +4,8 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniRequires;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacRequires extends JavacElement<JCTree.JCRequires> implements UniRequires {
@@ -36,11 +36,11 @@ public class JavacRequires extends JavacElement<JCTree.JCRequires> implements Un
 
     @Override
     public void setModuleName(@NotNull UniExpression moduleName) {
-        tree.moduleName = JavacUtils.javac(moduleName);
+        tree.moduleName = JavacUnwrapper.unwrap(moduleName);
     }
 
     @Override
     public @NotNull UniExpression getModuleName() {
-        return UniUtils.uni(tree.moduleName);
+        return UniflowWrapper.wrap(tree.moduleName);
     }
 }

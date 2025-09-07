@@ -5,8 +5,8 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacCatch extends JavacElement<JCTree.JCCatch> implements UniCatch {
@@ -17,21 +17,21 @@ public class JavacCatch extends JavacElement<JCTree.JCCatch> implements UniCatch
 
     @Override
     public void setParameter(@NotNull UniVariable parameter) {
-        tree.param = JavacUtils.javac(parameter);
+        tree.param = JavacUnwrapper.unwrap(parameter);
     }
 
     @Override
     public @NotNull UniVariable getParameter() {
-        return UniUtils.uni(tree.param);
+        return UniflowWrapper.wrap(tree.param);
     }
 
     @Override
     public void setBody(@NotNull UniBlock body) {
-        tree.body = JavacUtils.javac(body);
+        tree.body = JavacUnwrapper.unwrap(body);
     }
 
     @Override
     public @NotNull UniBlock getBody() {
-        return UniUtils.uni(tree.body);
+        return UniflowWrapper.wrap(tree.body);
     }
 }

@@ -4,7 +4,7 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniFieldAccess;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacFieldAccess extends JavacExpression<JCTree.JCFieldAccess> implements UniFieldAccess {
@@ -15,7 +15,7 @@ public class JavacFieldAccess extends JavacExpression<JCTree.JCFieldAccess> impl
 
     @Override
     public @NotNull UniType getSelected() {
-        return UniUtils.typeFromTree(tree.selected);
+        return UniflowWrapper.typeFromTree(tree.selected);
     }
 
     @Override

@@ -1,26 +1,28 @@
 package org.galaxy.uniflow.javac.types;
 
 import com.sun.tools.javac.code.Type;
+import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.types.UniIntersectionType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.javac.lists.JavacList;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavacIntersectionType extends JavacType<Type.IntersectionClassType> implements UniIntersectionType {
+public class JavacIntersectionType extends JavacType<JCTree.JCTypeIntersection, Type.IntersectionClassType>
+        implements UniIntersectionType {
 
-    public JavacIntersectionType(Type.IntersectionClassType type) {
-        super(type);
+    public JavacIntersectionType(JCTree.JCTypeIntersection expression, Type.IntersectionClassType type) {
+        super(expression, type);
     }
 
     @Override
     public @NotNull List<@NotNull UniType> getComponents() {
-        return new ArrayList<>(type.getComponents().map(UniUtils::type));
+        return new ArrayList<>(type.getComponents().map(UniflowWrapper::type));
     }
 
     @Override
@@ -28,18 +30,18 @@ public class JavacIntersectionType extends JavacType<Type.IntersectionClassType>
         return new JavacList<>(
                 type.interfaces_field,
                 newList -> type.interfaces_field = newList,
-                UniUtils::type,
-                JavacUtils::javac
+                UniflowWrapper::type,
+                JavacUnwrapper::unwrap
         );
     }
 
     @Override
     public void setSupertype(@NotNull UniType supertype) {
-        type.supertype_field = JavacUtils.javac(supertype);
+        type.supertype_field = JavacUnwrapper.unwrap(supertype);
     }
 
     @Override
     public @NotNull UniType getSupertype() {
-        return UniUtils.type(type.supertype_field);
+        return UniflowWrapper.type(type.supertype_field);
     }
 }

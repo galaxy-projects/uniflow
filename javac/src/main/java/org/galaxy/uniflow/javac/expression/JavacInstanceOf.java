@@ -5,8 +5,8 @@ import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniInstanceOf;
 import org.galaxy.uniflow.api.pattern.UniPattern;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,26 +18,26 @@ public class JavacInstanceOf extends JavacExpression<JCTree.JCInstanceOf> implem
 
     @Override
     public void setExpression(@NotNull UniExpression expression) {
-        tree.expr = JavacUtils.javac(expression);
+        tree.expr = JavacUnwrapper.unwrap(expression);
     }
 
     @Override
     public @NotNull UniExpression getExpression() {
-        return UniUtils.uni(tree.expr);
+        return UniflowWrapper.wrap(tree.expr);
     }
 
     @Override
     public @NotNull UniElement getType() {
-        return UniUtils.uni(tree.getType());
+        return UniflowWrapper.wrap(tree.getType());
     }
 
     @Override
     public void setPattern(@Nullable UniPattern pattern) {
-        tree.pattern = JavacUtils.javac(pattern);
+        tree.pattern = JavacUnwrapper.unwrap(pattern);
     }
 
     @Override
     public @Nullable UniPattern getPattern() {
-        return (UniPattern) UniUtils.uni(tree.pattern);
+        return (UniPattern) UniflowWrapper.wrap(tree.pattern);
     }
 }

@@ -4,8 +4,8 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniAssert;
 import org.galaxy.uniflow.javac.JavacElement;
-import org.galaxy.uniflow.javac.util.JavacUtils;
-import org.galaxy.uniflow.javac.util.UniUtils;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
+import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,21 +17,21 @@ public class JavacAssert extends JavacElement<JCTree.JCAssert> implements UniAss
 
     @Override
     public void setCondition(@NotNull UniExpression condition) {
-        tree.cond = JavacUtils.javac(condition);
+        tree.cond = JavacUnwrapper.unwrap(condition);
     }
 
     @Override
     public @NotNull UniExpression getCondition() {
-        return UniUtils.uni(tree.cond);
+        return UniflowWrapper.wrap(tree.cond);
     }
 
     @Override
     public void setDetails(@Nullable UniExpression details) {
-        tree.detail = JavacUtils.javac(details);
+        tree.detail = JavacUnwrapper.unwrap(details);
     }
 
     @Override
     public @Nullable UniExpression getDetails() {
-        return UniUtils.uni(tree.detail);
+        return UniflowWrapper.wrap(tree.detail);
     }
 }

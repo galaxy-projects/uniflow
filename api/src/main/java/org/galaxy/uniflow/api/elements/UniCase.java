@@ -7,7 +7,7 @@ import org.galaxy.uniflow.api.statements.UniStatement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface UniCase extends UniElement {
+public interface UniCase extends UniStatement {
 
     @NotNull UniList<UniCaseLabel> getLabels();
 
