@@ -1,6 +1,5 @@
 package org.galaxy.uniflow.javac;
 
-import com.sun.source.tree.Tree;
 import com.sun.tools.javac.tree.JCTree;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,16 +8,14 @@ import org.galaxy.uniflow.common.EnumUtils;
 import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
-public class JavacElement<T extends Tree> implements UniElement {
+public class JavacElement<T extends JCTree> implements UniElement {
 
     @Getter
     protected final @NotNull T tree;
 
     @Override
     public int getPosition() {
-        if (tree instanceof JCTree)
-            return ((JCTree) tree).pos;
-        throw new UnsupportedOperationException("getPosition() with value: " + tree);
+        return tree.pos;
     }
 
     @Override
