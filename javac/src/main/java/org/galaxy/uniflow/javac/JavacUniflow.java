@@ -4,15 +4,14 @@ import com.sun.tools.javac.api.JavacTrees;
 import com.sun.tools.javac.code.Source;
 import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.code.Types;
+import com.sun.tools.javac.model.JavacElements;
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.TreeMaker;
+import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Names;
 import org.galaxy.uniflow.api.Uniflow;
 import org.galaxy.uniflow.api.factories.*;
-import org.galaxy.uniflow.javac.factories.JavacEnvironment;
-import org.galaxy.uniflow.javac.factories.JavacFiler;
-import org.galaxy.uniflow.javac.factories.JavacMessenger;
-import org.galaxy.uniflow.javac.factories.JavacModuleFactory;
+import org.galaxy.uniflow.javac.factories.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.processing.Filer;
@@ -29,16 +28,20 @@ public class JavacUniflow extends Uniflow {
     public Source source;
     public Filer filer;
     public Messager messager;
+    public JavacElements elements;
 
     public JavacUniflow(JavacProcessingEnvironment processingEnvironment) {
-        treeMaker = TreeMaker.instance(processingEnvironment.getContext());
-        types = Types.instance(processingEnvironment.getContext());
-        names = Names.instance(processingEnvironment.getContext());
-        symtab = Symtab.instance(processingEnvironment.getContext());
-        trees = JavacTrees.instance(processingEnvironment.getContext());
-        source = Source.instance(processingEnvironment.getContext());
+        Context context = processingEnvironment.getContext();
+
+        treeMaker = TreeMaker.instance(context);
+        types = Types.instance(context);
+        names = Names.instance(context);
+        symtab = Symtab.instance(context);
+        trees = JavacTrees.instance(context);
+        source = Source.instance(context);
         filer = processingEnvironment.getFiler();
         messager = processingEnvironment.getMessager();
+        elements = JavacElements.instance(context);
     }
 
     @Override
@@ -48,7 +51,7 @@ public class JavacUniflow extends Uniflow {
 
     @Override
     protected @NotNull UniElementFinder createFinder() {
-        return null;
+        return new JavacElementFinder();
     }
 
     @Override
