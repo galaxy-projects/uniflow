@@ -8,24 +8,17 @@ import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.factories.UniMessenger;
 import org.galaxy.uniflow.common.EnumUtils;
 import org.galaxy.uniflow.javac.JavacElement;
+import org.galaxy.uniflow.javac.JavacUniflow;
 import org.galaxy.uniflow.javac.annotations.JavacAnnotation;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.Diagnostic;
 
 public class JavacMessenger implements UniMessenger {
 
-    private final Messager messager;
-
-    public JavacMessenger(ProcessingEnvironment env) {
-        messager = env.getMessager();
-    }
-
     @Override
     public void printMessage(@NotNull MessageKind kind, @NotNull CharSequence msg) {
-        messager.printMessage(parseKind(kind), msg);
+        JavacUniflow.getInstance().messager.printMessage(parseKind(kind), msg);
     }
 
     @Override
@@ -35,7 +28,8 @@ public class JavacMessenger implements UniMessenger {
         JavacElement<?> javacElement = (JavacElement<?>) element;
         JCTree tree = javacElement.getTree();
 
-        messager.printMessage(parseKind(kind), msg, TreeInfo.symbol(tree));
+        JavacUniflow.getInstance().messager
+                .printMessage(parseKind(kind), msg, TreeInfo.symbol(tree));
     }
 
     @Override
@@ -47,7 +41,8 @@ public class JavacMessenger implements UniMessenger {
         JCTree elementTree = ((JavacElement<?>) element).getTree();
         JCTree.JCAnnotation annotationTree = ((JavacAnnotation) annotation).getTree();
 
-        messager.printMessage(parseKind(kind), msg, TreeInfo.symbol(elementTree), annotationTree.attribute);
+        JavacUniflow.getInstance().messager
+                .printMessage(parseKind(kind), msg, TreeInfo.symbol(elementTree), annotationTree.attribute);
     }
 
     @Override
@@ -64,7 +59,8 @@ public class JavacMessenger implements UniMessenger {
                 .map(pair -> pair.snd)
                 .orElse(null);
 
-        messager.printMessage(parseKind(kind), msg, TreeInfo.symbol(elementTree), annotationTree.attribute, attribute);
+        JavacUniflow.getInstance().messager
+                .printMessage(parseKind(kind), msg, TreeInfo.symbol(elementTree), annotationTree.attribute, attribute);
     }
 
     private void checkElements(UniElement element, UniAnnotation annotation) {

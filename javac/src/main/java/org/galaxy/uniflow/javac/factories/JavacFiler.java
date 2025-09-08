@@ -1,17 +1,16 @@
 package org.galaxy.uniflow.javac.factories;
 
 import com.sun.tools.javac.code.Source;
-import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import org.galaxy.uniflow.api.factories.UniFiler;
 import org.galaxy.uniflow.api.files.UniFile;
 import org.galaxy.uniflow.api.files.UniFileLocation;
 import org.galaxy.uniflow.api.files.UniJavaFile;
+import org.galaxy.uniflow.javac.JavacUniflow;
 import org.galaxy.uniflow.javac.files.JavacFile;
 import org.galaxy.uniflow.javac.files.JavacFileLocation;
 import org.galaxy.uniflow.javac.files.JavacJavaFile;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.processing.Filer;
 import javax.tools.FileObject;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
@@ -21,14 +20,6 @@ import java.io.Writer;
 import java.util.function.Supplier;
 
 public class JavacFiler implements UniFiler {
-
-    private final Filer filer;
-    private final Source source;
-
-    public JavacFiler(JavacProcessingEnvironment env) {
-        this.filer = env.getFiler();
-        source = Source.instance(env.getContext());
-    }
 
     @Override
     public @NotNull UniFileLocation createLocation(@NotNull CharSequence name) {
@@ -72,7 +63,8 @@ public class JavacFiler implements UniFiler {
     public @NotNull UniJavaFile createSourceFile(@NotNull CharSequence name,
                                                  @NotNull Supplier<@NotNull String> contents)
             throws IOException {
-        JavaFileObject sourceFile = filer.createSourceFile(name);
+        JavaFileObject sourceFile = JavacUniflow.getInstance().filer
+                .createSourceFile(name);
 
         try (Writer writer = sourceFile.openWriter()) {
             writer.write(contents.get());
@@ -87,7 +79,8 @@ public class JavacFiler implements UniFiler {
                                            @NotNull Supplier<@NotNull String> contents)
             throws IOException {
         JavaFileManager.Location target = getLocation(location);
-        FileObject resourceFile = filer.createResource(target, createModuleAndPackage(location), location.getName());
+        FileObject resourceFile = JavacUniflow.getInstance().filer
+                .createResource(target, createModuleAndPackage(location), location.getName());
 
         try (Writer writer = resourceFile.openWriter()) {
             writer.write(contents.get());
@@ -98,13 +91,14 @@ public class JavacFiler implements UniFiler {
     @Override
     public @NotNull UniFile getResource(@NotNull UniFileLocation location) throws IOException {
         JavaFileManager.Location target = getLocation(location);
-        FileObject resource = filer.getResource(target, createModuleAndPackage(location), location.getName());
+        FileObject resource = JavacUniflow.getInstance().filer
+                .getResource(target, createModuleAndPackage(location), location.getName());
 
         return new JavacFile<>(resource);
     }
 
     private CharSequence createModuleAndPackage(UniFileLocation location) {
-        if ((location.getModule() != null) && (source.compareTo(Source.JDK9) >= 0))
+        if ((location.getModule() != null) && (JavacUniflow.getInstance().source.compareTo(Source.JDK9) >= 0))
             return location.getModule() + "/" + location.getPackage();
         return location.getPackage();
     }

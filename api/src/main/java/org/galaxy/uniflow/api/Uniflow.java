@@ -14,6 +14,8 @@ public abstract class Uniflow {
     private final Lazy<UniTypeFactory> typeFactory;
     private final Lazy<UniElementFactory> elementFactory;
     private final Lazy<UniModuleFactory> moduleFactory;
+    private final Lazy<UniFiler> filer;
+    private final Lazy<UniMessenger> messenger;
 
     protected Uniflow() {
         if (instance != null)
@@ -22,6 +24,8 @@ public abstract class Uniflow {
         typeFactory = new Lazy<>(this::createTypeFactory);
         elementFactory = new Lazy<>(this::createElementFactory);
         moduleFactory = new Lazy<>(this::createModuleFactory);
+        filer = new Lazy<>(this::createFiler);
+        messenger = new Lazy<>(this::createMessenger);
         instance = this;
     }
 
@@ -41,6 +45,14 @@ public abstract class Uniflow {
         return moduleFactory.get();
     }
 
+    public @NotNull UniFiler getFiler() {
+        return filer.get();
+    }
+
+    public @NotNull UniMessenger getMessenger() {
+        return messenger.get();
+    }
+
     public abstract @NotNull UniEnvironment createEnvironment(@NotNull RoundEnvironment roundEnv);
 
     protected abstract @NotNull UniElementFinder createFinder();
@@ -50,6 +62,10 @@ public abstract class Uniflow {
     protected abstract @NotNull UniElementFactory createElementFactory();
 
     protected abstract @NotNull UniModuleFactory createModuleFactory();
+
+    public abstract @NotNull UniFiler createFiler();
+
+    public abstract @NotNull UniMessenger createMessenger();
 
     public static @NotNull Uniflow getInstance() {
         if (instance == null)
