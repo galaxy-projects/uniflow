@@ -12,6 +12,7 @@ import org.galaxy.uniflow.api.factories.*;
 import org.galaxy.uniflow.javac.factories.JavacEnvironment;
 import org.galaxy.uniflow.javac.factories.JavacFiler;
 import org.galaxy.uniflow.javac.factories.JavacMessenger;
+import org.galaxy.uniflow.javac.factories.JavacModuleFactory;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.processing.Filer;
@@ -62,7 +63,9 @@ public class JavacUniflow extends Uniflow {
 
     @Override
     protected @NotNull UniModuleFactory createModuleFactory() {
-        return null;
+        if (source.compareTo(Source.JDK9) < 0)
+            throw new IllegalStateException("Running on " + source + ", needs at least java 9");
+        return new JavacModuleFactory();
     }
 
     @Override
