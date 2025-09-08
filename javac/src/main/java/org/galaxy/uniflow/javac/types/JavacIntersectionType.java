@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavacIntersectionType extends JavacType<JCTree.JCTypeIntersection, Type.IntersectionClassType>
+public class JavacIntersectionType extends JavacExpressionType<JCTree.JCTypeIntersection, Type.IntersectionClassType>
         implements UniIntersectionType {
 
     public JavacIntersectionType(JCTree.JCTypeIntersection expression, Type.IntersectionClassType type) {

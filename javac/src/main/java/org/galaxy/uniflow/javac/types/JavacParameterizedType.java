@@ -10,7 +10,7 @@ import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
-public class JavacParameterizedType extends JavacType<JCTree.JCTypeApply, Type.ClassType>
+public class JavacParameterizedType extends JavacExpressionType<JCTree.JCTypeApply, Type.ClassType>
         implements UniParameterizedType {
 
     public JavacParameterizedType(JCTree.JCTypeApply expression, Type.ClassType type) {

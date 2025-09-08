@@ -5,7 +5,7 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.types.UniType;
 import org.jetbrains.annotations.Nullable;
 
-public class JavacType<J extends JCTree.JCExpression, T extends Type> implements UniType {
+public class JavacType<J extends JCTree, T extends Type> implements UniType {
 
     protected final J expression;
     protected final T type;

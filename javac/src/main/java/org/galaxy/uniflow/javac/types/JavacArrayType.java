@@ -8,7 +8,8 @@ import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
-public class JavacArrayType extends JavacType<JCTree.JCArrayTypeTree, Type.ArrayType> implements UniArrayType {
+public class JavacArrayType extends JavacExpressionType<JCTree.JCArrayTypeTree, Type.ArrayType>
+        implements UniArrayType {
 
     public JavacArrayType(JCTree.JCArrayTypeTree expression, Type.ArrayType type) {
         super(expression, type);

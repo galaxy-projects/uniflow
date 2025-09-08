@@ -37,7 +37,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public @NotNull UniClassType asType() {
-        return (UniClassType) UniflowWrapper.type(tree.type);
+        return (UniClassType) UniflowWrapper.typeFromTree(tree);
     }
 
     @Override

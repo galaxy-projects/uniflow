@@ -13,18 +13,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 
-public class JavacUnionType extends JavacType<JCTree.JCExpression, Type.UnionClassType> implements UniUnionType {
+public class JavacUnionType extends JavacExpressionType<JCTree.JCTypeUnion, Type.UnionClassType>
+        implements UniUnionType {
 
     private static final Field ALTERNATIVES;
 
-    public JavacUnionType(Type.UnionClassType type) {
-        super(null, type);
+    public JavacUnionType(JCTree.JCTypeUnion expression, Type.UnionClassType type) {
+        super(expression, type);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public @NotNull UniList<@NotNull UniType> getTypeAlternatives() {
-        List<Type> alternatives = null;
+        List<Type> alternatives;
 
         try {
             alternatives = (List<Type>) ALTERNATIVES.get(type);

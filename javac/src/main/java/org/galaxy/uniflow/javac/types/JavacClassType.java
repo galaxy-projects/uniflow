@@ -10,7 +10,7 @@ import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
-public class JavacClassType extends JavacType<JCTree.JCExpression, Type.ClassType> implements UniClassType {
+public class JavacClassType extends JavacExpressionType<JCTree.JCExpression, Type.ClassType> implements UniClassType {
 
     public JavacClassType(JCTree.JCIdent expression, Type.ClassType type) {
         super(expression, type);

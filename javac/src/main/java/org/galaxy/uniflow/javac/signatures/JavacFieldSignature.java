@@ -21,7 +21,7 @@ public class JavacFieldSignature extends JavacSignature<Symbol.VarSymbol> implem
 
     @Override
     public @NotNull UniType getType() {
-        return UniflowWrapper.type(symbol.type);
+        return UniflowWrapper.type(symbol);
     }
 
     @Override

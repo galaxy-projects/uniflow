@@ -9,7 +9,8 @@ import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class JavacWildcardType extends JavacType<JCTree.JCWildcard, Type.WildcardType> implements UniWildcardType {
+public class JavacWildcardType extends JavacExpressionType<JCTree.JCWildcard, Type.WildcardType>
+        implements UniWildcardType {
 
     public JavacWildcardType(JCTree.JCWildcard wildcard, Type.WildcardType type) {
         super(wildcard, type);

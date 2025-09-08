@@ -5,10 +5,7 @@ import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
-import org.galaxy.uniflow.api.UniClass;
-import org.galaxy.uniflow.api.UniClassInitializer;
-import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.UniMethod;
+import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCase;
@@ -35,6 +32,7 @@ import org.galaxy.uniflow.javac.expression.JavacNewArray;
 import org.galaxy.uniflow.javac.signatures.JavacFieldSignature;
 import org.galaxy.uniflow.javac.signatures.JavacMethodSignature;
 import org.galaxy.uniflow.javac.signatures.JavacOperatorSignature;
+import org.galaxy.uniflow.javac.types.JavacExpressionType;
 import org.galaxy.uniflow.javac.types.JavacType;
 import org.galaxy.uniflow.javac.types.JavacTypeParameter;
 import org.jetbrains.annotations.NotNull;
@@ -76,8 +74,8 @@ public class JavacUnwrapper {
     }
 
     public static JCTree.JCExpression typeToTree(@NotNull UniType type) {
-        if (type instanceof JavacType<?, ?>)
-            return ((JavacType<?, ?>) type).getExpression();
+        if (type instanceof JavacExpressionType<?, ?>)
+            return ((JavacExpressionType<?, ?>) type).getExpression();
         throw new IllegalArgumentException("Type not supported: " + type);
     }
 
@@ -87,7 +85,6 @@ public class JavacUnwrapper {
 
     // Elements
 
-    @SuppressWarnings("unchecked")
     public static @NotNull JCTree unwrap(UniElement element) {
         if (element instanceof JavacElement)
             return ((JavacElement<? extends JCTree>) element).getTree();
@@ -161,6 +158,10 @@ public class JavacUnwrapper {
 
     public static JCTree.JCClassDecl unwrap(UniClass uniClass) {
         return (JCTree.JCClassDecl) unwrap((UniElement) uniClass);
+    }
+
+    public static JCTree.JCModifiers unwrap(UniModifiers modifiers) {
+        return (JCTree.JCModifiers) unwrap((UniElement) modifiers);
     }
 
     // Signatures

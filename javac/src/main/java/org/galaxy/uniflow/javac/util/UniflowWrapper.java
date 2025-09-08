@@ -257,13 +257,21 @@ public class UniflowWrapper {
         return new JavacPackage(pkg);
     }
 
+    public static @NotNull UniType type(Symbol symbol) {
+        JCTree tree = JavacUniflow.getInstance().trees.getTree(symbol);
+
+        if (tree != null)
+            return typeFromTree(tree);
+        return type(symbol.type);
+    }
+
     public static @NotNull UniType type(Type type) {
         if (type instanceof Type.ArrayType)
             return new JavacArrayType(null, (Type.ArrayType) type);
         else if (type instanceof Type.IntersectionClassType)
             return new JavacIntersectionType(null, (Type.IntersectionClassType) type);
         else if (type instanceof Type.UnionClassType)
-            return new JavacUnionType((Type.UnionClassType) type);
+            return new JavacUnionType(null, (Type.UnionClassType) type);
         else if (type instanceof Type.ClassType) {
             Type.ClassType ct = (Type.ClassType) type;
 
@@ -278,10 +286,24 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniType typeFromTree(JCTree tree) {
-        return type(tree.type);
+        if (tree instanceof JCTree.JCArrayTypeTree)
+            return new JavacArrayType((JCTree.JCArrayTypeTree) tree, (Type.ArrayType) tree.type);
+        else if (tree instanceof JCTree.JCTypeIntersection)
+            return new JavacIntersectionType((JCTree.JCTypeIntersection) tree, (Type.IntersectionClassType) tree.type);
+        else if (tree instanceof JCTree.JCTypeUnion)
+            return new JavacUnionType((JCTree.JCTypeUnion) tree, (Type.UnionClassType) tree.type);
+        else if (tree instanceof JCTree.JCTypeApply)
+            return new JavacParameterizedType((JCTree.JCTypeApply) tree, (Type.ClassType) tree.type);
+        else if (tree instanceof JCTree.JCIdent)
+            return new JavacClassType((JCTree.JCIdent) tree, (Type.ClassType) tree.type);
+        else if (tree instanceof JCTree.JCPrimitiveTypeTree)
+            return new JavacPrimitiveType((JCTree.JCPrimitiveTypeTree) tree, (Type.JCPrimitiveType) tree.type);
+        else if (tree instanceof JCTree.JCWildcard)
+            return new JavacWildcardType((JCTree.JCWildcard) tree, (Type.WildcardType) tree.type);
+        return new JavacType<>(tree, tree.type);
     }
 
     public static @NotNull UniClassType symbolToType(Symbol owner) {
-        return (UniClassType) type(owner.type);
+        return (UniClassType) typeFromTree(JavacUniflow.getInstance().trees.getTree(owner));
     }
 }

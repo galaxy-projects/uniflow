@@ -37,7 +37,7 @@ public class JavacMethodSignature extends JavacSignature<Symbol.MethodSymbol> im
 
     @Override
     public @NotNull UniType @NotNull [] getParameterTypes() {
-        return symbol.getParameters().map(symbol -> UniflowWrapper.type(symbol.type)).toArray(new UniType[0]);
+        return symbol.getParameters().map(UniflowWrapper::type).toArray(new UniType[0]);
     }
 
     @Override

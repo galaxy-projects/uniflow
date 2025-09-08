@@ -40,7 +40,7 @@ public class JavacTypeParameter extends JavacElement<JCTree.JCTypeParameter> imp
 
     @Override
     public @NotNull UniType getType() {
-        return UniflowWrapper.type(tree.type);
+        return UniflowWrapper.typeFromTree(tree);
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 
-public class JavacPrimitiveType extends JavacType<JCTree.JCPrimitiveTypeTree, Type.JCPrimitiveType>
+public class JavacPrimitiveType extends JavacExpressionType<JCTree.JCPrimitiveTypeTree, Type.JCPrimitiveType>
         implements UniPrimitiveType {
 
     private static final Field TAG;
