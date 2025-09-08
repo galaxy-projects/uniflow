@@ -1,10 +1,9 @@
 package org.galaxy.uniflow.api;
 
-import org.galaxy.uniflow.api.factories.UniElementFactory;
-import org.galaxy.uniflow.api.factories.UniElementFinder;
-import org.galaxy.uniflow.api.factories.UniModuleFactory;
-import org.galaxy.uniflow.api.factories.UniTypeFactory;
+import org.galaxy.uniflow.api.factories.*;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.processing.RoundEnvironment;
 import java.util.function.Supplier;
 
 public abstract class Uniflow {
@@ -26,31 +25,35 @@ public abstract class Uniflow {
         instance = this;
     }
 
-    public UniElementFinder getFinder() {
+    public @NotNull UniElementFinder getFinder() {
         return finder.get();
     }
 
-    public UniTypeFactory getTypeFactory() {
+    public @NotNull UniTypeFactory getTypeFactory() {
         return typeFactory.get();
     }
 
-    public UniElementFactory getElementFactory() {
+    public @NotNull UniElementFactory getElementFactory() {
         return elementFactory.get();
     }
 
-    public UniModuleFactory getModuleFactory() {
+    public @NotNull UniModuleFactory getModuleFactory() {
         return moduleFactory.get();
     }
 
-    protected abstract UniElementFinder createFinder();
+    public abstract @NotNull UniEnvironment createEnvironment(@NotNull RoundEnvironment roundEnv);
 
-    protected abstract UniTypeFactory createTypeFactory();
+    protected abstract @NotNull UniElementFinder createFinder();
 
-    protected abstract UniElementFactory createElementFactory();
+    protected abstract @NotNull UniTypeFactory createTypeFactory();
 
-    protected abstract UniModuleFactory createModuleFactory();
+    protected abstract @NotNull UniElementFactory createElementFactory();
 
-    public static Uniflow getInstance() {
+    protected abstract @NotNull UniModuleFactory createModuleFactory();
+
+    public static @NotNull Uniflow getInstance() {
+        if (instance == null)
+            throw new IllegalStateException("Uniflow instance has not been created");
         return instance;
     }
 
