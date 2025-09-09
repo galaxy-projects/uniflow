@@ -13,10 +13,12 @@ import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.JavacModifiers;
+import org.galaxy.uniflow.javac.JavacUniflow;
 import org.galaxy.uniflow.javac.lists.JavacFieldList;
 import org.galaxy.uniflow.javac.lists.JavacIndexedList;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.lists.JavacMethodList;
+import org.galaxy.uniflow.javac.types.JavacClassType;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
@@ -37,7 +39,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public @NotNull UniClassType asType() {
-        return (UniClassType) UniflowWrapper.typeFromTree(tree);
+        return new JavacClassType(JavacUniflow.getInstance().treeMaker.Ident(tree.sym), (Type.ClassType) tree.sym.type);
     }
 
     @Override
