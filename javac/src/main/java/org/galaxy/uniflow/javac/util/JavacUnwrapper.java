@@ -47,7 +47,7 @@ public class JavacUnwrapper {
         throw new IllegalArgumentException("Type not supported: " + type);
     }
 
-    public static @NotNull Type tagToType(@NotNull TypeTag typeTag) {
+    public static @NotNull Type.JCPrimitiveType tagToPrimitiveType(@NotNull TypeTag typeTag) {
         Symtab symtab = JavacUniflow.getInstance().symtab;
 
         switch (typeTag) {
@@ -67,10 +67,15 @@ public class JavacUnwrapper {
                 return symtab.booleanType;
             case CHAR:
                 return symtab.charType;
-            case VOID:
-                return symtab.voidType;
+
         }
         throw new IllegalArgumentException("Tag not supported: " + typeTag);
+    }
+
+    public static @NotNull Type tagToType(@NotNull TypeTag typeTag) {
+        if (typeTag == TypeTag.VOID)
+            return JavacUniflow.getInstance().symtab.voidType;
+        return tagToPrimitiveType(typeTag);
     }
 
     public static JCTree.JCExpression typeToTree(@NotNull UniType type) {

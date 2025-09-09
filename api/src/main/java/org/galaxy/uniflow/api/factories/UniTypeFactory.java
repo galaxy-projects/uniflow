@@ -1,5 +1,6 @@
 package org.galaxy.uniflow.api.factories;
 
+import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.types.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,4 +24,7 @@ public interface UniTypeFactory {
     @NotNull UniTypeParameter createTypeParameter(@NotNull String name,
                                                   @NotNull List<@NotNull UniType> bounds);
 
+    @NotNull UniTypeParameter createTypeParameter(@NotNull String name,
+                                                  @NotNull List<@NotNull UniType> bounds,
+                                                  @NotNull List<@NotNull UniAnnotation> annotations);
 }

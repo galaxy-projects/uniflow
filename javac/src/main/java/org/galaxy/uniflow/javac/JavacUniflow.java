@@ -56,7 +56,7 @@ public class JavacUniflow extends Uniflow {
 
     @Override
     protected @NotNull UniTypeFactory createTypeFactory() {
-        return null;
+        return new JavacTypeFactory();
     }
 
     @Override
