@@ -2,6 +2,7 @@ package org.galaxy.uniflow.javac.factories;
 
 import com.sun.tools.javac.code.BoundKind;
 import com.sun.tools.javac.code.Type;
+import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
@@ -18,22 +19,31 @@ import java.util.List;
 
 public class JavacTypeFactory implements UniTypeFactory {
 
+    private final TreeMaker treeMaker;
+
+    public JavacTypeFactory() {
+        treeMaker = JavacUniflow.getInstance().treeMaker;
+    }
+
     @Override
     public @NotNull UniPrimitiveType asType(@NotNull TypeTag tag) {
         com.sun.tools.javac.code.TypeTag convert = EnumUtils.convert(com.sun.tools.javac.code.TypeTag.class, tag);
         Type.JCPrimitiveType sym = JavacUnwrapper.tagToPrimitiveType(tag);
 
-        return new JavacPrimitiveType(null, new Type.JCPrimitiveType(convert, sym.tsym));
+        return new JavacPrimitiveType(treeMaker.TypeIdent(convert), new Type.JCPrimitiveType(convert, sym.tsym));
     }
 
     @Override
     public @NotNull UniArrayType createArrayType(@NotNull UniType elementType) {
-        if (!(elementType instanceof JavacType<?, ?>))
+        if (!(elementType instanceof JavacExpressionType<?, ?>))
             throw new IllegalArgumentException("Invalid element type");
-        Type rawElementType = ((JavacType<?, ?>) elementType).getRawType();
+        JavacExpressionType<?, ?> javacElementType = (JavacExpressionType<?, ?>) elementType;
+        Type rawElementType = javacElementType.getRawType();
 
-        return new JavacArrayType(null,
-                new Type.ArrayType(rawElementType, rawElementType.tsym, rawElementType.getMetadata()));
+        return new JavacArrayType(
+                treeMaker.TypeArray(javacElementType.getExpression()),
+                new Type.ArrayType(rawElementType, rawElementType.tsym, rawElementType.getMetadata())
+        );
     }
 
     @Override
@@ -41,10 +51,16 @@ public class JavacTypeFactory implements UniTypeFactory {
         if (!(type instanceof JavacType<?, ?>))
             throw new IllegalArgumentException("Invalid type");
         BoundKind boundKind = EnumUtils.convert(BoundKind.class, kind);
-        Type rawType = ((JavacType<?, ?>) type).getRawType();
+        JavacType<?, ?> javacType = (JavacType<?, ?>) type;
+        Type rawType = javacType.getRawType();
 
-        return new JavacWildcardType(null,
-                new Type.WildcardType(rawType, boundKind, rawType.tsym, rawType.getMetadata()));
+        return new JavacWildcardType(
+                treeMaker.Wildcard(
+                        treeMaker.TypeBoundKind(boundKind),
+                        javacType.getExpression()
+                ),
+                new Type.WildcardType(rawType, boundKind, rawType.tsym, rawType.getMetadata())
+        );
     }
 
     @Override
@@ -56,33 +72,48 @@ public class JavacTypeFactory implements UniTypeFactory {
         if (!(bound instanceof JavacType<?, ?>))
             throw new IllegalArgumentException("Invalid bound type");
         BoundKind boundKind = EnumUtils.convert(BoundKind.class, kind);
-        Type rawType = ((JavacType<?, ?>) type).getRawType();
+        JavacType<?, ?> javacType = (JavacType<?, ?>) type;
+        Type rawType = javacType.getRawType();
         Type boundRawType = ((JavacType<?, ?>) bound).getRawType();
 
-        return new JavacWildcardType(null,
+        return new JavacWildcardType(
+                treeMaker.Wildcard(
+                        treeMaker.TypeBoundKind(boundKind),
+                        javacType.getExpression()
+                ),
                 new Type.WildcardType(rawType, boundKind, rawType.tsym,
                         new Type.TypeVar(boundRawType.tsym, boundRawType, boundRawType.getLowerBound(),
                                 boundRawType.getMetadata()),
-                        rawType.getMetadata()));
+                        rawType.getMetadata())
+        );
     }
 
     @Override
     public @NotNull UniParameterizedType createParameterizedType(@NotNull UniType elementType,
                                                                  @NotNull List<@NotNull UniType> argumentTypes) {
-        if (!(elementType instanceof JavacType<?, ?>))
+        if (!(elementType instanceof JavacExpressionType<?, ?>))
             throw new IllegalArgumentException("Invalid element type");
         for (UniType type : argumentTypes) {
-            if (!(type instanceof JavacType<?, ?>))
+            if (!(type instanceof JavacExpressionType<?, ?>))
                 throw new IllegalArgumentException("Invalid type argument: " + type);
         }
-        Type rawElementType = ((JavacType<?, ?>) elementType).getRawType();
+        JavacExpressionType<?, ?> javacElementType = (JavacExpressionType<?, ?>) elementType;
+        Type rawElementType = javacElementType.getRawType();
         com.sun.tools.javac.util.List<Type> types = argumentTypes.stream()
                 .map(JavacType.class::cast)
                 .map(JavacType::getRawType)
                 .collect(com.sun.tools.javac.util.List.collector());
 
-        return new JavacParameterizedType(null,
-                new Type.ClassType(rawElementType, types, rawElementType.tsym, rawElementType.getMetadata()));
+        return new JavacParameterizedType(
+                treeMaker.TypeApply(
+                        javacElementType.getExpression(),
+                        argumentTypes.stream()
+                                .map(JavacExpressionType.class::cast)
+                                .map(expr -> (JCTree.JCExpression) expr.getExpression())
+                                .collect(com.sun.tools.javac.util.List.collector())
+                ),
+                new Type.ClassType(rawElementType, types, rawElementType.tsym, rawElementType.getMetadata())
+        );
     }
 
     @Override
@@ -93,10 +124,14 @@ public class JavacTypeFactory implements UniTypeFactory {
         }
         TreeMaker treeMaker = JavacUniflow.getInstance().treeMaker;
 
-        return new JavacTypeParameter(treeMaker.TypeParameter(
-                NameUtils.name(name),
-                bounds.stream().map(JavacUnwrapper::typeToTree).collect(com.sun.tools.javac.util.List.collector())
-        ), 0);
+        return new JavacTypeParameter(
+                treeMaker.TypeParameter(
+                        NameUtils.name(name),
+                        bounds.stream().map(JavacUnwrapper::typeToTree)
+                                .collect(com.sun.tools.javac.util.List.collector())
+                ),
+                0
+        );
     }
 
     @Override
@@ -113,10 +148,15 @@ public class JavacTypeFactory implements UniTypeFactory {
         }
         TreeMaker treeMaker = JavacUniflow.getInstance().treeMaker;
 
-        return new JavacTypeParameter(treeMaker.TypeParameter(
-                NameUtils.name(name),
-                bounds.stream().map(JavacUnwrapper::typeToTree).collect(com.sun.tools.javac.util.List.collector()),
-                annotations.stream().map(JavacUnwrapper::unwrap).collect(com.sun.tools.javac.util.List.collector())
-        ), 0);
+        return new JavacTypeParameter(
+                treeMaker.TypeParameter(
+                        NameUtils.name(name),
+                        bounds.stream().map(JavacUnwrapper::typeToTree)
+                                .collect(com.sun.tools.javac.util.List.collector()),
+                        annotations.stream().map(JavacUnwrapper::unwrap)
+                                .collect(com.sun.tools.javac.util.List.collector())
+                ),
+                0
+        );
     }
 }
