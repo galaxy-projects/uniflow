@@ -1,6 +1,7 @@
 package org.galaxy.uniflow.javac.factories;
 
 import com.sun.tools.javac.code.BoundKind;
+import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
@@ -23,6 +24,21 @@ public class JavacTypeFactory implements UniTypeFactory {
 
     public JavacTypeFactory() {
         treeMaker = JavacUniflow.getInstance().treeMaker;
+    }
+
+    @Override
+    public @NotNull UniClassType createClassType(@NotNull Class<?> clazz) {
+        return createClassType(clazz.getSimpleName());
+    }
+
+    @Override
+    public @NotNull UniClassType createClassType(@NotNull String name) {
+        Symbol.ClassSymbol sym = JavacUniflow.getInstance().elements.getTypeElement(name);
+
+        return new JavacClassType(
+                treeMaker.Ident(sym),
+                (Type.ClassType) sym.type
+        );
     }
 
     @Override

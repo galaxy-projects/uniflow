@@ -64,16 +64,16 @@ public interface UniMethodFinder {
 
     // methods with parameters
     // uses Class instead of UniClassType
-    @NotNull UniMethodSignature find(@NotNull Class<?> owner,
-                                     @NotNull String name,
-                                     @NotNull UniType returnType,
-                                     @NotNull List<UniType> parameterTypes);
+    @Nullable UniMethodSignature find(@NotNull Class<?> owner,
+                                      @NotNull String name,
+                                      @NotNull UniType returnType,
+                                      @NotNull List<UniType> parameterTypes);
 
     // methods with parameters and throws
     // uses Class instead of UniClassType
-    @NotNull UniMethodSignature find(@NotNull Class<?> owner,
-                                     @NotNull String name,
-                                     @NotNull UniType returnType,
-                                     @NotNull List<UniType> parameterTypes,
-                                     @NotNull List<UniType> thrownTypes);
+    @Nullable UniMethodSignature find(@NotNull Class<?> owner,
+                                      @NotNull String name,
+                                      @NotNull UniType returnType,
+                                      @NotNull List<UniType> parameterTypes,
+                                      @NotNull List<UniType> thrownTypes);
 }

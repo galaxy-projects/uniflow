@@ -14,8 +14,8 @@ public class JavacElementFinder implements UniElementFinder {
     private final UniMethodFinder methodFinder;
 
     public JavacElementFinder() {
-        fieldFinder = new JavacFieldFinder(this);
-        methodFinder = new JavacMethodFinder(this);
+        fieldFinder = new JavacFieldFinder();
+        methodFinder = new JavacMethodFinder();
     }
 
     @Override

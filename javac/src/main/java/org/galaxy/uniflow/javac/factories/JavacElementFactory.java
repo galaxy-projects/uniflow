@@ -15,7 +15,7 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
-import org.galaxy.uniflow.api.factories.UniElementFinder;
+import org.galaxy.uniflow.api.factories.UniTypeFactory;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
@@ -173,10 +173,10 @@ public class JavacElementFactory implements UniElementFactory {
                                            @NotNull List<@NotNull UniExpression> thrown,
                                            @NotNull UniBlock body,
                                            @NotNull UniExpression defaultValue) {
-        UniElementFinder finder = Uniflow.getInstance().getFinder();
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
-        return createMethod(modifiers, name, finder.findClass(returnType), typeParameters, receiveParam, parameters,
-                thrown, body, defaultValue);
+        return createMethod(modifiers, name, typeFactory.createClassType(returnType), typeParameters, receiveParam,
+                parameters, thrown, body, defaultValue);
     }
 
     @Override
@@ -217,9 +217,9 @@ public class JavacElementFactory implements UniElementFactory {
                                             @NotNull String name,
                                             @NotNull Class<?> type,
                                             @Nullable UniExpression init) {
-        UniElementFinder finder = Uniflow.getInstance().getFinder();
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
-        return createField(modifiers, name, finder.findClass(type), init);
+        return createField(modifiers, name, typeFactory.createClassType(type), init);
     }
 
     @Override
@@ -245,9 +245,9 @@ public class JavacElementFactory implements UniElementFactory {
                                                @NotNull Class<?> type,
                                                @NotNull UniExpression init,
                                                boolean useVar) {
-        UniElementFinder finder = Uniflow.getInstance().getFinder();
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
-        return createVariable(annotations, name, finder.findClass(type), init, useVar);
+        return createVariable(annotations, name, typeFactory.createClassType(type), init, useVar);
     }
 
     @Override
@@ -360,7 +360,7 @@ public class JavacElementFactory implements UniElementFactory {
     @Override
     public @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
                                                                @NotNull List<@NotNull UniCase> cases) {
-        if (!isSourceAtLeast(Source.JDK14))
+        if (isSourceNotAtLeast(Source.JDK14))
             throw new IllegalStateException("Switch expression requires at least java 14");
         JavacExpression<?> javacSelector = check(selector, JavacExpression.class);
         Stream<JavacCase> javacCases = checkList(cases, JavacCase.class);
@@ -495,7 +495,7 @@ public class JavacElementFactory implements UniElementFactory {
 
     @Override
     public @NotNull UniYield createYield(@NotNull UniExpression value) {
-        if (!isSourceAtLeast(Source.JDK14))
+        if (isSourceNotAtLeast(Source.JDK14))
             throw new IllegalStateException("Yield requires java 14");
         JavacExpression<?> javacValue = check(value, JavacExpression.class);
 
@@ -681,7 +681,7 @@ public class JavacElementFactory implements UniElementFactory {
 
     @Override
     public @NotNull UniBindingPattern createBindingPattern(@NotNull UniVariable variable) {
-        if (!isSourceAtLeast(Source.JDK17))
+        if (isSourceNotAtLeast(Source.JDK17))
             throw new IllegalStateException("Binding pattern requires java 17");
         JavacVariable javacVariable = check(variable, JavacVariable.class);
 
@@ -775,7 +775,7 @@ public class JavacElementFactory implements UniElementFactory {
 
     @Override
     public @NotNull UniFieldAccess createClassLiteral(@NotNull Class<?> type) {
-        return createClassLiteral(Uniflow.getInstance().getFinder().findClass(type));
+        return createClassLiteral(Uniflow.getInstance().getTypeFactory().createClassType(type));
     }
 
     @Override
@@ -804,7 +804,7 @@ public class JavacElementFactory implements UniElementFactory {
         return stream.map(mapper).collect(com.sun.tools.javac.util.List.collector());
     }
 
-    private boolean isSourceAtLeast(Source source) {
-        return JavacUniflow.getInstance().source.compareTo(source) >= 0;
+    private boolean isSourceNotAtLeast(Source source) {
+        return JavacUniflow.getInstance().source.compareTo(source) < 0;
     }
 }

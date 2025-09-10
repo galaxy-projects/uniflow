@@ -10,6 +10,10 @@ public interface UniTypeFactory {
 
     @NotNull UniPrimitiveType asType(@NotNull TypeTag tag);
 
+    @NotNull UniClassType createClassType(@NotNull Class<?> clazz);
+
+    @NotNull UniClassType createClassType(@NotNull String name);
+
     @NotNull UniArrayType createArrayType(@NotNull UniType elementType);
 
     @NotNull UniWildcardType createWildcardType(@NotNull UniType type, @NotNull UniWildcardType.BoundKind kind);
