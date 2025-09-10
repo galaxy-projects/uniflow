@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 
 public class JavacUniflow extends Uniflow {
@@ -30,7 +31,7 @@ public class JavacUniflow extends Uniflow {
     public Messager messager;
     public JavacElements elements;
 
-    public JavacUniflow(JavacProcessingEnvironment processingEnvironment) {
+    private JavacUniflow(JavacProcessingEnvironment processingEnvironment) {
         Context context = processingEnvironment.getContext();
 
         treeMaker = TreeMaker.instance(context);
@@ -45,7 +46,7 @@ public class JavacUniflow extends Uniflow {
     }
 
     @Override
-    public @NotNull UniEnvironment createEnvironment(@NotNull RoundEnvironment roundEnv) {
+    public @NotNull UniEnvironment createRoundEnvironment(@NotNull RoundEnvironment roundEnv) {
         return new JavacEnvironment(roundEnv);
     }
 
@@ -83,5 +84,11 @@ public class JavacUniflow extends Uniflow {
 
     public static @NotNull JavacUniflow getInstance() {
         return (JavacUniflow) Uniflow.getInstance();
+    }
+
+    public static @NotNull Uniflow create(@NotNull ProcessingEnvironment environment) {
+        if (!(environment instanceof JavacProcessingEnvironment))
+            throw new IllegalArgumentException("environment must be an instance of JavacProcessingEnvironment");
+        return new JavacUniflow((JavacProcessingEnvironment) environment);
     }
 }
