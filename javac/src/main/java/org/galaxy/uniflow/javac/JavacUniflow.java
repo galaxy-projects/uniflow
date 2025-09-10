@@ -46,8 +46,8 @@ public class JavacUniflow extends Uniflow {
     }
 
     @Override
-    public @NotNull UniEnvironment createRoundEnvironment(@NotNull RoundEnvironment roundEnv) {
-        return new JavacEnvironment(roundEnv);
+    public @NotNull UniRoundEnvironment createRoundEnvironment(@NotNull RoundEnvironment roundEnv) {
+        return new JavacRoundEnvironment(roundEnv);
     }
 
     @Override

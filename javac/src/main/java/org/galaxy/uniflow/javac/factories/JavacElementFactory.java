@@ -243,7 +243,7 @@ public class JavacElementFactory implements UniElementFactory {
     public @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                                @NotNull String name,
                                                @NotNull Class<?> type,
-                                               @NotNull UniExpression init,
+                                               @Nullable UniExpression init,
                                                boolean useVar) {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
@@ -254,7 +254,7 @@ public class JavacElementFactory implements UniElementFactory {
     public @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                                @NotNull String name,
                                                @NotNull UniType type,
-                                               @NotNull UniExpression init,
+                                               @Nullable UniExpression init,
                                                boolean useVar) {
         Stream<JavacAnnotation> javacAnnotations = checkList(annotations, JavacAnnotation.class);
         JavacExpressionType<?, ?> javacType = check(type, JavacExpressionType.class);
@@ -264,7 +264,7 @@ public class JavacElementFactory implements UniElementFactory {
                 treeMaker.Modifiers(0, mapToList(javacAnnotations, JavacAnnotation::getTree)),
                 NameUtils.name(name),
                 javacType.getExpression(),
-                javacInit.getTree(),
+                javacInit != null ? javacInit.getTree() : null,
                 useVar
         ));
     }

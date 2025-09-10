@@ -42,7 +42,7 @@ public class JavacTypeFactory implements UniTypeFactory {
     }
 
     @Override
-    public @NotNull UniPrimitiveType asType(@NotNull TypeTag tag) {
+    public @NotNull UniPrimitiveType createPrimitiveType(@NotNull TypeTag tag) {
         com.sun.tools.javac.code.TypeTag convert = EnumUtils.convert(com.sun.tools.javac.code.TypeTag.class, tag);
         Type.JCPrimitiveType sym = JavacUnwrapper.tagToPrimitiveType(tag);
 

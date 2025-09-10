@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
-public interface UniEnvironment {
+public interface UniRoundEnvironment {
 
     boolean processingOver();
 

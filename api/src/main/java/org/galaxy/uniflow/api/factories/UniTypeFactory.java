@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UniTypeFactory {
 
-    @NotNull UniPrimitiveType asType(@NotNull TypeTag tag);
+    @NotNull UniPrimitiveType createPrimitiveType(@NotNull TypeTag tag);
 
     @NotNull UniClassType createClassType(@NotNull Class<?> clazz);
 

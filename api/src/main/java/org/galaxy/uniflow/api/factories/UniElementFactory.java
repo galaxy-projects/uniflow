@@ -90,14 +90,40 @@ public interface UniElementFactory {
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,
                                         @NotNull Class<?> type,
-                                        @NotNull UniExpression init,
+                                        @Nullable UniExpression init,
                                         boolean useVar);
 
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,
                                         @NotNull UniType type,
-                                        @NotNull UniExpression init,
+                                        @Nullable UniExpression init,
                                         boolean useVar);
+
+    default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
+                                                @NotNull String name,
+                                                @NotNull Class<?> type,
+                                                @NotNull UniExpression init) {
+        return createVariable(annotations, name, type, init, false);
+    }
+
+    default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
+                                                @NotNull String name,
+                                                @NotNull UniType type,
+                                                @NotNull UniExpression init) {
+        return createVariable(annotations, name, type, init, false);
+    }
+
+    default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
+                                                @NotNull String name,
+                                                @NotNull Class<?> type) {
+        return createVariable(annotations, name, type, null, false);
+    }
+
+    default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
+                                                @NotNull String name,
+                                                @NotNull UniType type) {
+        return createVariable(annotations, name, type, null, false);
+    }
 
     @NotNull UniEmpty createSkip();
 

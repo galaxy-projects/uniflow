@@ -2,7 +2,7 @@ package org.galaxy.uniflow.javac.factories;
 
 import com.sun.tools.javac.api.JavacTrees;
 import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.factories.UniEnvironment;
+import org.galaxy.uniflow.api.factories.UniRoundEnvironment;
 import org.galaxy.uniflow.javac.JavacUniflow;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class JavacEnvironment implements UniEnvironment {
+public class JavacRoundEnvironment implements UniRoundEnvironment {
 
     private final RoundEnvironment roundEnv;
 
-    public JavacEnvironment(RoundEnvironment roundEnv) {
+    public JavacRoundEnvironment(RoundEnvironment roundEnv) {
         this.roundEnv = roundEnv;
     }
 
