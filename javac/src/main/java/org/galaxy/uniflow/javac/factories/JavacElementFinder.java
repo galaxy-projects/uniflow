@@ -3,9 +3,6 @@ package org.galaxy.uniflow.javac.factories;
 import org.galaxy.uniflow.api.factories.UniElementFinder;
 import org.galaxy.uniflow.api.factories.UniFieldFinder;
 import org.galaxy.uniflow.api.factories.UniMethodFinder;
-import org.galaxy.uniflow.api.types.UniClassType;
-import org.galaxy.uniflow.javac.JavacUniflow;
-import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class JavacElementFinder implements UniElementFinder {
@@ -16,16 +13,6 @@ public class JavacElementFinder implements UniElementFinder {
     public JavacElementFinder() {
         fieldFinder = new JavacFieldFinder();
         methodFinder = new JavacMethodFinder();
-    }
-
-    @Override
-    public @NotNull UniClassType findClass(@NotNull Class<?> clazz) {
-        return findClass(clazz.getSimpleName());
-    }
-
-    @Override
-    public @NotNull UniClassType findClass(@NotNull String name) {
-        return (UniClassType) UniflowWrapper.type(JavacUniflow.getInstance().elements.getTypeElement(name));
     }
 
     @Override
