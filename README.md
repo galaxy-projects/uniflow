@@ -9,9 +9,11 @@
 
 > _“Uniflow bridges the gap between parallel universes in Java code analysis.”_
 
-**Uniflow** is a Java library that unifies source code processing between **javac** (AST) and **IntelliJ IDEA** (PSI) and their environment
+**Uniflow** is a Java library that unifies source code processing between **javac** (AST) and **IntelliJ IDEA** (PSI)
+and their environment
 
-It connects different code-processing platforms through a unified API, enabling developers to write once and deploy across multiple environments.
+It connects different code-processing platforms through a unified API, enabling developers to write once and deploy
+across multiple environments.
 
 ## 🚀 Goals
 
@@ -32,7 +34,9 @@ It connects different code-processing platforms through a unified API, enabling 
 ## 📦 Installation
 
 ### Gradle
+
 Add Uniflow to your ``build.gradle``
+
 ```groovy
 repositories {
     mavenCentral()
@@ -50,7 +54,9 @@ dependencies {
 ### Maven
 
 Add Uniflow to your ``pom.xml``:
+
 ```xml
+
 <repositories>
     <repository>
         <id>uniflow</id>
@@ -60,10 +66,11 @@ Add Uniflow to your ``pom.xml``:
 ```
 
 ```xml
+
 <dependency>
-  <groupId>org.galaxy</groupId>
-  <artifactId>uniflow</artifactId>
-  <version>1.0.0</version>
+    <groupId>org.galaxy</groupId>
+    <artifactId>uniflow</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -72,23 +79,23 @@ Add Uniflow to your ``pom.xml``:
 ## 🧪 Example Usage
 
 ### Annotation Processing
+
 ```java
-public class MyProcessor extends AbstractProcessor {
-    public boolean process(...) {
-        UniElementFactory factory = Uniflow.initForJavac(processingEnv);
-        UniClass clazz = factory.createClass("GeneratedClass");
+public class MyProcessor extends UniflowAnnotationProcessor {
+    @Override
+    public boolean process(@NotNull Uniflow uniflow, @NotNull UniRoundEnvironment roundEnv) {
+        UniElementFactory factory = uniflow.getElementFactory();
         // ...
     }
 }
 ```
-### IntelliJ Plugin
-```java
-UniElementFactory factory = Uniflow.initForIntelliJ(project);
-UniClass psiClass = factory.createClass("GeneratedClass");
-```
+
+### IntelliJ Plugin (TODO)
 
 ---
+
 ## 🧑‍💻 Contributing
+
 Contributions are welcome!
 
 - Fork the repo
@@ -98,4 +105,5 @@ Contributions are welcome!
 ---
 
 ## 📜 License
+
 MIT License — do whatever you want, but don’t forget to give credit 😊
