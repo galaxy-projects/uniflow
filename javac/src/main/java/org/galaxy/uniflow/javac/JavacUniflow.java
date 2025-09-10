@@ -61,7 +61,7 @@ public class JavacUniflow extends Uniflow {
 
     @Override
     protected @NotNull UniElementFactory createElementFactory() {
-        return null;
+        return new JavacElementFactory();
     }
 
     @Override

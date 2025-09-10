@@ -35,26 +35,6 @@ public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
 
     @Override
     public @NotNull UniList<UniExpression> getExpressions() {
-//        List<JCTree.JCExpression> affected = tree.labels.stream()
-//                .filter(p -> p instanceof JCTree.JCExpression)
-//                .map(p -> (JCTree.JCExpression) p)
-//                .collect(List.collector());
-//        java.util.List<JCTree.JCCaseLabel> notAffected = tree.labels.stream()
-//                .filter(p -> !(p instanceof JCTree.JCExpression))
-//                .collect(Collectors.toList());
-//
-//        return new JavacList<>(
-//                affected,
-//                newList -> {
-//                    ListBuffer<JCTree.JCCaseLabel> result = new ListBuffer<>();
-//
-//                    result.addAll(notAffected);
-//                    result.addAll(newList);
-//                    tree.labels = result.toList();
-//                },
-//                UniUtils::uni,
-//                JavacUtils::javac
-//        );
         return new JavacList<>(
                 tree.labels,
                 newList -> tree.labels = newList,

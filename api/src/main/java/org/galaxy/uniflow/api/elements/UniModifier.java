@@ -1,5 +1,9 @@
 package org.galaxy.uniflow.api.elements;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
 public enum UniModifier {
 
     PUBLIC(1),
@@ -29,5 +33,13 @@ public enum UniModifier {
 
     public boolean hasModifier(long flags) {
         return (flags & mask) != 0;
+    }
+
+    public static long asLongFlags(@NotNull List<@NotNull UniModifier> modifiers) {
+        long result = 0;
+
+        for (UniModifier modifier : modifiers)
+            result |= modifier.mask;
+        return result;
     }
 }

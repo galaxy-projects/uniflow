@@ -4,12 +4,11 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
 import org.galaxy.uniflow.api.pattern.UniPattern;
-import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
-public class JavacGuardedPattern extends JavacElement<JCTree.JCGuardPattern> implements UniGuardedPattern {
+public class JavacGuardedPattern extends JavacPattern<JCTree.JCGuardPattern> implements UniGuardedPattern {
 
     public JavacGuardedPattern(JCTree.@NotNull JCGuardPattern tree) {
         super(tree);
