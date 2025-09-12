@@ -5,39 +5,35 @@ import org.galaxy.uniflow.api.lists.UniParameterList;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.jetbrains.annotations.NotNull;
 
-public class JavacParameterList implements UniParameterList {
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-    private final JavacList<UniVariable, JCTree.JCVariableDecl> list;
+public class JavacParameterList extends JavacList<UniVariable, JCTree.JCVariableDecl> implements UniParameterList {
 
-    public JavacParameterList(JavacList<UniVariable, JCTree.JCVariableDecl> list) {
-        this.list = list;
+    public JavacParameterList(List<UniVariable> elements,
+                              Consumer<com.sun.tools.javac.util.List<JCTree.JCVariableDecl>> setter,
+                              Function<UniVariable, JCTree.JCVariableDecl> converter) {
+        super(elements, setter, converter);
     }
 
-    @Override
-    public @NotNull UniVariable @NotNull [] getParameters() {
-        return list.get();
-    }
-
-    @Override
-    public boolean hasParameters() {
-        return !list.elements.isEmpty();
+    public JavacParameterList(com.sun.tools.javac.util.List<JCTree.JCVariableDecl> elements,
+                              Consumer<com.sun.tools.javac.util.List<JCTree.JCVariableDecl>> setter,
+                              Function<JCTree.JCVariableDecl, UniVariable> inverterConverter,
+                              Function<UniVariable, JCTree.JCVariableDecl> converter) {
+        super(elements, setter, inverterConverter, converter);
     }
 
     @Override
     public boolean hasParameter(@NotNull String name) {
-        return list.elements.stream().anyMatch(param -> param.getName().equals(name));
-    }
-
-    @Override
-    public void addParameter(@NotNull UniVariable parameter) {
-        list.addLast(parameter);
+        return elements.stream().anyMatch(param -> param.getName().equals(name));
     }
 
     @Override
     public int getParameterIndex(@NotNull String name) {
         int index = 0;
 
-        for (UniVariable parameter : list.elements) {
+        for (UniVariable parameter : elements) {
             if (parameter.getName().equals(name))
                 return index;
             index++;
@@ -47,14 +43,9 @@ public class JavacParameterList implements UniParameterList {
 
     @Override
     public void removeParameter(int index) {
-        if (index >= 0 && index < list.elements.size()) {
-            list.elements.remove(index);
-            list.update();
+        if (index >= 0 && index < elements.size()) {
+            elements.remove(index);
+            update();
         }
-    }
-
-    @Override
-    public void removeParameter(@NotNull UniVariable parameter) {
-        removeParameter(list.elements.indexOf(parameter));
     }
 }

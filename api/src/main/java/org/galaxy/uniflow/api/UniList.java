@@ -6,6 +6,8 @@ import java.util.stream.Stream;
 
 public interface UniList<T> {
 
+    boolean isEmpty();
+
     @NotNull T @NotNull [] get();
 
     @NotNull Stream<T> stream();

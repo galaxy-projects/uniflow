@@ -7,19 +7,26 @@ import java.util.List;
 public enum UniModifier {
 
     PUBLIC(1),
-    PROTECTED(1 << 2),
     PRIVATE(1 << 1),
-    ABSTRACT(1 << 10),
+    PROTECTED(1 << 2),
     STATIC(1 << 3),
-    SEALED(1L << 62L),
-    NON_SEALED(1L << 63),
     FINAL(1 << 4),
-    NATIVE(1 << 8),
     SYNCHRONIZED(1 << 5),
     VOLATILE(1 << 6),
     TRANSIENT(1 << 7),
+    NATIVE(1 << 8),
+    INTERFACE(1 << 9),
+    ABSTRACT(1 << 10),
     STRICTFP(1 << 11),
-    DEFAULT(1L << 43);
+    SYNTHETIC(1 << 12),
+    ANNOTATION(1 << 13),
+    ENUM(1 << 14),
+
+    DEFAULT(1L << 43),
+
+    RECORD(1L << 61),
+    SEALED(1L << 62L),
+    NON_SEALED(1L << 63);
 
     private final long mask;
 

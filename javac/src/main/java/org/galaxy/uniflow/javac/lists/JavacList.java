@@ -33,6 +33,11 @@ public class JavacList<T, R> implements UniList<T> {
     }
 
     @Override
+    public boolean isEmpty() {
+        return elements.isEmpty();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public @NotNull T @NotNull [] get() {
         return (T[]) elements.toArray(new Object[0]);

@@ -8,11 +8,21 @@ import java.util.List;
 
 public interface UniTypeFactory {
 
+    default @NotNull UniType createType(@NotNull Class<?> clazz) {
+        if (clazz.isPrimitive())
+            return createPrimitiveType(TypeTag.fromPrimitiveType(clazz));
+        else if (clazz.isArray())
+            return createArrayType(clazz.getComponentType());
+        return createClassType(clazz);
+    }
+
     @NotNull UniPrimitiveType createPrimitiveType(@NotNull TypeTag tag);
 
     @NotNull UniClassType createClassType(@NotNull Class<?> clazz);
 
     @NotNull UniClassType createClassType(@NotNull String name);
+
+    @NotNull UniArrayType createArrayType(@NotNull Class<?> elementType);
 
     @NotNull UniArrayType createArrayType(@NotNull UniType elementType);
 

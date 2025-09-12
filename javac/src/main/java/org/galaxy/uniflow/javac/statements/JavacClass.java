@@ -3,6 +3,7 @@ package org.galaxy.uniflow.javac.statements;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.*;
+import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.lists.UniFieldList;
 import org.galaxy.uniflow.api.lists.UniIndexedList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
@@ -49,22 +50,22 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public boolean isInterface() {
-        return tree.sym.isInterface();
+        return UniModifier.INTERFACE.hasModifier(tree.mods.flags);
     }
 
     @Override
     public boolean isAnnotationType() {
-        return tree.sym.isAnnotationType();
+        return UniModifier.ANNOTATION.hasModifier(tree.mods.flags);
     }
 
     @Override
     public boolean isEnum() {
-        return tree.sym.isEnum();
+        return UniModifier.ENUM.hasModifier(tree.mods.flags);
     }
 
     @Override
     public boolean isRecord() {
-        return false;
+        return UniModifier.RECORD.hasModifier(tree.mods.flags);
     }
 
     @Override

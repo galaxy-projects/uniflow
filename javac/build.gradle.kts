@@ -10,6 +10,9 @@ dependencies {
 
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.annotations)
+    testImplementation(project(":api"))
+    testImplementation(project(":common"))
 }
 
 tasks.test {

@@ -50,6 +50,11 @@ public class JavacTypeFactory implements UniTypeFactory {
     }
 
     @Override
+    public @NotNull UniArrayType createArrayType(@NotNull Class<?> elementType) {
+        return createArrayType(createClassType(elementType));
+    }
+
+    @Override
     public @NotNull UniArrayType createArrayType(@NotNull UniType elementType) {
         if (!(elementType instanceof JavacExpressionType<?, ?>))
             throw new IllegalArgumentException("Invalid element type");

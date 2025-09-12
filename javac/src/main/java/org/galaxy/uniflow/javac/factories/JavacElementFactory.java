@@ -9,6 +9,7 @@ import com.sun.tools.javac.util.ListBuffer;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
+import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
@@ -44,6 +45,7 @@ import org.galaxy.uniflow.javac.types.JavacClassType;
 import org.galaxy.uniflow.javac.types.JavacExpressionType;
 import org.galaxy.uniflow.javac.types.JavacType;
 import org.galaxy.uniflow.javac.types.JavacTypeParameter;
+import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -125,8 +127,21 @@ public class JavacElementFactory implements UniElementFactory {
                                          @NotNull List<@NotNull UniType> implementing,
                                          @NotNull List<@NotNull UniVariable> fields,
                                          @NotNull List<@NotNull UniMethod> methods) {
-        return createClass(modifiers, name, typeParameters, extending, implementing, Collections.emptyList(),
-                fields, methods);
+        return createClass(modifiers, name, typeParameters, extending, implementing,
+                Collections.emptyList(), fields, methods, Collections.emptyList());
+    }
+
+    @Override
+    public @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
+                                         @NotNull String name,
+                                         @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                         @Nullable UniType extending,
+                                         @NotNull List<@NotNull UniType> implementing,
+                                         @NotNull List<@NotNull UniExpression> permitting,
+                                         @NotNull List<@NotNull UniVariable> fields,
+                                         @NotNull List<@NotNull UniMethod> methods) {
+        return createClass(modifiers, name, typeParameters, extending, implementing, permitting,
+                fields, methods, Collections.emptyList());
     }
 
     @Override
@@ -138,7 +153,8 @@ public class JavacElementFactory implements UniElementFactory {
                                          @NotNull List<@NotNull UniType> implementing,
                                          @NotNull List<@NotNull UniExpression> permitting,
                                          @NotNull List<@NotNull UniVariable> fields,
-                                         @NotNull List<@NotNull UniMethod> methods) {
+                                         @NotNull List<@NotNull UniMethod> methods,
+                                         @NotNull List<@NotNull UniClassInitializer> initializers) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
         Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
         JavacExpressionType<JCTree.JCExpression, ?> javacExtending = check(extending, JavacExpressionType.class);
@@ -147,10 +163,12 @@ public class JavacElementFactory implements UniElementFactory {
         Stream<JavacExpression> javacPermitting = checkList(permitting, JavacExpression.class);
         Stream<JavacVariable> javacFields = checkList(fields, JavacVariable.class);
         Stream<JavacMethod> javacMethods = checkList(methods, JavacMethod.class);
+        Stream<JavacClassInitializer> javacInitializers = checkList(initializers, JavacClassInitializer.class);
         ListBuffer<JCTree> buffer = new ListBuffer<>();
 
         javacFields.map(JavacVariable::getTree).forEach(buffer::add);
         javacMethods.map(JavacMethod::getTree).forEach(buffer::add);
+        javacInitializers.map(JavacClassInitializer::getTree).forEach(buffer::add);
 
         return new JavacClass(treeMaker.ClassDef(
                 javacModifiers.getTree(),
@@ -721,11 +739,21 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
+    public @NotNull UniLiteral createNull() {
+        return new JavacLiteral(treeMaker.Literal(com.sun.tools.javac.code.TypeTag.BOT, null));
+    }
+
+    @Override
     public @NotNull UniLiteral createLiteral(@NotNull TypeTag tag, @NotNull Object value) {
         return new JavacLiteral(treeMaker.Literal(
                 EnumUtils.convert(com.sun.tools.javac.code.TypeTag.class, tag),
                 value
         ));
+    }
+
+    @Override
+    public @NotNull UniLiteral createStringLiteral(@NotNull String value) {
+        return new JavacLiteral(treeMaker.Literal(value));
     }
 
     @Override
@@ -738,6 +766,22 @@ public class JavacElementFactory implements UniElementFactory {
                 javacAnnotationType.getExpression(),
                 mapToList(javacAttributes, JavacAnnotationAttribute::getTree)
         ));
+    }
+
+    @Override
+    public @NotNull UniAnnotationAttribute createAnnotationAttribute(@NotNull String name,
+                                                                     @NotNull UniAnnotationValue value) {
+        if (!(value instanceof JavacAnnotationAttribute))
+            throw new IllegalArgumentException("Value is not type of JavacAnnotationAttribute");
+
+        return new JavacAnnotationAttribute(
+                treeMaker.Assign(
+                        treeMaker.Ident(NameUtils.name(name)),
+                        JavacUnwrapper.unwrap(value)
+                ),
+                name,
+                value
+        );
     }
 
     @Override

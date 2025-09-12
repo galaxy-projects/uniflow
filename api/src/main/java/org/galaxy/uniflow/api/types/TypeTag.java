@@ -1,5 +1,9 @@
 package org.galaxy.uniflow.api.types;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+
 public enum TypeTag {
     /**
      * The tag of the basic type `byte'.
@@ -41,5 +45,24 @@ public enum TypeTag {
     /**
      * The tag of the basic type 'void'
      */
-    VOID
+    VOID;
+
+    private static final HashMap<Class<?>, TypeTag> TAG_BY_TYPE = new HashMap<>();
+
+
+    public static @NotNull TypeTag fromPrimitiveType(@NotNull Class<?> type) {
+        return TAG_BY_TYPE.get(type);
+    }
+
+    static {
+        TAG_BY_TYPE.put(Byte.TYPE, BYTE);
+        TAG_BY_TYPE.put(Short.TYPE, SHORT);
+        TAG_BY_TYPE.put(Integer.TYPE, INT);
+        TAG_BY_TYPE.put(Long.TYPE, LONG);
+        TAG_BY_TYPE.put(Float.TYPE, FLOAT);
+        TAG_BY_TYPE.put(Double.TYPE, DOUBLE);
+        TAG_BY_TYPE.put(Boolean.TYPE, BOOLEAN);
+        TAG_BY_TYPE.put(Character.TYPE, CHAR);
+        TAG_BY_TYPE.put(Void.TYPE, VOID);
+    }
 }

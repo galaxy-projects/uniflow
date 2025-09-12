@@ -3,6 +3,7 @@ package org.galaxy.uniflow.api.factories;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
+import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
@@ -56,6 +57,16 @@ public interface UniElementFactory {
                                   @NotNull List<@NotNull UniExpression> permitting,
                                   @NotNull List<@NotNull UniVariable> fields,
                                   @NotNull List<@NotNull UniMethod> methods);
+
+    @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
+                                  @NotNull String name,
+                                  @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                  @Nullable UniType extending,
+                                  @NotNull List<@NotNull UniType> implementing,
+                                  @NotNull List<@NotNull UniExpression> permitting,
+                                  @NotNull List<@NotNull UniVariable> fields,
+                                  @NotNull List<@NotNull UniMethod> methods,
+                                  @NotNull List<@NotNull UniClassInitializer> initializers);
 
     @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
                                     @NotNull String name,
@@ -236,10 +247,16 @@ public interface UniElementFactory {
 
     @NotNull UniIdentifier createIdentifier(@NotNull String name);
 
+    @NotNull UniLiteral createNull();
+
     @NotNull UniLiteral createLiteral(@NotNull TypeTag tag, @NotNull Object value);
+
+    @NotNull UniLiteral createStringLiteral(@NotNull String value);
 
     @NotNull UniAnnotation createAnnotation(@NotNull UniType annotationType,
                                             @NotNull List<@NotNull UniAnnotationAttribute> attributes);
+
+    @NotNull UniAnnotationAttribute createAnnotationAttribute(@NotNull String name, @NotNull UniAnnotationValue value);
 
     @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors);
 

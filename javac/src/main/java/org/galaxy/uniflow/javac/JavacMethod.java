@@ -59,7 +59,7 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
 
     @Override
     public @NotNull UniParameterList getParameters() {
-        return new JavacParameterList(new JavacList<>(
+        return new JavacParameterList(
                 tree.params,
                 newList -> {
                     tree.params = newList;
@@ -68,7 +68,7 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
                 },
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
-        ));
+        );
     }
 
     @Override
