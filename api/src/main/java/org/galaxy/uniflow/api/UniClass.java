@@ -8,9 +8,7 @@ import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.jetbrains.annotations.NotNull;
 
-public interface UniClass extends UniStatement {
-
-    @NotNull UniModifiers getModifiers();
+public interface UniClass extends UniStatement, UniModifiersHolder {
 
     @NotNull UniClassType asType();
 

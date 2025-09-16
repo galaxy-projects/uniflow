@@ -3,7 +3,6 @@ package org.galaxy.uniflow.api;
 import org.galaxy.uniflow.api.factories.*;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.processing.RoundEnvironment;
 import java.util.function.Supplier;
 
 public abstract class Uniflow {
@@ -52,8 +51,6 @@ public abstract class Uniflow {
     public @NotNull UniMessenger getMessenger() {
         return messenger.get();
     }
-
-    public abstract @NotNull UniRoundEnvironment createRoundEnvironment(@NotNull RoundEnvironment roundEnv);
 
     protected abstract @NotNull UniElementFinder createFinder();
 

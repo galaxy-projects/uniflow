@@ -20,7 +20,7 @@ public abstract class UniflowAnnotationProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Uniflow uniflow = Uniflow.getInstance();
+        JavacUniflow uniflow = JavacUniflow.getInstance();
         UniRoundEnvironment roundEnvironment = uniflow.createRoundEnvironment(roundEnv);
 
         return process(uniflow, roundEnvironment);
