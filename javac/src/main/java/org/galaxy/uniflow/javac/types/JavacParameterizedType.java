@@ -25,7 +25,7 @@ public class JavacParameterizedType extends JavacExpressionType<JCTree.JCTypeApp
     @Override
     public @NotNull UniList<@NotNull UniType> getTypeArguments() {
         return new JavacList<>(
-                type.getTypeArguments(),
+                () -> type.typarams_field,
                 newList -> type.typarams_field = newList,
                 UniflowWrapper::type,
                 JavacUnwrapper::unwrap

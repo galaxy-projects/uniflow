@@ -29,7 +29,7 @@ public class JavacProvides extends JavacElement<JCTree.JCProvides> implements Un
     @Override
     public @NotNull UniList<@NotNull UniExpression> getImplementationNames() {
         return new JavacList<>(
-                tree.implNames,
+                () -> tree.implNames,
                 newList -> tree.implNames = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

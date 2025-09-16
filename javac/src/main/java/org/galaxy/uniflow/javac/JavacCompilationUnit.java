@@ -48,11 +48,11 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
     }
 
     @Override
-    public @NotNull UniList<UniImport> getImports() {
+    public @NotNull UniList<@NotNull UniImport> getImports() {
         return elements().partial(
-                UniImport.class::isInstance,
-                UniImport.class::cast,
-                Function.identity(),
+                JCTree.JCImport.class::isInstance,
+                JCTree.JCImport.class::cast,
+                UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
         );
     }
@@ -60,9 +60,9 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
     @Override
     public @NotNull UniList<@NotNull UniClass> getClasses() {
         return elements().partial(
-                UniClass.class::isInstance,
-                UniClass.class::cast,
-                Function.identity(),
+                JCTree.JCClassDecl.class::isInstance,
+                JCTree.JCClassDecl.class::cast,
+                UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
         );
     }
@@ -70,16 +70,16 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
     @Override
     public @NotNull UniList<UniElement> getOtherElements() {
         return elements().partial(
-                e -> !(e instanceof UniModule) && !(e instanceof UniPackage) && !(e instanceof UniImport) && !(e instanceof UniClass),
+                e -> !(e instanceof JCTree.JCModuleDecl) && !(e instanceof JCTree.JCPackageDecl) && !(e instanceof JCTree.JCImport) && !(e instanceof JCTree.JCClassDecl),
                 Function.identity(),
-                Function.identity(),
+                UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
         );
     }
 
     private JavacList<UniElement, JCTree> elements() {
         return new JavacList<>(
-                tree.defs,
+                () -> tree.defs,
                 newList -> tree.defs = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

@@ -4,14 +4,12 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.UniModifiers;
-import org.galaxy.uniflow.api.lists.UniIndexedList;
 import org.galaxy.uniflow.api.lists.UniParameterList;
 import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
-import org.galaxy.uniflow.javac.lists.JavacIndexedList;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.lists.JavacParameterList;
 import org.galaxy.uniflow.javac.signatures.JavacMethodSignature;
@@ -48,9 +46,9 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
     }
 
     @Override
-    public @NotNull UniIndexedList<@NotNull UniTypeParameter> getTypeParameters() {
-        return JavacIndexedList.of(
-                tree.typarams,
+    public @NotNull UniList<@NotNull UniTypeParameter> getTypeParameters() {
+        return new JavacList<>(
+                () -> tree.typarams,
                 newList -> tree.typarams = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
@@ -60,7 +58,7 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
     @Override
     public @NotNull UniParameterList getParameters() {
         return new JavacParameterList(
-                tree.params,
+                () -> tree.params,
                 newList -> {
                     tree.params = newList;
                     tree.sym.params = newList.map(var -> var.sym);
@@ -74,7 +72,7 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
     @Override
     public @NotNull UniList<@NotNull UniType> getThrows() {
         return new JavacList<>(
-                tree.thrown,
+                () -> tree.thrown,
                 newList -> {
                     tree.thrown = newList;
                     tree.sym.type.asMethodType().thrown = newList.map(exp -> exp.type);

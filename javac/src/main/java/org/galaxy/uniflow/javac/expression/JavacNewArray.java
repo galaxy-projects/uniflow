@@ -28,9 +28,9 @@ public class JavacNewArray extends JavacExpression<JCTree.JCNewArray> implements
     }
 
     @Override
-    public @NotNull UniList<UniExpression> getDimensions() {
+    public @NotNull UniList<@NotNull UniExpression> getDimensions() {
         return new JavacList<>(
-                tree.dims,
+                () -> tree.dims,
                 newList -> tree.dims = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
@@ -38,9 +38,9 @@ public class JavacNewArray extends JavacExpression<JCTree.JCNewArray> implements
     }
 
     @Override
-    public @NotNull UniList<UniExpression> getInitializers() {
+    public @NotNull UniList<@NotNull UniExpression> getInitializers() {
         return new JavacList<>(
-                tree.elems,
+                () -> tree.elems,
                 newList -> tree.elems = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
@@ -48,9 +48,9 @@ public class JavacNewArray extends JavacExpression<JCTree.JCNewArray> implements
     }
 
     @Override
-    public @NotNull UniList<UniAnnotationHolder> getDimAnnotations() {
+    public @NotNull UniList<@NotNull UniAnnotationHolder> getDimAnnotations() {
         return new JavacList<>(
-                tree.dimAnnotations,
+                () -> tree.dimAnnotations,
                 newList -> tree.dimAnnotations = newList,
                 list -> UniflowWrapper.wrap(newList -> {
                     int index = tree.dimAnnotations.indexOf(list);
@@ -70,7 +70,7 @@ public class JavacNewArray extends JavacExpression<JCTree.JCNewArray> implements
     @Override
     public @NotNull UniList<@NotNull UniAnnotation> getAnnotations() {
         return new JavacList<>(
-                tree.annotations,
+                () -> tree.annotations,
                 newList -> tree.annotations = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

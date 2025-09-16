@@ -150,8 +150,7 @@ public class JavacTypeFactory implements UniTypeFactory {
                         NameUtils.name(name),
                         bounds.stream().map(JavacUnwrapper::typeToTree)
                                 .collect(com.sun.tools.javac.util.List.collector())
-                ),
-                0
+                )
         );
     }
 
@@ -176,8 +175,7 @@ public class JavacTypeFactory implements UniTypeFactory {
                                 .collect(com.sun.tools.javac.util.List.collector()),
                         annotations.stream().map(JavacUnwrapper::unwrap)
                                 .collect(com.sun.tools.javac.util.List.collector())
-                ),
-                0
+                )
         );
     }
 }

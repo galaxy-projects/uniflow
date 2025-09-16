@@ -25,7 +25,7 @@ public class JavacNewClass extends JavacExpression<JCTree.JCNewClass> implements
     @Override
     public @NotNull UniList<@NotNull UniExpression> getTypeArguments() {
         return new JavacList<>(
-                tree.typeargs,
+                () -> tree.typeargs,
                 newList -> tree.typeargs = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
@@ -40,7 +40,7 @@ public class JavacNewClass extends JavacExpression<JCTree.JCNewClass> implements
     @Override
     public @NotNull UniList<@NotNull UniExpression> getArguments() {
         return new JavacList<>(
-                tree.args,
+                () -> tree.args,
                 newList -> tree.args = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

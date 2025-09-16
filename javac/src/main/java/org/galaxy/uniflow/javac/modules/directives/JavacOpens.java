@@ -29,7 +29,7 @@ public class JavacOpens extends JavacElement<JCTree.JCOpens> implements UniOpens
     @Override
     public @NotNull UniList<@NotNull UniExpression> getModuleNames() {
         return new JavacList<>(
-                tree.moduleNames,
+                () -> tree.moduleNames,
                 newList -> tree.moduleNames = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

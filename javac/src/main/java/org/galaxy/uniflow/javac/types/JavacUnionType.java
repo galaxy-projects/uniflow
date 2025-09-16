@@ -25,16 +25,17 @@ public class JavacUnionType extends JavacExpressionType<JCTree.JCTypeUnion, Type
     @Override
     @SuppressWarnings("unchecked")
     public @NotNull UniList<@NotNull UniType> getTypeAlternatives() {
-        List<Type> alternatives;
-
-        try {
-            alternatives = (List<Type>) ALTERNATIVES.get(type);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-
         return new JavacList<>(
-                alternatives,
+                () -> {
+                    List<Type> alternatives;
+
+                    try {
+                        alternatives = (List<Type>) ALTERNATIVES.get(type);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return alternatives;
+                },
                 newList -> {
                     try {
                         ALTERNATIVES.set(type, newList);

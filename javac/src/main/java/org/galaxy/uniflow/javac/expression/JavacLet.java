@@ -19,7 +19,7 @@ public class JavacLet extends JavacExpression<JCTree.LetExpr> implements UniLet 
     @Override
     public @NotNull UniList<@NotNull UniStatement> getDefinitions() {
         return new JavacList<>(
-                tree.defs,
+                () -> tree.defs,
                 newList -> tree.defs = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

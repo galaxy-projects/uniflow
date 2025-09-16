@@ -169,6 +169,10 @@ public class JavacUnwrapper {
         return (JCTree.JCModifiers) unwrap((UniElement) modifiers);
     }
 
+    public static JCTree.JCImport unwrap(UniImport uniImport) {
+        return (JCTree.JCImport) unwrap((UniElement) uniImport);
+    }
+
     // Signatures
 
     public static @NotNull Symbol.OperatorSymbol unwrap(@NotNull UniOperatorSignature signature) {

@@ -22,6 +22,10 @@ public interface UniList<T> {
 
     void remove(@NotNull T value);
 
+    int getIndex(@NotNull T element);
+
+    void remove(int index);
+
     void clear();
 
 }

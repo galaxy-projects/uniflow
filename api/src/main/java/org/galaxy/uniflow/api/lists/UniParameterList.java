@@ -14,6 +14,4 @@ public interface UniParameterList extends UniList<UniVariable> {
 
     int getParameterIndex(@NotNull String name);
 
-    void removeParameter(int index);
-
 }

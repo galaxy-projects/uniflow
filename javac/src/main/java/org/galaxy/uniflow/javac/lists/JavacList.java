@@ -5,123 +5,154 @@ import com.sun.tools.javac.util.ListBuffer;
 import org.galaxy.uniflow.api.UniList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class JavacList<T, R> implements UniList<T> {
 
-    protected final java.util.List<T> elements;
+    protected final Supplier<List<R>> elementsSupplier;
     protected final Consumer<List<R>> setter;
-    protected final Function<T, R> converter;
+    protected final Function<R, T> wrapper;
+    protected final Function<T, R> unwrapper;
 
-    protected JavacList(java.util.List<T> elements, Consumer<List<R>> setter, Function<T, R> converter) {
-        this.elements = elements;
-        this.setter = setter;
-        this.converter = converter;
-    }
-
-    public JavacList(List<R> elements,
+    public JavacList(Supplier<List<R>> elementsSupplier,
                      Consumer<List<R>> setter,
-                     Function<R, T> inverterConverter,
-                     Function<T, R> converter) {
+                     Function<R, T> wrapper,
+                     Function<T, R> unwrapper) {
+        this.elementsSupplier = elementsSupplier;
         this.setter = setter;
-        this.elements = new ArrayList<>(elements.map(inverterConverter));
-        this.converter = converter;
+        this.wrapper = wrapper;
+        this.unwrapper = unwrapper;
     }
 
     @Override
     public boolean isEmpty() {
-        return elements.isEmpty();
+        return elementsSupplier.get().isEmpty();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public @NotNull T @NotNull [] get() {
-        return (T[]) elements.toArray(new Object[0]);
+        return (T[]) elementsSupplier.get().map(wrapper).toArray(new Object[0]);
     }
 
     @Override
     public @NotNull Stream<T> stream() {
-        return elements.stream();
+        return elementsSupplier.get().stream().map(wrapper);
     }
 
     @Override
     public void addFirst(@NotNull T value) {
-        elements.add(0, value);
-        update();
+        update(() -> elementsSupplier.get().prepend(unwrapper.apply(value)));
     }
 
     @Override
     public void addAfter(@NotNull T value, @NotNull T target) {
-        int index = elements.indexOf(target);
+        List<R> elements = elementsSupplier.get();
+        R targetUnwrapped = unwrapper.apply(target);
+        ListBuffer<R> buffer = new ListBuffer<>();
+        boolean added = false;
 
-        if (index >= 0)
-            elements.add(index + 1, value);
-        else
-            elements.add(value);
-        update();
+        for (R element : elements) {
+            buffer.append(element);
+            if (Objects.equals(targetUnwrapped, element)) {
+                buffer.add(unwrapper.apply(value));
+                added = true;
+            }
+        }
+        if (!added)
+            buffer.append(unwrapper.apply(value));
+
+        update(buffer::toList);
     }
 
     @Override
     public void addBefore(@NotNull T value, @NotNull T target) {
-        int index = elements.indexOf(target);
+        List<R> elements = elementsSupplier.get();
+        R targetUnwrapped = unwrapper.apply(target);
+        ListBuffer<R> buffer = new ListBuffer<>();
+        boolean added = false;
 
-        if (index >= 0)
-            elements.add(index, value);
-        else
-            elements.add(value);
-        update();
+        for (R element : elements) {
+            if (Objects.equals(targetUnwrapped, element)) {
+                buffer.add(unwrapper.apply(value));
+                added = true;
+            }
+            buffer.append(element);
+        }
+        if (!added)
+            buffer.append(unwrapper.apply(value));
+
+        update(buffer::toList);
     }
 
     @Override
     public void addLast(@NotNull T value) {
-        elements.add(value);
-        update();
+        update(() -> elementsSupplier.get().append(unwrapper.apply(value)));
     }
 
     @Override
     public void remove(@NotNull T value) {
-        elements.remove(value);
-        update();
+        R unwrappedValue = unwrapper.apply(value);
+
+        update(() -> elementsSupplier.get().stream()
+                .filter(element -> element != unwrappedValue)
+                .collect(List.collector()));
+    }
+
+    @Override
+    public int getIndex(@NotNull T element) {
+        return elementsSupplier.get().indexOf(unwrapper.apply(element));
+    }
+
+    @Override
+    public void remove(int index) {
+        update(() -> {
+            ListBuffer<R> newElements = new ListBuffer<>();
+            Iterator<R> elements = elementsSupplier.get().iterator();
+            int currentIndex = 0;
+
+            while (elements.hasNext() && currentIndex < index) {
+                newElements.append(elements.next());
+                currentIndex++;
+            }
+            if (elements.hasNext())
+                elements.next(); // skip 'index' element
+            while (elements.hasNext())
+                newElements.append(elements.next());
+            return newElements.toList();
+        });
     }
 
     @Override
     public void clear() {
-        elements.clear();
         setter.accept(List.nil());
     }
 
-    public <T1, R1> JavacList<T1, R1> partial(Predicate<T> predicate,
-                                              Function<T, T1> mapper,
-                                              Function<R1, R> invertMapper,
-                                              Function<T1, R1> inverter) {
-        java.util.List<T1> affected = new ArrayList<>();
-        java.util.List<R1> notAffected = new ArrayList<>();
-
-        elements.forEach(element -> {
-            if (predicate.test(element))
-                affected.add(mapper.apply(element));
-            else
-                notAffected.add(inverter.apply(mapper.apply(element)));
-        });
-
+    public <T1 extends T, R1 extends R> JavacList<T1, R1> partial(Predicate<R> predicate,
+                                                                  Function<R, R1> mapper,
+                                                                  Function<R1, T1> wrapper,
+                                                                  Function<T1, R1> unwrapper) {
         return new JavacList<>(
-                affected,
+                () -> elementsSupplier.get().stream().filter(predicate).map(mapper).collect(List.collector()),
                 newList -> {
                     ListBuffer<R1> result = new ListBuffer<>();
 
-                    result.addAll(notAffected);
+                    elementsSupplier.get().stream().filter(predicate.negate()).map(mapper).forEach(result::append);
                     result.addAll(newList);
-                    setter.accept(result.toList().map(invertMapper));
+                    setter.accept(result.toList().map(var -> var));
                 },
-                inverter
+                wrapper,
+                unwrapper
         );
     }
 
-    protected void update() {
-        setter.accept(elements.stream().map(converter).collect(List.collector()));
+    protected void update(Supplier<List<R>> newElements) {
+        setter.accept(newElements.get());
     }
 }

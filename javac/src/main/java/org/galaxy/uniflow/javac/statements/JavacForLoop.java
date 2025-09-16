@@ -21,7 +21,7 @@ public class JavacForLoop extends JavacElement<JCTree.JCForLoop> implements UniF
     @Override
     public @NotNull UniList<UniStatement> getInitializer() {
         return new JavacList<>(
-                tree.init,
+                () -> tree.init,
                 newList -> tree.init = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
@@ -41,7 +41,7 @@ public class JavacForLoop extends JavacElement<JCTree.JCForLoop> implements UniF
     @Override
     public @NotNull UniList<@NotNull UniExpressionStatement> getUpdate() {
         return new JavacList<>(
-                tree.step,
+                () -> tree.step,
                 newList -> tree.step = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

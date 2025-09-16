@@ -7,6 +7,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniErroneous extends UniAnnotationValue, UniExpression {
 
-    @NotNull UniList<UniElement> getErrors();
+    @NotNull UniList<@NotNull UniElement> getErrors();
 
 }

@@ -18,9 +18,9 @@ public class JavacLambda extends JavacExpression<JCTree.JCLambda> implements Uni
     }
 
     @Override
-    public @NotNull UniList<UniVariable> getParameters() {
+    public @NotNull UniList<@NotNull UniVariable> getParameters() {
         return new JavacList<>(
-                tree.params,
+                () -> tree.params,
                 newList -> tree.params = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

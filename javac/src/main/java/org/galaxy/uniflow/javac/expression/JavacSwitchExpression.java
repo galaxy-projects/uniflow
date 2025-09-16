@@ -29,7 +29,7 @@ public class JavacSwitchExpression extends JavacExpression<JCTree.JCSwitchExpres
     @Override
     public @NotNull UniList<UniCase> getCases() {
         return new JavacList<>(
-                tree.cases,
+                () -> tree.cases,
                 newList -> tree.cases = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

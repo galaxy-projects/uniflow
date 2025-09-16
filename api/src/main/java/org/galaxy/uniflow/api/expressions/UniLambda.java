@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniLambda extends UniExpression {
 
-    @NotNull UniList<UniVariable> getParameters();
+    @NotNull UniList<@NotNull UniVariable> getParameters();
 
     @NotNull UniElement getBody();
 

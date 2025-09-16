@@ -44,7 +44,7 @@ public class JavacModifiers extends JavacElement<JCTree.JCModifiers> implements 
     @Override
     public @NotNull UniList<@NotNull UniAnnotation> getAnnotations() {
         return new JavacList<>(
-                tree.annotations,
+                () -> tree.annotations,
                 newList -> tree.annotations = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

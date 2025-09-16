@@ -18,10 +18,12 @@ public class JavacErroneous extends JavacExpression<JCTree.JCErroneous> implemen
 
     @Override
     @SuppressWarnings("unchecked")
-    public @NotNull UniList<UniElement> getErrors() {
-        return new JavacList<>((List<JCTree>) tree.errs,
+    public @NotNull UniList<@NotNull UniElement> getErrors() {
+        return new JavacList<>(
+                () -> (List<JCTree>) tree.errs,
                 newList -> tree.errs = newList,
                 UniflowWrapper::wrap,
-                JavacUnwrapper::unwrap);
+                JavacUnwrapper::unwrap
+        );
     }
 }

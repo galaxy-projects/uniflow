@@ -18,7 +18,7 @@ public class JavacMethodInvocation extends JavacExpression<JCTree.JCMethodInvoca
     @Override
     public @NotNull UniList<@NotNull UniExpression> getTypeArguments() {
         return new JavacList<>(
-                tree.typeargs,
+                () -> tree.typeargs,
                 newList -> tree.typeargs = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
@@ -38,7 +38,7 @@ public class JavacMethodInvocation extends JavacExpression<JCTree.JCMethodInvoca
     @Override
     public @NotNull UniList<UniExpression> getArguments() {
         return new JavacList<>(
-                tree.args,
+                () -> tree.args,
                 newList -> tree.args = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

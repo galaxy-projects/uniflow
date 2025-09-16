@@ -9,13 +9,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class JavacFieldList extends JavacList<UniVariable, JCTree.JCVariableDecl> implements UniFieldList {
 
-    public JavacFieldList(java.util.List<UniVariable> elements,
+    public JavacFieldList(Supplier<List<JCTree.JCVariableDecl>> elementsSupplier,
                           Consumer<List<JCTree.JCVariableDecl>> setter,
-                          Function<UniVariable, JCTree.JCVariableDecl> converter) {
-        super(elements, setter, converter);
+                          Function<JCTree.JCVariableDecl, UniVariable> wrapper,
+                          Function<UniVariable, JCTree.JCVariableDecl> unwrapper) {
+        super(elementsSupplier, setter, wrapper, unwrapper);
     }
 
     @Override
@@ -28,14 +30,19 @@ public class JavacFieldList extends JavacList<UniVariable, JCTree.JCVariableDecl
 
     @Override
     public @Nullable UniVariable getField(@NotNull String name) {
-        return elements.stream().filter(field -> field.getName().equals(name)).findFirst().orElse(null);
+        return elementsSupplier.get().stream()
+                .filter(field -> field.name.contentEquals(name))
+                .findFirst()
+                .map(wrapper)
+                .orElse(null);
     }
 
     public static JavacFieldList from(JavacList<UniVariable, JCTree.JCVariableDecl> fields) {
         return new JavacFieldList(
-                fields.elements,
+                fields.elementsSupplier,
                 fields.setter,
-                fields.converter
+                fields.wrapper,
+                fields.unwrapper
         );
     }
 }

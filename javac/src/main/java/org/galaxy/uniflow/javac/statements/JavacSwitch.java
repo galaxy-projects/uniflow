@@ -30,7 +30,7 @@ public class JavacSwitch extends JavacElement<JCTree.JCSwitch> implements UniSwi
     @Override
     public @NotNull UniList<UniCase> getCases() {
         return new JavacList<>(
-                tree.cases,
+                () -> tree.cases,
                 newList -> tree.cases = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

@@ -16,11 +16,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class JavacTypeParameter extends JavacElement<JCTree.JCTypeParameter> implements UniTypeParameter {
 
-    private int index;
-
-    public JavacTypeParameter(JCTree.@NotNull JCTypeParameter tree, int index) {
+    public JavacTypeParameter(JCTree.@NotNull JCTypeParameter tree) {
         super(tree);
-        this.index = index;
     }
 
     @Override
@@ -46,7 +43,7 @@ public class JavacTypeParameter extends JavacElement<JCTree.JCTypeParameter> imp
     @Override
     public @NotNull UniList<@NotNull UniType> getExtends() {
         return new JavacList<>(
-                tree.bounds,
+                () -> tree.bounds,
                 newList -> tree.bounds = newList,
                 UniflowWrapper::typeFromTree,
                 JavacUnwrapper::typeToTree
@@ -54,19 +51,9 @@ public class JavacTypeParameter extends JavacElement<JCTree.JCTypeParameter> imp
     }
 
     @Override
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    @Override
-    public int getIndex() {
-        return index;
-    }
-
-    @Override
     public @NotNull UniList<@NotNull UniAnnotation> getAnnotations() {
         return new JavacList<>(
-                tree.annotations,
+                () -> tree.annotations,
                 newList -> tree.annotations = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

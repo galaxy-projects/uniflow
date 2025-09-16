@@ -28,7 +28,7 @@ public class JavacSimpleAnnotationHolder implements UniAnnotationHolder {
     @Override
     public @NotNull UniList<@NotNull UniAnnotation> getAnnotations() {
         return new JavacList<>(
-                annotations,
+                () -> annotations,
                 newList -> {
                     annotations = newList;
                     updater.accept(newList);

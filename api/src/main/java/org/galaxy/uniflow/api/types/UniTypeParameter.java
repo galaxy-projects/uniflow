@@ -17,8 +17,4 @@ public interface UniTypeParameter extends UniAnnotationHolder, UniElement {
 
     @NotNull UniList<@NotNull UniType> getExtends();
 
-    void setIndex(int index);
-
-    int getIndex();
-
 }

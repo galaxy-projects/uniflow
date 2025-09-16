@@ -43,7 +43,7 @@ public class JavacModule extends JavacElement<JCTree.JCModuleDecl> implements Un
     @Override
     public @NotNull UniList<UniDirective> getDirectives() {
         return new JavacList<>(
-                tree.directives,
+                () -> tree.directives,
                 newList -> tree.directives = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

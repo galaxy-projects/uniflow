@@ -15,8 +15,6 @@ import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
-
 public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
 
     public JavacCase(JCTree.@NotNull JCCase tree) {
@@ -26,7 +24,7 @@ public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
     @Override
     public @NotNull UniList<UniCaseLabel> getLabels() {
         return new JavacList<>(
-                tree.labels,
+                () -> tree.labels,
                 newList -> tree.labels = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
@@ -36,14 +34,14 @@ public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
     @Override
     public @NotNull UniList<UniExpression> getExpressions() {
         return new JavacList<>(
-                tree.labels,
+                () -> tree.labels,
                 newList -> tree.labels = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
         ).partial(
-                UniExpression.class::isInstance,
-                label -> (UniExpression) label,
-                Function.identity(),
+                JCTree.JCExpression.class::isInstance,
+                JCTree.JCExpression.class::cast,
+                UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
         );
     }
@@ -51,7 +49,7 @@ public class JavacCase extends JavacElement<JCTree.JCCase> implements UniCase {
     @Override
     public @NotNull UniList<UniStatement> getStatements() {
         return new JavacList<>(
-                tree.getStatements(),
+                tree::getStatements,
                 newList -> tree.stats = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

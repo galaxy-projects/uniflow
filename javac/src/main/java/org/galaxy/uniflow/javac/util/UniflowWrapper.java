@@ -4,9 +4,7 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
-import org.galaxy.uniflow.api.UniClassInitializer;
-import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.UniPackage;
+import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCase;
@@ -225,8 +223,8 @@ public class UniflowWrapper {
         return new JavacBlock(block);
     }
 
-    public static @NotNull UniClassInitializer blockToInitializer(UniBlock block) {
-        return new JavacClassInitializer(((JavacBlock) block).getTree());
+    public static @NotNull UniClassInitializer blockToInitializer(JCTree.JCBlock block) {
+        return new JavacClassInitializer(block);
     }
 
     public static @NotNull UniExpressionStatement wrap(JCTree.JCExpressionStatement statement) {
@@ -245,8 +243,8 @@ public class UniflowWrapper {
         return new JavacCaseLabel(caseLabel);
     }
 
-    public static @NotNull UniTypeParameter wrap(int index, JCTree.JCTypeParameter typeParameter) {
-        return new JavacTypeParameter(typeParameter, index);
+    public static @NotNull UniTypeParameter wrap(JCTree.JCTypeParameter typeParameter) {
+        return new JavacTypeParameter(typeParameter);
     }
 
     public static @NotNull UniModule wrap(JCTree.JCModuleDecl module) {
@@ -256,6 +254,20 @@ public class UniflowWrapper {
     public static @NotNull UniPackage wrap(JCTree.JCPackageDecl pkg) {
         return new JavacPackage(pkg);
     }
+
+    public static @NotNull UniImport wrap(JCTree.JCImport jcImport) {
+        return new JavacImport(jcImport);
+    }
+
+    public static @NotNull UniClass wrap(JCTree.JCClassDecl clazz) {
+        return new JavacClass(clazz);
+    }
+
+    public static @NotNull UniMethod wrap(JCTree.JCMethodDecl method) {
+        return new JavacMethod(method);
+    }
+
+    // Types
 
     public static @NotNull UniType type(Symbol symbol) {
         JCTree tree = JavacUniflow.getInstance().trees.getTree(symbol);

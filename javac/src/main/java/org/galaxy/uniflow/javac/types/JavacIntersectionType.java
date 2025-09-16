@@ -28,7 +28,7 @@ public class JavacIntersectionType extends JavacExpressionType<JCTree.JCTypeInte
     @Override
     public @NotNull UniList<@NotNull UniType> getInterfaces() {
         return new JavacList<>(
-                type.interfaces_field,
+                () -> type.interfaces_field,
                 newList -> type.interfaces_field = newList,
                 UniflowWrapper::type,
                 JavacUnwrapper::unwrap

@@ -1,6 +1,5 @@
 package org.galaxy.uniflow.api;
 
-import org.galaxy.uniflow.api.lists.UniIndexedList;
 import org.galaxy.uniflow.api.lists.UniParameterList;
 import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.statements.UniBlock;
@@ -16,7 +15,7 @@ public interface UniMethod extends UniMember {
 
     @NotNull UniType getReturnType();
 
-    @NotNull UniIndexedList<@NotNull UniTypeParameter> getTypeParameters();
+    @NotNull UniList<@NotNull UniTypeParameter> getTypeParameters();
 
     @NotNull UniParameterList getParameters();
 

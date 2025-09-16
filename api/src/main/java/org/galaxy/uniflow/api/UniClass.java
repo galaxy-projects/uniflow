@@ -1,7 +1,6 @@
 package org.galaxy.uniflow.api;
 
 import org.galaxy.uniflow.api.lists.UniFieldList;
-import org.galaxy.uniflow.api.lists.UniIndexedList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.types.UniClassType;
@@ -29,7 +28,7 @@ public interface UniClass extends UniStatement {
 
     @NotNull UniList<@NotNull UniType> getImplements();
 
-    @NotNull UniIndexedList<@NotNull UniTypeParameter> getTypeParameters();
+    @NotNull UniList<@NotNull UniTypeParameter> getTypeParameters();
 
     @NotNull UniFieldList getFields();
 

@@ -29,7 +29,7 @@ public class JavacExports extends JavacElement<JCTree.JCExports> implements UniE
     @Override
     public @NotNull UniList<@NotNull UniExpression> getModuleNames() {
         return new JavacList<>(
-                tree.moduleNames,
+                () -> tree.moduleNames,
                 newList -> tree.moduleNames = newList,
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap

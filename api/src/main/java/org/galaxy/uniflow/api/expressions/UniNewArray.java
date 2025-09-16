@@ -11,10 +11,10 @@ public interface UniNewArray extends UniAnnotationValue, UniExpression, UniAnnot
 
     @Nullable UniType getType();
 
-    @NotNull UniList<UniExpression> getDimensions();
+    @NotNull UniList<@NotNull UniExpression> getDimensions();
 
-    @NotNull UniList<UniExpression> getInitializers();
+    @NotNull UniList<@NotNull UniExpression> getInitializers();
 
-    @NotNull UniList<UniAnnotationHolder> getDimAnnotations();
+    @NotNull UniList<@NotNull UniAnnotationHolder> getDimAnnotations();
 
 }
