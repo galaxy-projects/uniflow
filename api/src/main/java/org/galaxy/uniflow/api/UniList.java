@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
-public interface UniList<T> {
+public interface UniList<T> extends Iterable<T> {
 
     boolean isEmpty();
 

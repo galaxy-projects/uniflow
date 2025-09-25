@@ -182,6 +182,51 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
+    public @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers, @NotNull String name,
+                                                        @NotNull Class<?> returnType,
+                                                        @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                                        @NotNull UniVariable receiveParam,
+                                                        @NotNull List<@NotNull UniVariable> parameters,
+                                                        @NotNull List<@NotNull UniExpression> thrown,
+                                                        @Nullable UniExpression defaultValue) {
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
+
+        return createAnnotationAttribute(modifiers, name, typeFactory.createClassType(returnType), typeParameters,
+                receiveParam, parameters, thrown, defaultValue);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers, @NotNull String name,
+                                                        @NotNull UniType returnType,
+                                                        @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                                        @NotNull UniVariable receiveParam,
+                                                        @NotNull List<@NotNull UniVariable> parameters,
+                                                        @NotNull List<@NotNull UniExpression> thrown,
+                                                        @Nullable UniExpression defaultValue) {
+        JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
+        JavacClassType javacReturnType = check(returnType, JavacClassType.class);
+        //noinspection DuplicatedCode
+        Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
+        JavacVariable javacReceiveParam = check(receiveParam, JavacVariable.class);
+        Stream<JavacVariable> javacParameters = checkList(parameters, JavacVariable.class);
+        Stream<JavacExpression> javacThrown = checkList(thrown, JavacExpression.class);
+        JavacExpression<?> javacDefaultValue = check(defaultValue, JavacExpression.class);
+
+        return new JavacMethod(treeMaker.MethodDef(
+                javacModifiers.getTree(),
+                NameUtils.name(name),
+                javacReturnType.getExpression(),
+                mapToList(javacTypeParameters, JavacTypeParameter::getTree),
+                javacReceiveParam.getTree(),
+                mapToList(javacParameters, JavacVariable::getTree),
+                mapToList(javacThrown, threw -> (JCTree.JCExpression) threw.getTree()),
+                null,
+                javacDefaultValue != null ? javacDefaultValue.getTree() : null
+        ));
+    }
+
+    @Override
     public @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
                                            @NotNull String name,
                                            @NotNull Class<?> returnType,
@@ -189,12 +234,11 @@ public class JavacElementFactory implements UniElementFactory {
                                            @NotNull UniVariable receiveParam,
                                            @NotNull List<@NotNull UniVariable> parameters,
                                            @NotNull List<@NotNull UniExpression> thrown,
-                                           @NotNull UniBlock body,
-                                           @NotNull UniExpression defaultValue) {
+                                           @NotNull UniBlock body) {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
         return createMethod(modifiers, name, typeFactory.createClassType(returnType), typeParameters, receiveParam,
-                parameters, thrown, body, defaultValue);
+                parameters, thrown, body);
     }
 
     @Override
@@ -206,16 +250,15 @@ public class JavacElementFactory implements UniElementFactory {
                                            @NotNull UniVariable receiveParam,
                                            @NotNull List<@NotNull UniVariable> parameters,
                                            @NotNull List<@NotNull UniExpression> thrown,
-                                           @NotNull UniBlock body,
-                                           @NotNull UniExpression defaultValue) {
+                                           @NotNull UniBlock body) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
-        JavacClassType javacReturnType = check(returnType, JavacClassType.class);
+        JavacExpressionType<?, ?> javacReturnType = check(returnType, JavacExpressionType.class);
+        //noinspection DuplicatedCode
         Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
         JavacVariable javacReceiveParam = check(receiveParam, JavacVariable.class);
         Stream<JavacVariable> javacParameters = checkList(parameters, JavacVariable.class);
         Stream<JavacExpression> javacThrown = checkList(thrown, JavacExpression.class);
         JavacBlock javacBody = check(body, JavacBlock.class);
-        JavacExpression javacDefaultValue = check(defaultValue, JavacExpression.class);
 
         return new JavacMethod(treeMaker.MethodDef(
                 javacModifiers.getTree(),
@@ -226,7 +269,7 @@ public class JavacElementFactory implements UniElementFactory {
                 mapToList(javacParameters, JavacVariable::getTree),
                 mapToList(javacThrown, threw -> (JCTree.JCExpression) threw.getTree()),
                 javacBody.getTree(),
-                (JCTree.JCExpression) javacDefaultValue.getTree()
+                null
         ));
     }
 

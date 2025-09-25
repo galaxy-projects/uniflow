@@ -5,12 +5,12 @@ import com.sun.tools.javac.code.Source;
 import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.model.JavacElements;
-import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Names;
 import org.galaxy.uniflow.api.Uniflow;
 import org.galaxy.uniflow.api.factories.*;
+import org.galaxy.uniflow.api.processing.UniProcessingEnvironment;
 import org.galaxy.uniflow.javac.factories.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +31,7 @@ public class JavacUniflow extends Uniflow {
     public Messager messager;
     public JavacElements elements;
 
-    private JavacUniflow(JavacProcessingEnvironment processingEnvironment) {
+    private JavacUniflow(com.sun.tools.javac.processing.JavacProcessingEnvironment processingEnvironment) {
         Context context = processingEnvironment.getContext();
 
         treeMaker = TreeMaker.instance(context);
@@ -45,8 +45,8 @@ public class JavacUniflow extends Uniflow {
         elements = JavacElements.instance(context);
     }
 
-    public @NotNull UniRoundEnvironment createRoundEnvironment(@NotNull RoundEnvironment roundEnv) {
-        return new JavacRoundEnvironment(roundEnv);
+    public @NotNull UniProcessingEnvironment createRoundEnvironment(@NotNull RoundEnvironment roundEnv) {
+        return new JavacProcessingEnvironment(roundEnv);
     }
 
     @Override
@@ -86,8 +86,8 @@ public class JavacUniflow extends Uniflow {
     }
 
     public static @NotNull Uniflow create(@NotNull ProcessingEnvironment environment) {
-        if (!(environment instanceof JavacProcessingEnvironment))
+        if (!(environment instanceof com.sun.tools.javac.processing.JavacProcessingEnvironment))
             throw new IllegalArgumentException("environment must be an instance of JavacProcessingEnvironment");
-        return new JavacUniflow((JavacProcessingEnvironment) environment);
+        return new JavacUniflow((com.sun.tools.javac.processing.JavacProcessingEnvironment) environment);
     }
 }

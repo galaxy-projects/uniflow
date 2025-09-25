@@ -70,23 +70,39 @@ public interface UniElementFactory {
 
     @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
                                     @NotNull String name,
-                                    @NotNull UniType returnType,
-                                    @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                    @NotNull UniVariable receiveParam,
-                                    @NotNull List<@NotNull UniVariable> parameters,
-                                    @NotNull List<@NotNull UniExpression> thrown,
-                                    @NotNull UniBlock body,
-                                    @NotNull UniExpression defaultValue);
-
-    @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
-                                    @NotNull String name,
                                     @NotNull Class<?> returnType,
                                     @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                     @NotNull UniVariable receiveParam,
                                     @NotNull List<@NotNull UniVariable> parameters,
                                     @NotNull List<@NotNull UniExpression> thrown,
-                                    @NotNull UniBlock body,
-                                    @NotNull UniExpression defaultValue);
+                                    @NotNull UniBlock body);
+
+    @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
+                                    @NotNull String name,
+                                    @NotNull UniType returnType,
+                                    @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                    @NotNull UniVariable receiveParam,
+                                    @NotNull List<@NotNull UniVariable> parameters,
+                                    @NotNull List<@NotNull UniExpression> thrown,
+                                    @NotNull UniBlock body);
+
+    @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers,
+                                                 @NotNull String name,
+                                                 @NotNull Class<?> returnType,
+                                                 @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                                 @NotNull UniVariable receiveParam,
+                                                 @NotNull List<@NotNull UniVariable> parameters,
+                                                 @NotNull List<@NotNull UniExpression> thrown,
+                                                 @Nullable UniExpression defaultValue);
+
+    @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers,
+                                                 @NotNull String name,
+                                                 @NotNull UniType returnType,
+                                                 @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                                 @NotNull UniVariable receiveParam,
+                                                 @NotNull List<@NotNull UniVariable> parameters,
+                                                 @NotNull List<@NotNull UniExpression> thrown,
+                                                 @Nullable UniExpression defaultValue);
 
     @NotNull UniVariable createField(@NotNull UniModifiers modifiers,
                                      @NotNull String name,

@@ -28,7 +28,7 @@ public class JavacTypeFactory implements UniTypeFactory {
 
     @Override
     public @NotNull UniClassType createClassType(@NotNull Class<?> clazz) {
-        return createClassType(clazz.getSimpleName());
+        return createClassType(clazz.getName());
     }
 
     @Override
@@ -38,6 +38,14 @@ public class JavacTypeFactory implements UniTypeFactory {
         return new JavacClassType(
                 treeMaker.Ident(sym),
                 (Type.ClassType) sym.type
+        );
+    }
+
+    @Override
+    public @NotNull UniType createVoidType() {
+        return new JavacExpressionType<>(
+                treeMaker.TypeIdent(com.sun.tools.javac.code.TypeTag.VOID),
+                JavacUniflow.getInstance().symtab.voidType
         );
     }
 

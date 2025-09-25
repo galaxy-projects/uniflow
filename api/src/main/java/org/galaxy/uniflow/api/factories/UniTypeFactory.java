@@ -16,6 +16,8 @@ public interface UniTypeFactory {
         return createClassType(clazz);
     }
 
+    @NotNull UniType createVoidType();
+
     @NotNull UniPrimitiveType createPrimitiveType(@NotNull TypeTag tag);
 
     @NotNull UniClassType createClassType(@NotNull Class<?> clazz);
