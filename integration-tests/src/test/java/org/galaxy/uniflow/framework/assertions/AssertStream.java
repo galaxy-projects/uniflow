@@ -23,10 +23,12 @@ public class AssertStream {
         System.setErr(prevErr);
     }
 
-    public static void assertStream(String expected, Runnable task, Consumer<PrintStream> setter) {
+    private static void assertStream(String expected, Runnable task, Consumer<PrintStream> setter) {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             setter.accept(new PrintStream(out));
             task.run();
+
+            Assertions.assertEquals(expected, out.toString());
         } catch (IOException e) {
             Assertions.fail(e);
         }
