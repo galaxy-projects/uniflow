@@ -72,7 +72,7 @@ public interface UniElementFactory {
                                     @NotNull String name,
                                     @NotNull Class<?> returnType,
                                     @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                    @NotNull UniVariable receiveParam,
+                                    @Nullable UniVariable receiveParam,
                                     @NotNull List<@NotNull UniVariable> parameters,
                                     @NotNull List<@NotNull UniExpression> thrown,
                                     @NotNull UniBlock body);
@@ -81,7 +81,7 @@ public interface UniElementFactory {
                                     @NotNull String name,
                                     @NotNull UniType returnType,
                                     @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                    @NotNull UniVariable receiveParam,
+                                    @Nullable UniVariable receiveParam,
                                     @NotNull List<@NotNull UniVariable> parameters,
                                     @NotNull List<@NotNull UniExpression> thrown,
                                     @NotNull UniBlock body);
@@ -260,6 +260,8 @@ public interface UniElementFactory {
     @NotNull UniParenthesizedPattern createParenthesizedPattern(@NotNull UniPattern pattern);
 
     @NotNull UniArrayAccess createArrayAccess(@NotNull UniExpression array, @NotNull UniExpression index);
+
+    @NotNull UniIdentifier createThis();
 
     @NotNull UniIdentifier createIdentifier(@NotNull String name);
 
