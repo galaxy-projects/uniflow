@@ -47,6 +47,11 @@ public class JavacList<T, R> implements UniList<T> {
     }
 
     @Override
+    public @NotNull Iterator<T> iterator() {
+        return elementsSupplier.get().map(wrapper).iterator();
+    }
+
+    @Override
     public void addFirst(@NotNull T value) {
         update(() -> elementsSupplier.get().prepend(unwrapper.apply(value)));
     }

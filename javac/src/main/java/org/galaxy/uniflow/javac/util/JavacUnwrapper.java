@@ -67,7 +67,6 @@ public class JavacUnwrapper {
                 return symtab.booleanType;
             case CHAR:
                 return symtab.charType;
-
         }
         throw new IllegalArgumentException("Tag not supported: " + typeTag);
     }

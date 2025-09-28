@@ -17,8 +17,6 @@ public abstract class Uniflow {
     private final Lazy<UniMessenger> messenger;
 
     protected Uniflow() {
-        if (instance != null)
-            throw new IllegalStateException("Uniflow instance has already been created");
         finder = new Lazy<>(this::createFinder);
         typeFactory = new Lazy<>(this::createTypeFactory);
         elementFactory = new Lazy<>(this::createElementFactory);

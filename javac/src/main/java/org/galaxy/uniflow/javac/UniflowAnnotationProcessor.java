@@ -1,16 +1,32 @@
 package org.galaxy.uniflow.javac;
 
-import org.galaxy.uniflow.api.Uniflow;
-import org.galaxy.uniflow.api.factories.UniRoundEnvironment;
-import org.jetbrains.annotations.NotNull;
+import org.galaxy.uniflow.api.processing.UniProcessingEnvironment;
+import org.galaxy.uniflow.api.processing.UniProcessor;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import java.util.Set;
 
-public abstract class UniflowAnnotationProcessor extends AbstractProcessor {
+public class UniflowAnnotationProcessor extends AbstractProcessor {
+
+    private final UniProcessor processor;
+
+    public UniflowAnnotationProcessor(UniProcessor processor) {
+        this.processor = processor;
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return processor.getSupportedSourceVersion();
+    }
+
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        return processor.getSupportedAnnotationTypes();
+    }
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -21,10 +37,8 @@ public abstract class UniflowAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         JavacUniflow uniflow = JavacUniflow.getInstance();
-        UniRoundEnvironment roundEnvironment = uniflow.createRoundEnvironment(roundEnv);
+        UniProcessingEnvironment environment = uniflow.createRoundEnvironment(roundEnv);
 
-        return process(uniflow, roundEnvironment);
+        return processor.process(uniflow, environment);
     }
-
-    protected abstract boolean process(@NotNull Uniflow uniflow, @NotNull UniRoundEnvironment roundEnvironment);
 }

@@ -7,16 +7,6 @@ dependencies {
     compileOnly(project(":common"))
 
     compileOnly(files("libs/tools-1.5.0.jar"))
-
-    testImplementation(platform(libs.junit.bom))
-    testImplementation(libs.junit.jupiter)
-    testImplementation(libs.annotations)
-    testImplementation(project(":api"))
-    testImplementation(project(":common"))
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
 
 tasks.withType<JavaCompile> {
@@ -32,8 +22,7 @@ tasks.withType<JavaCompile> {
                 "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
                 "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
                 "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/sun.nio.ch=ALL-UNNAMED"
+                "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED"
             )
         )
     }

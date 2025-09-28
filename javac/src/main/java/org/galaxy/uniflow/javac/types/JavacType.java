@@ -22,4 +22,9 @@ public class JavacType<J extends JCTree, T extends Type> implements UniType {
     public T getRawType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(expression = " + expression + ", type = " + type + ')';
+    }
 }

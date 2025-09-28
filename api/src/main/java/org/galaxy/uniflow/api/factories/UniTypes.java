@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public final class UniTypes {
 
-    public static final UniType VOID = primitive(TypeTag.VOID);
+    public static final UniType VOID = Uniflow.getInstance().getTypeFactory().createVoidType();
 
     public static final UniPrimitiveType BYTE = primitive(TypeTag.BYTE);
     public static final UniPrimitiveType SHORT = primitive(TypeTag.SHORT);
