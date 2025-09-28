@@ -1,4 +1,4 @@
-package org.galaxy.uniflow.gradle;
+package org.galaxy.uniflow.gradle
 
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
