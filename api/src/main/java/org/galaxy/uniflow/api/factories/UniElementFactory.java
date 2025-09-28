@@ -269,6 +269,9 @@ public interface UniElementFactory {
 
     @NotNull UniLiteral createStringLiteral(@NotNull String value);
 
+    @NotNull UniAnnotation createAnnotation(@NotNull Class<?> annotationType,
+                                            @NotNull List<@NotNull UniAnnotationAttribute> attributes);
+
     @NotNull UniAnnotation createAnnotation(@NotNull UniType annotationType,
                                             @NotNull List<@NotNull UniAnnotationAttribute> attributes);
 
@@ -278,6 +281,8 @@ public interface UniElementFactory {
 
     @NotNull UniLet createLet(@NotNull List<@NotNull UniStatement> definitions,
                               @NotNull UniExpression expression);
+
+    @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name);
 
     @NotNull UniFieldAccess createFieldAccess(@NotNull UniType selected, @NotNull String name);
 

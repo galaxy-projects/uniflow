@@ -800,6 +800,14 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
+    public @NotNull UniAnnotation createAnnotation(@NotNull Class<?> annotationType,
+                                                   @NotNull List<@NotNull UniAnnotationAttribute> attributes) {
+        UniType annotationTypeAsType = Uniflow.getInstance().getTypeFactory().createType(annotationType);
+
+        return createAnnotation(annotationTypeAsType, attributes);
+    }
+
+    @Override
     public @NotNull UniAnnotation createAnnotation(@NotNull UniType annotationType,
                                                    @NotNull List<@NotNull UniAnnotationAttribute> attributes) {
         JavacType<?, ?> javacAnnotationType = check(annotationType, JavacType.class);
@@ -848,6 +856,13 @@ public class JavacElementFactory implements UniElementFactory {
                 mapToList(javacDefinitions, st -> (JCTree.JCStatement) st.getTree()),
                 javacExpression.getTree()
         ));
+    }
+
+    @Override
+    public @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name) {
+        UniType selectedType = Uniflow.getInstance().getTypeFactory().createType(selected);
+
+        return createFieldAccess(selectedType, name);
     }
 
     @Override
