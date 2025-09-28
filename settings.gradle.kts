@@ -10,4 +10,5 @@ rootProject.name = "uniflow"
 include("api")
 include("javac")
 include("common")
+include("gradle-plugin")
 include("integration-tests")
