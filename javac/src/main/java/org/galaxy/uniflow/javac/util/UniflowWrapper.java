@@ -308,9 +308,12 @@ public class UniflowWrapper {
             return new JavacParameterizedType((JCTree.JCTypeApply) tree, (Type.ClassType) tree.type);
         else if (tree instanceof JCTree.JCIdent)
             return new JavacClassType((JCTree.JCIdent) tree, (Type.ClassType) tree.type);
-        else if (tree instanceof JCTree.JCPrimitiveTypeTree)
-            return new JavacPrimitiveType((JCTree.JCPrimitiveTypeTree) tree, (Type.JCPrimitiveType) tree.type);
-        else if (tree instanceof JCTree.JCWildcard)
+        else if (tree instanceof JCTree.JCPrimitiveTypeTree) {
+            if (tree.type instanceof Type.JCPrimitiveType)
+                return new JavacPrimitiveType((JCTree.JCPrimitiveTypeTree) tree, (Type.JCPrimitiveType) tree.type);
+            else if (tree.type instanceof Type.JCVoidType)
+                return new JavacExpressionType<>((JCTree.JCPrimitiveTypeTree) tree, tree.type);
+        } else if (tree instanceof JCTree.JCWildcard)
             return new JavacWildcardType((JCTree.JCWildcard) tree, (Type.WildcardType) tree.type);
         return new JavacType<>(tree, tree.type);
     }
