@@ -274,25 +274,25 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniVariable createField(@NotNull UniModifiers modifiers,
-                                            @NotNull String name,
-                                            @NotNull Class<?> type,
-                                            @Nullable UniExpression init) {
+    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                         @NotNull String name,
+                                         @NotNull Class<?> type,
+                                         @Nullable UniExpression init) {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
         return createField(modifiers, name, typeFactory.createClassType(type), init);
     }
 
     @Override
-    public @NotNull UniVariable createField(@NotNull UniModifiers modifiers,
-                                            @NotNull String name,
-                                            @NotNull UniType type,
-                                            @Nullable UniExpression init) {
+    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                         @NotNull String name,
+                                         @NotNull UniType type,
+                                         @Nullable UniExpression init) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
         JavacExpressionType<?, ?> javacType = check(type, JavacExpressionType.class);
         JavacExpression<?> javacInit = check(init, JavacExpression.class);
 
-        return new JavacVariable(treeMaker.VarDef(
+        return new JavacField(treeMaker.VarDef(
                 javacModifiers.getTree(),
                 NameUtils.name(name),
                 javacType.getExpression(),

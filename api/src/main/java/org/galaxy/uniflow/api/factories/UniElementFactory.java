@@ -104,15 +104,15 @@ public interface UniElementFactory {
                                                  @NotNull List<@NotNull UniExpression> thrown,
                                                  @Nullable UniExpression defaultValue);
 
-    @NotNull UniVariable createField(@NotNull UniModifiers modifiers,
-                                     @NotNull String name,
-                                     @NotNull Class<?> type,
-                                     @Nullable UniExpression init);
+    @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                  @NotNull String name,
+                                  @NotNull Class<?> type,
+                                  @Nullable UniExpression init);
 
-    @NotNull UniVariable createField(@NotNull UniModifiers modifiers,
-                                     @NotNull String name,
-                                     @NotNull UniType type,
-                                     @Nullable UniExpression init);
+    @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                  @NotNull String name,
+                                  @NotNull UniType type,
+                                  @Nullable UniExpression init);
 
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,

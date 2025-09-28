@@ -15,11 +15,15 @@ import java.util.function.Supplier;
 
 public class JavacMethodList extends JavacList<UniMethod, JCTree.JCMethodDecl> implements UniMethodList {
 
-    public JavacMethodList(Supplier<List<JCTree.JCMethodDecl>> elementsSupplier,
+    private final JCTree.JCClassDecl owner;
+
+    public JavacMethodList(JCTree.JCClassDecl owner,
+                           Supplier<List<JCTree.JCMethodDecl>> elementsSupplier,
                            Consumer<List<JCTree.JCMethodDecl>> setter,
                            Function<JCTree.JCMethodDecl, UniMethod> wrapper,
                            Function<UniMethod, JCTree.JCMethodDecl> unwrapper) {
         super(elementsSupplier, setter, wrapper, unwrapper);
+        this.owner = owner;
     }
 
     @Override
@@ -47,8 +51,15 @@ public class JavacMethodList extends JavacList<UniMethod, JCTree.JCMethodDecl> i
                 .orElse(null);
     }
 
-    public static JavacMethodList from(JavacList<UniMethod, JCTree.JCMethodDecl> methods) {
+    @Override
+    protected void onAdded(JCTree.JCMethodDecl element) {
+        if (element.sym != null)
+            element.sym.owner = owner.sym;
+    }
+
+    public static JavacMethodList from(JCTree.JCClassDecl owner, JavacList<UniMethod, JCTree.JCMethodDecl> methods) {
         return new JavacMethodList(
+                owner,
                 methods.elementsSupplier,
                 methods.setter,
                 methods.wrapper,
