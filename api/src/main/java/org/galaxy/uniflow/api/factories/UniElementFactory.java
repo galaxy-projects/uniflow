@@ -14,6 +14,7 @@ import org.galaxy.uniflow.api.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
 import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
 import org.galaxy.uniflow.api.pattern.UniPattern;
+import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniClassType;
@@ -217,7 +218,7 @@ public interface UniElementFactory {
 
     @NotNull UniAssert createAssert(@NotNull UniExpression condition, @Nullable UniExpression details);
 
-    @NotNull UniMethodInvocation createMethodInvocation(@NotNull UniExpression method,
+    @NotNull UniMethodInvocation createMethodInvocation(@NotNull UniMethodSignature method,
                                                         @NotNull List<@NotNull UniType> argumentTypes,
                                                         @NotNull List<@NotNull UniExpression> args);
 

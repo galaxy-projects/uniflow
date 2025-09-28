@@ -22,6 +22,7 @@ import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.function.Consumer;
 
 public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniClass {
@@ -38,6 +39,11 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
     @Override
     public @NotNull UniClassType asType() {
         return new JavacClassType(JavacUniflow.getInstance().treeMaker.Ident(tree.sym), (Type.ClassType) tree.sym.type);
+    }
+
+    @Override
+    public @NotNull UniVariable createThis() {
+        return Uniflow.getInstance().getElementFactory().createVariable(Collections.emptyList(), "this", asType());
     }
 
     @Override

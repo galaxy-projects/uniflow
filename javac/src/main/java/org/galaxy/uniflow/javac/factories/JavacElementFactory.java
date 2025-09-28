@@ -22,6 +22,7 @@ import org.galaxy.uniflow.api.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
 import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
 import org.galaxy.uniflow.api.pattern.UniPattern;
+import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniClassType;
@@ -40,6 +41,7 @@ import org.galaxy.uniflow.javac.pattern.JavacBindingPattern;
 import org.galaxy.uniflow.javac.pattern.JavacGuardedPattern;
 import org.galaxy.uniflow.javac.pattern.JavacParenthesizedPattern;
 import org.galaxy.uniflow.javac.pattern.JavacPattern;
+import org.galaxy.uniflow.javac.signatures.JavacMethodSignature;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.JavacClassType;
 import org.galaxy.uniflow.javac.types.JavacExpressionType;
@@ -595,16 +597,16 @@ public class JavacElementFactory implements UniElementFactory {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public @NotNull UniMethodInvocation createMethodInvocation(@NotNull UniExpression method,
+    public @NotNull UniMethodInvocation createMethodInvocation(@NotNull UniMethodSignature method,
                                                                @NotNull List<@NotNull UniType> argumentTypes,
                                                                @NotNull List<@NotNull UniExpression> args) {
-        JavacExpression<?> javacMethod = check(method, JavacExpression.class);
+        JavacMethodSignature javacMethod = check(method, JavacMethodSignature.class);
         Stream<JavacExpressionType> javacArgumentTypes = checkList(argumentTypes, JavacExpressionType.class);
         Stream<JavacExpression> javacArgs = checkList(args, JavacExpression.class);
 
         return new JavacMethodInvocation(treeMaker.Apply(
                 mapToList(javacArgumentTypes, type -> (JCTree.JCExpression) type.getExpression()),
-                javacMethod.getTree(),
+                treeMaker.Ident(javacMethod.getSymbol()),
                 mapToList(javacArgs, expr -> (JCTree.JCExpression) expr.getTree())
         ));
     }
