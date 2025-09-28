@@ -16,6 +16,7 @@ import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.framework.CompilationHarness;
 import org.galaxy.uniflow.framework.Resource;
 import org.galaxy.uniflow.framework.assertions.CompilationLog;
+import org.galaxy.uniflow.framework.assertions.CompilationResult;
 import org.galaxy.uniflow.junit.IntegrationTest;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,21 +47,11 @@ public class TestAddGetterForFields {
                     private String message = "Hello from message";
                 }
                 """;
-        harness.compile(new AddGetterForFieldProcessor(),
+        CompilationResult result = harness.compile(new AddGetterForFieldProcessor(),
                         new Resource("demo.Getter", GETTER_SOURCE),
                         new Resource("demo.Test", source))
-                .assertSuccess()
-                .assertClass("demo.Test", testClass -> {
-                    testClass.assertField("message", field -> {
-                        field.assertType(String.class);
-                        field.assertModifier(Modifier.PRIVATE);
-                    });
-                    testClass.assertMethod("getMessage", get -> {
-                        get.assertReturnType(String.class);
-                        get.assertParameterCount(0);
-                        get.assertExecute("Hello from message");
-                    });
-                });
+                .assertSuccess();
+        commonAssertion(result);
     }
 
     @IntegrationTest
@@ -76,25 +67,30 @@ public class TestAddGetterForFields {
                     }
                 }
                 """;
-        harness.compile(new AddGetterForFieldProcessor(),
+        CompilationResult result = harness.compile(new AddGetterForFieldProcessor(),
                         new Resource("demo.Getter", GETTER_SOURCE),
                         new Resource("demo.Test", source))
                 .assertSuccess()
                 .assertLogs(logs -> {
                     logs.assertNotEmpty();
                     logs.assertLog(CompilationLog.LogKind.NOTE, null, "Getter already exist for field message");
-                })
-                .assertClass("demo.Test", testClass -> {
-                    testClass.assertField("message", field -> {
-                        field.assertType(String.class);
-                        field.assertModifier(Modifier.PRIVATE);
-                    });
-                    testClass.assertMethod("getMessage", get -> {
-                        get.assertReturnType(String.class);
-                        get.assertParameterCount(0);
-                        get.assertExecute("Hello from message");
-                    });
                 });
+
+        commonAssertion(result);
+    }
+
+    private void commonAssertion(CompilationResult result) {
+        result.assertClass("demo.Test", testClass -> {
+            testClass.assertField("message", field -> {
+                field.assertType(String.class);
+                field.assertModifier(Modifier.PRIVATE);
+            });
+            testClass.assertMethod("getMessage", get -> {
+                get.assertReturnType(String.class);
+                get.assertParameterCount(0);
+                get.assertExecute("Hello from message");
+            });
+        });
     }
 
     static class AddGetterForFieldProcessor implements UniProcessor {
