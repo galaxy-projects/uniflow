@@ -4,6 +4,7 @@ import org.galaxy.uniflow.api.processing.UniProcessor;
 import org.galaxy.uniflow.framework.CompilationHarness;
 import org.galaxy.uniflow.framework.Resource;
 import org.galaxy.uniflow.framework.assertions.CompilationResult;
+import org.galaxy.uniflow.framework.javac.assertions.JavacCompilationResult;
 import org.galaxy.uniflow.javac.UniflowAnnotationProcessor;
 
 import javax.tools.*;
@@ -41,9 +42,9 @@ public class JavacCompilationHarness implements CompilationHarness {
             boolean success = task.call();
 
             if (!success)
-                return new CompilationResult(false, null);
+                return new JavacCompilationResult(false, null);
 
-            return new CompilationResult(true, new InMemoryClassLoader(fileManager.getCompiledClasses()));
+            return new JavacCompilationResult(true, new InMemoryClassLoader(fileManager.getCompiledClasses()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

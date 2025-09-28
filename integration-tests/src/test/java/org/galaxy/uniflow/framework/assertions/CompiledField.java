@@ -1,21 +1,14 @@
 package org.galaxy.uniflow.framework.assertions;
 
-import org.junit.jupiter.api.Assertions;
+import org.intellij.lang.annotations.MagicConstant;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
-public class CompiledField extends CompiledAnnotationHolder<CompiledField> {
+public interface CompiledField extends CompiledAnnotationHolder<CompiledField> {
 
-    private final Field field;
+    CompiledField assertModifier(@MagicConstant(valuesFromClass = Modifier.class) int modifier);
 
-    public CompiledField(Field field) {
-        super(field);
-        this.field = field;
-    }
+    CompiledField assertType(Type type);
 
-    public CompiledField assertType(Type type) {
-        Assertions.assertEquals(type, field.getGenericType(), "Field type mismatch");
-        return this;
-    }
 }
