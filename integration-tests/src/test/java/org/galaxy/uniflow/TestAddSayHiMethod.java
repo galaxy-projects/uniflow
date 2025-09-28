@@ -8,7 +8,6 @@ import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypes;
 import org.galaxy.uniflow.api.processing.UniProcessingEnvironment;
 import org.galaxy.uniflow.api.processing.UniProcessor;
-import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.framework.CompilationHarness;
 import org.galaxy.uniflow.framework.Resource;
@@ -70,28 +69,27 @@ public class TestAddSayHiMethod {
 
         @Override
         public boolean process(@NotNull Uniflow uniflow, @NotNull UniProcessingEnvironment environment) {
+            if (environment.processingOver()) return true;
             UniElementFactory factory = uniflow.getElementFactory();
 
-            if (environment.processingOver()) return true;
             environment.getElementStreamAnnotatedWithByName(Sources.ANNOTATION_NAME)
                     .filter(element -> element instanceof UniClass)
                     .forEach(element -> {
                         UniClass uniClass = (UniClass) element;
-                        UniVariable thisVar = uniClass.createThis();
-                        UniMethod sayHi = createSayHi(factory, thisVar);
+                        UniMethod sayHi = createSayHi(factory);
 
                         uniClass.getMethods().addLast(sayHi);
                     });
             return true;
         }
 
-        private UniMethod createSayHi(UniElementFactory factory, UniVariable thisVar) {
+        private UniMethod createSayHi(UniElementFactory factory) {
             return factory.createMethod(
                     factory.createModifiers(List.of(UniModifier.PUBLIC), List.of()),
                     "sayHi",
                     UniTypes.INT,
                     List.of(),
-                    thisVar,
+                    null,
                     List.of(),
                     List.of(),
                     factory.createBlock(false, List.of(
