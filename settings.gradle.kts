@@ -7,6 +7,15 @@
 
 rootProject.name = "uniflow"
 
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
 include("api")
 include("javac")
 include("common")
+include("gradle-plugin")
