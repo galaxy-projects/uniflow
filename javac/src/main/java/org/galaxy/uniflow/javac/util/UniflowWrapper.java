@@ -16,10 +16,7 @@ import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
-import org.galaxy.uniflow.api.statements.UniBlock;
-import org.galaxy.uniflow.api.statements.UniExpressionStatement;
-import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.api.statements.UniVariable;
+import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
@@ -208,6 +205,10 @@ public class UniflowWrapper {
 
     public static @NotNull UniVariable wrap(JCTree.JCVariableDecl variable) {
         return new JavacVariable(variable);
+    }
+
+    public static @NotNull UniField wrapField(JCTree.JCVariableDecl field) {
+        return new JavacField(field);
     }
 
     public static @NotNull UniAnnotationHolder wrap(Consumer<List<JCTree.JCAnnotation>> updater,

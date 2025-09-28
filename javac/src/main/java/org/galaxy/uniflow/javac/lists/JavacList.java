@@ -53,7 +53,12 @@ public class JavacList<T, R> implements UniList<T> {
 
     @Override
     public void addFirst(@NotNull T value) {
-        update(() -> elementsSupplier.get().prepend(unwrapper.apply(value)));
+        update(() -> {
+            R unwrapped = unwrapper.apply(value);
+
+            onAdded(unwrapped);
+            return elementsSupplier.get().prepend(unwrapped);
+        });
     }
 
     @Override
@@ -62,16 +67,20 @@ public class JavacList<T, R> implements UniList<T> {
         R targetUnwrapped = unwrapper.apply(target);
         ListBuffer<R> buffer = new ListBuffer<>();
         boolean added = false;
+        R unwrapped = unwrapper.apply(value);
 
         for (R element : elements) {
             buffer.append(element);
             if (Objects.equals(targetUnwrapped, element)) {
-                buffer.add(unwrapper.apply(value));
+                onAdded(unwrapped);
+                buffer.add(unwrapped);
                 added = true;
             }
         }
-        if (!added)
-            buffer.append(unwrapper.apply(value));
+        if (!added) {
+            onAdded(unwrapped);
+            buffer.append(unwrapped);
+        }
 
         update(buffer::toList);
     }
@@ -82,23 +91,32 @@ public class JavacList<T, R> implements UniList<T> {
         R targetUnwrapped = unwrapper.apply(target);
         ListBuffer<R> buffer = new ListBuffer<>();
         boolean added = false;
+        R unwrapped = unwrapper.apply(value);
 
         for (R element : elements) {
             if (Objects.equals(targetUnwrapped, element)) {
-                buffer.add(unwrapper.apply(value));
+                onAdded(unwrapped);
+                buffer.add(unwrapped);
                 added = true;
             }
             buffer.append(element);
         }
-        if (!added)
-            buffer.append(unwrapper.apply(value));
+        if (!added) {
+            onAdded(unwrapped);
+            buffer.append(unwrapped);
+        }
 
         update(buffer::toList);
     }
 
     @Override
     public void addLast(@NotNull T value) {
-        update(() -> elementsSupplier.get().append(unwrapper.apply(value)));
+        update(() -> {
+            R unwrapped = unwrapper.apply(value);
+
+            onAdded(unwrapped);
+            return elementsSupplier.get().append(unwrapped);
+        });
     }
 
     @Override
@@ -156,6 +174,8 @@ public class JavacList<T, R> implements UniList<T> {
                 unwrapper
         );
     }
+
+    protected void onAdded(R element) {}
 
     protected void update(Supplier<List<R>> newElements) {
         setter.accept(newElements.get());
