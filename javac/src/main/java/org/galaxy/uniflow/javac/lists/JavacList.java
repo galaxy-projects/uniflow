@@ -146,11 +146,11 @@ public class JavacList<T, R> implements UniList<T> {
         return new JavacList<>(
                 () -> elementsSupplier.get().stream().filter(predicate).map(mapper).collect(List.collector()),
                 newList -> {
-                    ListBuffer<R1> result = new ListBuffer<>();
+                    ListBuffer<R> result = new ListBuffer<>();
 
-                    elementsSupplier.get().stream().filter(predicate.negate()).map(mapper).forEach(result::append);
+                    elementsSupplier.get().stream().filter(predicate.negate()).forEach(result::append);
                     result.addAll(newList);
-                    setter.accept(result.toList().map(var -> var));
+                    setter.accept(result.toList());
                 },
                 wrapper,
                 unwrapper
