@@ -261,6 +261,8 @@ public interface UniElementFactory {
 
     @NotNull UniArrayAccess createArrayAccess(@NotNull UniExpression array, @NotNull UniExpression index);
 
+    @NotNull UniIdentifier createThis();
+
     @NotNull UniIdentifier createIdentifier(@NotNull String name);
 
     @NotNull UniLiteral createNull();

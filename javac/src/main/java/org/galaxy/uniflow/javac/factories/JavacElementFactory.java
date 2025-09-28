@@ -777,6 +777,11 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
+    public @NotNull UniIdentifier createThis() {
+        return new JavacIdentifier(treeMaker.Ident(JavacUniflow.getInstance().names._this));
+    }
+
+    @Override
     public @NotNull UniIdentifier createIdentifier(@NotNull String name) {
         return new JavacIdentifier(treeMaker.Ident(NameUtils.name(name)));
     }
