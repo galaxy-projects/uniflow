@@ -8,6 +8,8 @@ public interface CompilationResult {
 
     CompilationResult assertSuccess();
 
+    CompilationResult assertLogs(Consumer<CompilationLogList> consumer);
+
     CompilationResult assertClass(String className);
 
     CompilationResult assertClasses(String... classNames);

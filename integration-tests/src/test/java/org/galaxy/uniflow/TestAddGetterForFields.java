@@ -15,6 +15,7 @@ import org.galaxy.uniflow.api.statements.UniField;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.framework.CompilationHarness;
 import org.galaxy.uniflow.framework.Resource;
+import org.galaxy.uniflow.framework.assertions.CompilationLog;
 import org.galaxy.uniflow.junit.IntegrationTest;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,17 +27,18 @@ import java.util.stream.Stream;
 
 public class TestAddGetterForFields {
 
+    private final String GETTER_SOURCE = """
+            package demo;
+            
+            import java.lang.annotation.*;
+            
+            @Target(ElementType.FIELD)
+            @Retention(RetentionPolicy.SOURCE)
+            public @interface Getter {}
+            """;
+
     @IntegrationTest
     public void addGetterForFields(CompilationHarness harness) {
-        String getter = """
-                package demo;
-                
-                import java.lang.annotation.*;
-                
-                @Target(ElementType.FIELD)
-                @Retention(RetentionPolicy.SOURCE)
-                public @interface Getter {}
-                """;
         String source = """
                 package demo;
                 public class Test {
@@ -44,9 +46,44 @@ public class TestAddGetterForFields {
                     private String message = "Hello from message";
                 }
                 """;
-        harness.compile(new AddGetterForFieldProcessor(), new Resource("demo.Getter", getter),
+        harness.compile(new AddGetterForFieldProcessor(),
+                        new Resource("demo.Getter", GETTER_SOURCE),
                         new Resource("demo.Test", source))
                 .assertSuccess()
+                .assertClass("demo.Test", testClass -> {
+                    testClass.assertField("message", field -> {
+                        field.assertType(String.class);
+                        field.assertModifier(Modifier.PRIVATE);
+                    });
+                    testClass.assertMethod("getMessage", get -> {
+                        get.assertReturnType(String.class);
+                        get.assertParameterCount(0);
+                        get.assertExecute("Hello from message");
+                    });
+                });
+    }
+
+    @IntegrationTest
+    public void addExistingGetterForFields(CompilationHarness harness) {
+        String source = """
+                package demo;
+                public class Test {
+                    @Getter
+                    private String message = "Hello from message";
+                
+                    public String getMessage() {
+                        return this.message;
+                    }
+                }
+                """;
+        harness.compile(new AddGetterForFieldProcessor(),
+                        new Resource("demo.Getter", GETTER_SOURCE),
+                        new Resource("demo.Test", source))
+                .assertSuccess()
+                .assertLogs(logs -> {
+                    logs.assertNotEmpty();
+                    logs.assertLog(CompilationLog.LogKind.NOTE, null, "Getter already exist for field message");
+                })
                 .assertClass("demo.Test", testClass -> {
                     testClass.assertField("message", field -> {
                         field.assertType(String.class);

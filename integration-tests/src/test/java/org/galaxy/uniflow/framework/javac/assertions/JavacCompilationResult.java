@@ -1,12 +1,18 @@
 package org.galaxy.uniflow.framework.javac.assertions;
 
+import org.galaxy.uniflow.framework.assertions.CompilationLogList;
 import org.galaxy.uniflow.framework.assertions.CompilationResult;
 import org.galaxy.uniflow.framework.assertions.CompiledClass;
 import org.junit.jupiter.api.Assertions;
 
+import javax.tools.Diagnostic;
+import javax.tools.JavaFileObject;
+import java.util.List;
 import java.util.function.Consumer;
 
-public record JavacCompilationResult(boolean success, ClassLoader classLoader) implements CompilationResult {
+public record JavacCompilationResult(boolean success, ClassLoader classLoader,
+                                     List<Diagnostic<? extends JavaFileObject>> diagnostics)
+        implements CompilationResult {
 
     @Override
     public CompilationResult assertFailed() {
@@ -17,6 +23,12 @@ public record JavacCompilationResult(boolean success, ClassLoader classLoader) i
     @Override
     public CompilationResult assertSuccess() {
         Assertions.assertTrue(success, "Compilation should have succeeded");
+        return this;
+    }
+
+    @Override
+    public CompilationResult assertLogs(Consumer<CompilationLogList> consumer) {
+        consumer.accept(new CompilationLogList(diagnostics.stream().map(JavacCompilationLog::new).toList()));
         return this;
     }
 

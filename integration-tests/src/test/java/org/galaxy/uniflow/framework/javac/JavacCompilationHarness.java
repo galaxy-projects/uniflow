@@ -42,9 +42,10 @@ public class JavacCompilationHarness implements CompilationHarness {
             boolean success = task.call();
 
             if (!success)
-                return new JavacCompilationResult(false, null);
+                return new JavacCompilationResult(false, null, diagnostics.getDiagnostics());
 
-            return new JavacCompilationResult(true, new InMemoryClassLoader(fileManager.getCompiledClasses()));
+            return new JavacCompilationResult(true, new InMemoryClassLoader(fileManager.getCompiledClasses()),
+                    diagnostics.getDiagnostics());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
