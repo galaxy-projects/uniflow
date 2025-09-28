@@ -160,9 +160,13 @@ public class UniflowWrapper {
             return new JavacThrow((JCTree.JCThrow) statement);
         else if (statement instanceof JCTree.JCTry)
             return new JavacTry((JCTree.JCTry) statement);
-        else if (statement instanceof JCTree.JCVariableDecl)
-            return new JavacVariable((JCTree.JCVariableDecl) statement);
-        else if (statement instanceof JCTree.JCWhileLoop)
+        else if (statement instanceof JCTree.JCVariableDecl) {
+            JCTree.JCVariableDecl var = (JCTree.JCVariableDecl) statement;
+
+            if (var.sym != null && var.sym.owner instanceof Symbol.ClassSymbol)
+                return new JavacField(var);
+            return new JavacVariable(var);
+        } else if (statement instanceof JCTree.JCWhileLoop)
             return new JavacWhileLoop((JCTree.JCWhileLoop) statement);
         else if (statement instanceof JCTree.JCYield)
             return new JavacYield((JCTree.JCYield) statement);
