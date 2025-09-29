@@ -3,7 +3,7 @@
 </div>
 
 ![GitHub](https://img.shields.io/github/license/galaxy-projects/uniflow)
-![Java Version](https://img.shields.io/badge/Java-17%2B-blue)
+![Java Version](https://img.shields.io/badge/Java-8%2B-blue)
 
 ## 🌌 What is Uniflow?
 
@@ -78,14 +78,26 @@ Add Uniflow to your ``pom.xml``:
 
 ## 🧪 Example Usage
 
+### Common part
+
+```java
+// Common part for PSI and Javac
+public class CommonProcessor implements UniProcessor {
+    @Override
+    public boolean process(@NotNull Uniflow uniflow, @NotNull UniProcessingEnvironment environment) {
+        UniElementFactory factory = uniflow.getElementFactory();
+        // ...
+    }
+}
+```
+
 ### Annotation Processing
 
 ```java
+// Just a bridge to Java Annotation Processing
 public class MyProcessor extends UniflowAnnotationProcessor {
-    @Override
-    public boolean process(@NotNull Uniflow uniflow, @NotNull UniRoundEnvironment roundEnv) {
-        UniElementFactory factory = uniflow.getElementFactory();
-        // ...
+    public MyProcessor() {
+        super(new CommonProcessor());
     }
 }
 ```
