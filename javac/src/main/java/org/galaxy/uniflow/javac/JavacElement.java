@@ -22,16 +22,4 @@ public class JavacElement<T extends JCTree> implements UniElement {
     public @NotNull Kind getKind() {
         return EnumUtils.convert(Kind.class, tree.getKind());
     }
-
-    @Override
-    public boolean hasTag(@NotNull Tag tag) {
-        return getTag() == tag;
-    }
-
-    @Override
-    public Tag getTag() {
-        if (tree instanceof JCTree)
-            return EnumUtils.convert(Tag.class, ((JCTree) tree).getTag());
-        throw new UnsupportedOperationException("getTag() with value: " + tree);
-    }
 }
