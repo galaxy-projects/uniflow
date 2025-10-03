@@ -24,10 +24,6 @@ public interface UniElement {
 
     @NotNull Kind getKind();
 
-    boolean hasTag(@NotNull Tag tag);
-
-    Tag getTag();
-
     enum Tag {
         /**
          * For methods that return an invalid tag if a given condition is not met

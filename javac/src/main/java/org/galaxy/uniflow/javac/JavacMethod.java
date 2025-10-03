@@ -1,22 +1,25 @@
 package org.galaxy.uniflow.javac;
 
+import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
+import org.galaxy.uniflow.api.UniClass;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.lists.UniParameterList;
 import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.statements.UniBlock;
-import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.lists.JavacParameterList;
 import org.galaxy.uniflow.javac.signatures.JavacMethodSignature;
+import org.galaxy.uniflow.javac.statements.JavacClass;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements UniMethod {
 
@@ -108,7 +111,13 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
     }
 
     @Override
-    public @NotNull UniClassType getContainingClass() {
-        return UniflowWrapper.symbolToType(tree.sym.owner);
+    public @Nullable UniClass getEnclosingClass() {
+        if (tree.sym != null && tree.sym.owner instanceof Symbol.ClassSymbol) {
+            Symbol.ClassSymbol ownerSymbol = (Symbol.ClassSymbol) tree.sym.owner;
+            JCTree.JCClassDecl ownerClass = JavacUniflow.getInstance().trees.getTree(ownerSymbol);
+
+            return new JavacClass(ownerClass);
+        }
+        throw new IllegalStateException("No owner for method " + NameUtils.nameToString(tree.name));
     }
 }

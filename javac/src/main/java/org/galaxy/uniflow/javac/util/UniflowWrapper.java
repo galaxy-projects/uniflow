@@ -16,10 +16,7 @@ import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
-import org.galaxy.uniflow.api.statements.UniBlock;
-import org.galaxy.uniflow.api.statements.UniExpressionStatement;
-import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.api.statements.UniVariable;
+import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
@@ -163,9 +160,13 @@ public class UniflowWrapper {
             return new JavacThrow((JCTree.JCThrow) statement);
         else if (statement instanceof JCTree.JCTry)
             return new JavacTry((JCTree.JCTry) statement);
-        else if (statement instanceof JCTree.JCVariableDecl)
-            return new JavacVariable((JCTree.JCVariableDecl) statement);
-        else if (statement instanceof JCTree.JCWhileLoop)
+        else if (statement instanceof JCTree.JCVariableDecl) {
+            JCTree.JCVariableDecl var = (JCTree.JCVariableDecl) statement;
+
+            if (var.sym != null && var.sym.owner instanceof Symbol.ClassSymbol)
+                return new JavacField(var);
+            return new JavacVariable(var);
+        } else if (statement instanceof JCTree.JCWhileLoop)
             return new JavacWhileLoop((JCTree.JCWhileLoop) statement);
         else if (statement instanceof JCTree.JCYield)
             return new JavacYield((JCTree.JCYield) statement);
@@ -208,6 +209,10 @@ public class UniflowWrapper {
 
     public static @NotNull UniVariable wrap(JCTree.JCVariableDecl variable) {
         return new JavacVariable(variable);
+    }
+
+    public static @NotNull UniField wrapField(JCTree.JCVariableDecl field) {
+        return new JavacField(field);
     }
 
     public static @NotNull UniAnnotationHolder wrap(Consumer<List<JCTree.JCAnnotation>> updater,
@@ -308,9 +313,12 @@ public class UniflowWrapper {
             return new JavacParameterizedType((JCTree.JCTypeApply) tree, (Type.ClassType) tree.type);
         else if (tree instanceof JCTree.JCIdent)
             return new JavacClassType((JCTree.JCIdent) tree, (Type.ClassType) tree.type);
-        else if (tree instanceof JCTree.JCPrimitiveTypeTree)
-            return new JavacPrimitiveType((JCTree.JCPrimitiveTypeTree) tree, (Type.JCPrimitiveType) tree.type);
-        else if (tree instanceof JCTree.JCWildcard)
+        else if (tree instanceof JCTree.JCPrimitiveTypeTree) {
+            if (tree.type instanceof Type.JCPrimitiveType)
+                return new JavacPrimitiveType((JCTree.JCPrimitiveTypeTree) tree, (Type.JCPrimitiveType) tree.type);
+            else if (tree.type instanceof Type.JCVoidType)
+                return new JavacExpressionType<>((JCTree.JCPrimitiveTypeTree) tree, tree.type);
+        } else if (tree instanceof JCTree.JCWildcard)
             return new JavacWildcardType((JCTree.JCWildcard) tree, (Type.WildcardType) tree.type);
         return new JavacType<>(tree, tree.type);
     }

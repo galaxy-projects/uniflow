@@ -231,7 +231,7 @@ public class JavacElementFactory implements UniElementFactory {
                                            @NotNull String name,
                                            @NotNull Class<?> returnType,
                                            @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                           @NotNull UniVariable receiveParam,
+                                           @Nullable UniVariable receiveParam,
                                            @NotNull List<@NotNull UniVariable> parameters,
                                            @NotNull List<@NotNull UniExpression> thrown,
                                            @NotNull UniBlock body) {
@@ -247,7 +247,7 @@ public class JavacElementFactory implements UniElementFactory {
                                            @NotNull String name,
                                            @NotNull UniType returnType,
                                            @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                           @NotNull UniVariable receiveParam,
+                                           @Nullable UniVariable receiveParam,
                                            @NotNull List<@NotNull UniVariable> parameters,
                                            @NotNull List<@NotNull UniExpression> thrown,
                                            @NotNull UniBlock body) {
@@ -265,7 +265,7 @@ public class JavacElementFactory implements UniElementFactory {
                 NameUtils.name(name),
                 javacReturnType.getExpression(),
                 mapToList(javacTypeParameters, JavacTypeParameter::getTree),
-                javacReceiveParam.getTree(),
+                javacReceiveParam != null ? javacReceiveParam.getTree() : null,
                 mapToList(javacParameters, JavacVariable::getTree),
                 mapToList(javacThrown, threw -> (JCTree.JCExpression) threw.getTree()),
                 javacBody.getTree(),
@@ -274,25 +274,25 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniVariable createField(@NotNull UniModifiers modifiers,
-                                            @NotNull String name,
-                                            @NotNull Class<?> type,
-                                            @Nullable UniExpression init) {
+    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                         @NotNull String name,
+                                         @NotNull Class<?> type,
+                                         @Nullable UniExpression init) {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
         return createField(modifiers, name, typeFactory.createClassType(type), init);
     }
 
     @Override
-    public @NotNull UniVariable createField(@NotNull UniModifiers modifiers,
-                                            @NotNull String name,
-                                            @NotNull UniType type,
-                                            @Nullable UniExpression init) {
+    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                         @NotNull String name,
+                                         @NotNull UniType type,
+                                         @Nullable UniExpression init) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
         JavacExpressionType<?, ?> javacType = check(type, JavacExpressionType.class);
         JavacExpression<?> javacInit = check(init, JavacExpression.class);
 
-        return new JavacVariable(treeMaker.VarDef(
+        return new JavacField(treeMaker.VarDef(
                 javacModifiers.getTree(),
                 NameUtils.name(name),
                 javacType.getExpression(),
@@ -777,6 +777,11 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
+    public @NotNull UniIdentifier createThis() {
+        return new JavacIdentifier(treeMaker.Ident(JavacUniflow.getInstance().names._this));
+    }
+
+    @Override
     public @NotNull UniIdentifier createIdentifier(@NotNull String name) {
         return new JavacIdentifier(treeMaker.Ident(NameUtils.name(name)));
     }
@@ -797,6 +802,14 @@ public class JavacElementFactory implements UniElementFactory {
     @Override
     public @NotNull UniLiteral createStringLiteral(@NotNull String value) {
         return new JavacLiteral(treeMaker.Literal(value));
+    }
+
+    @Override
+    public @NotNull UniAnnotation createAnnotation(@NotNull Class<?> annotationType,
+                                                   @NotNull List<@NotNull UniAnnotationAttribute> attributes) {
+        UniType annotationTypeAsType = Uniflow.getInstance().getTypeFactory().createType(annotationType);
+
+        return createAnnotation(annotationTypeAsType, attributes);
     }
 
     @Override
@@ -851,11 +864,28 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
+    public @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name) {
+        UniType selectedType = Uniflow.getInstance().getTypeFactory().createType(selected);
+
+        return createFieldAccess(selectedType, name);
+    }
+
+    @Override
     public @NotNull UniFieldAccess createFieldAccess(@NotNull UniType selected, @NotNull String name) {
         JavacExpressionType<?, ?> javacSelected = check(selected, JavacExpressionType.class);
 
         return new JavacFieldAccess(treeMaker.Select(
                 javacSelected.getExpression(),
+                NameUtils.name(name)
+        ));
+    }
+
+    @Override
+    public @NotNull UniFieldAccess createFieldAccess(@NotNull UniExpression expression, @NotNull String name) {
+        JavacExpression<?> javacExpression = check(expression, JavacExpression.class);
+
+        return new JavacFieldAccess(treeMaker.Select(
+                javacExpression.getTree(),
                 NameUtils.name(name)
         ));
     }
