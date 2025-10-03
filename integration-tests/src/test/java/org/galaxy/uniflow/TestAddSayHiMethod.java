@@ -12,6 +12,7 @@ import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.framework.CompilationHarness;
 import org.galaxy.uniflow.framework.Resource;
 import org.galaxy.uniflow.framework.assertions.AssertStream;
+import org.galaxy.uniflow.framework.assertions.CompilationLog;
 import org.galaxy.uniflow.junit.IntegrationTest;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +48,26 @@ public class TestAddSayHiMethod {
                             sayHi.assertExecute(1234);
                         });
                     });
+                });
+    }
+
+    @IntegrationTest
+    public void failSayHi(CompilationHarness harness) {
+        String source = """
+                package demo;
+                
+                @TestAnnotation
+                public class Test {
+                    public void sayHi() {
+                        System.out.println("Hello World");
+                    }
+                }
+                """;
+        harness.compile(new AddSayHiProcessor(), new Resource("demo.Test", source), Sources.TEST_ANNOTATION_TYPE)
+                .assertFailed()
+                .assertLogs(logs -> {
+                    logs.assertNotEmpty();
+                    logs.assertLogCount(CompilationLog.LogKind.ERROR, 1);
                 });
     }
 

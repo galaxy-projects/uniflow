@@ -12,8 +12,16 @@ public record CompilationLogList(List<? extends CompilationLog> logs) {
         Assertions.assertTrue(logs.isEmpty(), "There should be no logs");
     }
 
+    public void assertLogCount(int expectedCount) {
+        Assertions.assertEquals(expectedCount, logs.size(), "Log count mismatch");
+    }
+
     public void assertNotEmpty() {
         Assertions.assertFalse(logs.isEmpty(), "There should be no logs");
+    }
+
+    public void assertLogCount(CompilationLog.LogKind kind, int expectedCount) {
+        Assertions.assertEquals(expectedCount, logs.stream().filter(log -> log.getKind() == kind).count());
     }
 
     public void assertLog(CompilationLog.LogKind kind, Locale locale, String message) {
