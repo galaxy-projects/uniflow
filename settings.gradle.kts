@@ -12,6 +12,16 @@ pluginManagement {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://www.jetbrains.com/intellij-repository/releases")
+        maven("https://cache-redirector.jetbrains.com/intellij-repository/releases")
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven("https://www.jetbrains.com/intellij-repository/releases")
+        maven("https://cache-redirector.jetbrains.com/intellij-repository/releases")
     }
 }
 
@@ -19,3 +29,4 @@ include("api")
 include("javac")
 include("common")
 include("gradle-plugin")
+include("psi")
