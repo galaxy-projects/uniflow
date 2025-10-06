@@ -1,0 +1,45 @@
+package org.galaxy.uniflow.intellij.psi;
+
+import com.intellij.psi.PsiElementFactory;
+import org.galaxy.uniflow.api.Uniflow;
+import org.galaxy.uniflow.api.factories.*;
+import org.jetbrains.annotations.NotNull;
+
+public class IntellijUniflow extends Uniflow {
+
+    public PsiElementFactory factory;
+
+    @Override
+    protected @NotNull UniElementFinder createFinder() {
+        return null;
+    }
+
+    @Override
+    protected @NotNull UniTypeFactory createTypeFactory() {
+        return null;
+    }
+
+    @Override
+    protected @NotNull UniElementFactory createElementFactory() {
+        return null;
+    }
+
+    @Override
+    protected @NotNull UniModuleFactory createModuleFactory() {
+        return null;
+    }
+
+    @Override
+    public @NotNull UniFiler createFiler() {
+        return null;
+    }
+
+    @Override
+    public @NotNull UniMessenger createMessenger() {
+        return null;
+    }
+
+    public static IntellijUniflow getInstance() {
+        return (IntellijUniflow) Uniflow.getInstance();
+    }
+}
