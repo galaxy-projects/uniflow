@@ -6,7 +6,11 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniFieldAccess extends UniAnnotationValue, UniExpression {
 
+    void setSelected(@NotNull UniType selected);
+
     @NotNull UniType getSelected();
+
+    void setName(@NotNull String name);
 
     @NotNull String getName();
 
