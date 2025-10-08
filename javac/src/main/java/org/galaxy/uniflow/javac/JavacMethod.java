@@ -67,7 +67,7 @@ public class JavacMethod extends JavacElement<JCTree.JCMethodDecl> implements Un
                     tree.sym.params = newList.map(var -> var.sym);
                     tree.sym.type.asMethodType().argtypes = newList.map(var -> var.type);
                 },
-                UniflowWrapper::wrap,
+                UniflowWrapper::wrapParameter,
                 JavacUnwrapper::unwrap
         );
     }

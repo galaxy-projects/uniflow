@@ -211,6 +211,10 @@ public class UniflowWrapper {
         return new JavacVariable(variable);
     }
 
+    public static @NotNull UniParameter wrapParameter(JCTree.JCVariableDecl variable) {
+        return new JavacParameter(variable);
+    }
+
     public static @NotNull UniField wrapField(JCTree.JCVariableDecl field) {
         return new JavacField(field);
     }

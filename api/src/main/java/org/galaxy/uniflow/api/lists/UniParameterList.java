@@ -1,10 +1,10 @@
 package org.galaxy.uniflow.api.lists;
 
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.statements.UniVariable;
+import org.galaxy.uniflow.api.statements.UniParameter;
 import org.jetbrains.annotations.NotNull;
 
-public interface UniParameterList extends UniList<UniVariable> {
+public interface UniParameterList extends UniList<UniParameter> {
 
     default boolean hasParameters() {
         return !isEmpty();
