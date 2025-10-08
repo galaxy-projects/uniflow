@@ -7,6 +7,7 @@ import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
+import org.galaxy.uniflow.api.statements.UniParameter;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniType;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +42,11 @@ public class UniflowWrapper {
         return null;
     }
 
-    public static @NotNull UniVariable wrap(PsiParameter parameter) {
+    public static @NotNull UniVariable wrap(PsiVariable variable) {
+        return null;
+    }
+
+    public static @NotNull UniParameter wrap(PsiParameter parameter) {
         return null;
     }
 

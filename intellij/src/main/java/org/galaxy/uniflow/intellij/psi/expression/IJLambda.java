@@ -2,11 +2,10 @@ package org.galaxy.uniflow.intellij.psi.expression;
 
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiLambdaExpression;
-import com.intellij.psi.PsiParameterList;
 import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniLambda;
-import org.galaxy.uniflow.api.statements.UniVariable;
+import org.galaxy.uniflow.api.lists.UniParameterList;
+import org.galaxy.uniflow.intellij.psi.lists.IJParameterList;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,11 +16,8 @@ public class IJLambda extends IJExpression<PsiLambdaExpression> implements UniLa
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniVariable> getParameters() {
-        PsiParameterList parameterList = element.getParameterList();
-
-        // TODO
-        return null;
+    public @NotNull UniParameterList getParameters() {
+        return new IJParameterList(element.getParameterList());
     }
 
     @Override
