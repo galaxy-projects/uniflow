@@ -27,6 +27,11 @@ public class JavacLambda extends JavacExpression<JCTree.JCLambda> implements Uni
     }
 
     @Override
+    public void setBody(@NotNull UniElement body) {
+        tree.body = JavacUnwrapper.unwrap(body);
+    }
+
+    @Override
     public @NotNull UniElement getBody() {
         return UniflowWrapper.wrap(tree.body);
     }
