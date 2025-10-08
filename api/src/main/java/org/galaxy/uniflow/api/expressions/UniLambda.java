@@ -8,6 +8,8 @@ public interface UniLambda extends UniExpression {
 
     @NotNull UniParameterList getParameters();
 
+    void setBody(@NotNull UniElement body);
+
     @NotNull UniElement getBody();
 
     @NotNull BodyKind getBodyKind();
