@@ -22,8 +22,9 @@ public class IJEmptyList<T> implements UniList<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public @NotNull T @NotNull [] get() {
-        return Array.newInstance(componentType, 0);
+        return (T[]) Array.newInstance(componentType, 0);
     }
 
     @Override
