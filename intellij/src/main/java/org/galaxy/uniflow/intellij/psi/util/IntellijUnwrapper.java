@@ -7,6 +7,7 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
 import org.galaxy.uniflow.api.statements.UniParameter;
 import org.galaxy.uniflow.api.types.UniClassType;
+import org.galaxy.uniflow.api.types.UniType;
 import org.jetbrains.annotations.NotNull;
 
 public class IntellijUnwrapper {
@@ -32,6 +33,10 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiClassType unwrap(UniClassType type) {
+        return null;
+    }
+
+    public static @NotNull PsiTypeElement unwrap(UniType type) {
         return null;
     }
 }

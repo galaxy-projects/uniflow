@@ -38,6 +38,10 @@ public class UniflowWrapper {
         return null;
     }
 
+    public static @NotNull UniType wrap(PsiTypeElement type) {
+        return null;
+    }
+
     public static @NotNull UniElement wrap(PsiElement element) {
         return null;
     }
