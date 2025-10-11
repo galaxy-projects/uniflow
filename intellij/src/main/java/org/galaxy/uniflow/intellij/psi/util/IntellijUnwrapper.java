@@ -3,9 +3,12 @@ package org.galaxy.uniflow.intellij.psi.util;
 import com.intellij.psi.*;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
+import org.galaxy.uniflow.api.elements.UniCase;
+import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
 import org.galaxy.uniflow.api.statements.UniParameter;
+import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +28,18 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiParameter unwrap(UniParameter parameter) {
+        return null;
+    }
+
+    public static @NotNull PsiSwitchLabelStatementBase unwrap(UniCase uniCase) {
+        return null;
+    }
+
+    public static @NotNull PsiCaseLabelElement unwrap(UniCaseLabel label) {
+        return null;
+    }
+
+    public static @NotNull PsiStatement unwrap(UniStatement statement) {
         return null;
     }
 
