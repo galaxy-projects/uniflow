@@ -434,32 +434,30 @@ public class JavacElementFactory implements UniElementFactory {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public @NotNull UniCase createCase(UniCase.@NotNull CaseKind kind,
-                                       @NotNull List<@NotNull UniCaseLabel> labels,
-                                       @NotNull List<@NotNull UniStatement> statements,
-                                       @NotNull UniElement body) {
-        ListBuffer<JCTree.JCCaseLabel> labelsBuffer = new ListBuffer<>();
-        // labels can be JavacDefaultCaseLabel, JavacCaseLabel, JavacExpression
-        for (UniCaseLabel label : labels) {
-            if (label instanceof JavacCaseLabel)
-                labelsBuffer.add(((JavacCaseLabel) label).getTree());
-            else if (label instanceof JavacDefaultCaseLabel)
-                labelsBuffer.add(((JavacDefaultCaseLabel) label).getTree());
-            else if (label instanceof JavacExpression<?>)
-                labelsBuffer.add(((JavacExpression<?>) label).getTree());
-            else if (label instanceof JavacPattern<?>) // newer versions
-                labelsBuffer.add(((JavacPattern<?>) label).getTree());
-            else
-                throw new IllegalArgumentException("Case label " + label + " is invalid");
-        }
+    public @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
+                                       @NotNull List<@NotNull UniStatement> statements) {
+        com.sun.tools.javac.util.List<JCTree.JCCaseLabel> caseLabels = createCaseLabels(labels);
         Stream<JavacStatement> javacStatements = checkList(statements, JavacStatement.class);
+
+        //noinspection Since15
+        return new JavacCase.JavacStatementCase(treeMaker.Case(
+                CaseTree.CaseKind.STATEMENT,
+                caseLabels,
+                mapToList(javacStatements, st -> (JCTree.JCStatement) st.getTree()),
+                null
+        ));
+    }
+
+    @Override
+    public @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels, @NotNull UniElement body) {
+        com.sun.tools.javac.util.List<JCTree.JCCaseLabel> caseLabels = createCaseLabels(labels);
         JavacElement<?> javacBody = check(body, JavacElement.class);
 
         //noinspection Since15
-        return new JavacCase(treeMaker.Case(
-                EnumUtils.convert(CaseTree.CaseKind.class, kind),
-                labelsBuffer.toList(),
-                mapToList(javacStatements, st -> (JCTree.JCStatement) st.getTree()),
+        return new JavacCase.JavacRuleCase(treeMaker.Case(
+                CaseTree.CaseKind.RULE,
+                caseLabels,
+                com.sun.tools.javac.util.List.nil(),
                 javacBody.getTree()
         ));
     }
@@ -923,5 +921,23 @@ public class JavacElementFactory implements UniElementFactory {
 
     private boolean isSourceNotAtLeast(Source source) {
         return JavacUniflow.getInstance().source.compareTo(source) < 0;
+    }
+
+    private com.sun.tools.javac.util.List<JCTree.JCCaseLabel> createCaseLabels(List<UniCaseLabel> labels) {
+        ListBuffer<JCTree.JCCaseLabel> labelsBuffer = new ListBuffer<>();
+        // labels can be JavacDefaultCaseLabel, JavacCaseLabel, JavacExpression
+        for (UniCaseLabel label : labels) {
+            if (label instanceof JavacCaseLabel)
+                labelsBuffer.add(((JavacCaseLabel) label).getTree());
+            else if (label instanceof JavacDefaultCaseLabel)
+                labelsBuffer.add(((JavacDefaultCaseLabel) label).getTree());
+            else if (label instanceof JavacExpression<?>)
+                labelsBuffer.add(((JavacExpression<?>) label).getTree());
+            else if (label instanceof JavacPattern<?>) // newer versions
+                labelsBuffer.add(((JavacPattern<?>) label).getTree());
+            else
+                throw new IllegalArgumentException("Case label " + label + " is invalid");
+        }
+        return labelsBuffer.toList();
     }
 }

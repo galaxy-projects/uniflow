@@ -177,9 +177,10 @@ public interface UniElementFactory {
     @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
                                                         @NotNull List<@NotNull UniCase> cases);
 
-    @NotNull UniCase createCase(@NotNull UniCase.CaseKind kind,
-                                @NotNull List<@NotNull UniCaseLabel> labels,
-                                @NotNull List<@NotNull UniStatement> statements,
+    @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
+                                @NotNull List<@NotNull UniStatement> statements);
+
+    @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
                                 @NotNull UniElement body);
 
     @NotNull UniSynchronized createSynchronized(@NotNull UniExpression lock, @NotNull UniBlock body);
