@@ -1,9 +1,9 @@
 package org.galaxy.uniflow.intellij.psi.statements;
 
 import com.intellij.psi.*;
-import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.statements.UniExpressionStatement;
 import org.galaxy.uniflow.api.statements.UniForLoop;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
 public class IJForLoop extends IJStatement<PsiForStatement> implements UniForLoop {
@@ -25,10 +26,9 @@ public class IJForLoop extends IJStatement<PsiForStatement> implements UniForLoo
     }
 
     @Override
-    public @NotNull UniList<UniElement> getInitializer() {
-        return createList(element.getInitialization(), init -> {
-            replace(init, element.getCondition(), element.getUpdate(), element.getBody());
-        });
+    public @NotNull UniList<@NotNull UniStatement> getInitializer() {
+        return createList(element.getInitialization(), UniStatement.class, UniStatement[]::new,
+                init -> replace(init, element.getCondition(), element.getUpdate(), element.getBody()));
     }
 
     @Override
@@ -45,10 +45,9 @@ public class IJForLoop extends IJStatement<PsiForStatement> implements UniForLoo
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniElement> getUpdate() {
-        return createList(element.getUpdate(), update -> {
-            replace(element.getInitialization(), element.getCondition(), update, element.getBody());
-        });
+    public @NotNull UniList<@NotNull UniExpressionStatement> getUpdate() {
+        return createList(element.getUpdate(), UniExpressionStatement.class, UniExpressionStatement[]::new,
+                update -> replace(element.getInitialization(), element.getCondition(), update, element.getBody()));
     }
 
     @Override
@@ -97,20 +96,25 @@ public class IJForLoop extends IJStatement<PsiForStatement> implements UniForLoo
         else current.delete();
     }
 
-    private UniList<UniElement> createList(PsiElement element, Consumer<PsiElement> updater) {
+    private <T extends UniStatement> UniList<T> createList(PsiElement element,
+                                                           Class<T> componentType,
+                                                           IntFunction<T[]> arrayGenerator,
+                                                           Consumer<PsiElement> updater) {
         Stream<PsiElement> elements;
 
-        if (element instanceof PsiDeclarationStatement) { // multiple
-            PsiDeclarationStatement declaration = (PsiDeclarationStatement) element;
-            elements = Arrays.stream(declaration.getDeclaredElements());
-        } else if (element != null) // unique
+        if (element instanceof PsiDeclarationStatement) // multiple
+            elements = Arrays.stream(((PsiDeclarationStatement) element).getDeclaredElements());
+        else if (element != null) // unique
             elements = Stream.of(element);
         else // none
             elements = Stream.empty();
-        return new IJForStatementList<>(elements.map(UniflowWrapper::wrap), UniElement[]::new, createConsumer(updater));
+        return new IJForStatementList<>(
+                elements.map(UniflowWrapper::wrap).map(componentType::cast),
+                arrayGenerator,
+                createConsumer(updater));
     }
 
-    private Consumer<List<UniElement>> createConsumer(Consumer<PsiElement> updater) {
+    private <T extends UniStatement> Consumer<List<T>> createConsumer(Consumer<PsiElement> updater) {
         return elements -> {
             if (elements.isEmpty())
                 updater.accept(null);

@@ -1,5 +1,6 @@
 package org.galaxy.uniflow.intellij.psi.lists.statements;
 
+import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,18 +12,18 @@ import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class IJForStatementList<T> implements UniList<T> {
+public class IJForStatementList<T extends UniElement> implements UniList<T> {
 
-    private final IntFunction<T[]> arrayGenerator;
     private final Consumer<List<T>> updater;
+    private final IntFunction<T[]> arrayGenerator;
 
     private final List<T> elements;
 
     public IJForStatementList(Stream<T> elements,
                               IntFunction<T[]> arrayGenerator,
                               Consumer<List<T>> updater) {
-        this.arrayGenerator = arrayGenerator;
         this.updater = updater;
+        this.arrayGenerator = arrayGenerator;
         this.elements = new ArrayList<T>(elements.collect(Collectors.toList())) {
             private static final long serialVersionUID = 7184756141798928010L;
 
