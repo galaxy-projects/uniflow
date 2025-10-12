@@ -30,7 +30,7 @@ public class IJInstanceOf extends IJExpression<PsiInstanceOfExpression> implemen
 
     @Override
     public @NotNull UniElement getType() {
-        return UniflowWrapper.wrap(element.getCheckType());
+        return UniflowWrapper.wrapAsType(element.getCheckType());
     }
 
     @Override

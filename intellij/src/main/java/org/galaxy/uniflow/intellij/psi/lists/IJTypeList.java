@@ -12,7 +12,7 @@ import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 public class IJTypeList extends IJList<PsiReferenceParameterList, PsiTypeElement, UniType> {
 
     public IJTypeList(PsiReferenceParameterList list) {
-        super(list, UniType[]::new, UniflowWrapper::wrap, IntellijUnwrapper::unwrap);
+        super(list, UniType[]::new, UniflowWrapper::wrapAsType, IntellijUnwrapper::unwrap);
     }
 
     @Override

@@ -43,10 +43,6 @@ public class UniflowWrapper {
         return null;
     }
 
-    public static @NotNull UniType wrap(PsiTypeElement type) {
-        return null;
-    }
-
     public static @NotNull UniExpression wrap(PsiJavaCodeReferenceElement classReference) {
         return null;
     }
@@ -82,6 +78,10 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniType wrapAsType(@Nullable PsiExpression expression) {
+        return null;
+    }
+
+    public static @NotNull UniType wrapAsType(PsiTypeElement type) {
         return null;
     }
 }
