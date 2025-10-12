@@ -1,4 +1,4 @@
-package org.galaxy.uniflow.intellij.psi.lists;
+package org.galaxy.uniflow.intellij.psi.lists.statements;
 
 import com.intellij.psi.PsiCodeBlock;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;

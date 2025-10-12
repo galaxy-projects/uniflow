@@ -8,7 +8,7 @@ import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.galaxy.uniflow.intellij.psi.lists.IJCaseLabelList;
-import org.galaxy.uniflow.intellij.psi.lists.IJCaseStatementList;
+import org.galaxy.uniflow.intellij.psi.lists.statements.IJCaseStatementList;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;

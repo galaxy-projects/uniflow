@@ -4,7 +4,7 @@ import com.intellij.psi.PsiBlockStatement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.intellij.psi.lists.IJBlockStatementList;
+import org.galaxy.uniflow.intellij.psi.lists.statements.IJBlockStatementList;
 import org.jetbrains.annotations.NotNull;
 
 public class IJBlock extends IJStatement<PsiBlockStatement> implements UniBlock {
