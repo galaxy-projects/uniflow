@@ -1,6 +1,7 @@
 package org.galaxy.uniflow.intellij.psi.util;
 
 import com.intellij.psi.*;
+import org.galaxy.uniflow.api.UniClass;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
@@ -9,6 +10,7 @@ import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
+import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniParameter;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniVariable;
@@ -53,7 +55,15 @@ public class UniflowWrapper {
                 new IJCase.IJRuleCase((PsiSwitchLabeledRuleStatement) caseLabel);
     }
 
+    public static @NotNull UniClass wrap(PsiClass psiClass) {
+        return null;
+    }
+
     public static @NotNull UniCaseLabel wrap(PsiCaseLabelElement caseLabel) {
+        return null;
+    }
+
+    public static @NotNull UniBlock wrap(PsiCodeBlock block) {
         return null;
     }
 

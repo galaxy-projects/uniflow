@@ -7,6 +7,7 @@ import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
+import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniParameter;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.types.UniClassType;
@@ -36,6 +37,10 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiCaseLabelElement unwrap(UniCaseLabel label) {
+        return null;
+    }
+
+    public static @NotNull PsiCodeBlock unwrap(UniBlock block) {
         return null;
     }
 
