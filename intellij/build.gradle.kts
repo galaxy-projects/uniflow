@@ -1,18 +1,42 @@
 plugins {
-    id("org.jetbrains.intellij") version "1.17.4"
+    id("org.jetbrains.intellij.platform")
+}
+
+repositories {
+    intellijPlatform {
+        defaultRepositories()
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
     compileOnly(project(":api"))
     compileOnly(project(":common"))
+
+    intellijPlatform {
+        //  use this when JetBrains will do it
+        //  intellijIdea {
+        //      version.set("2025.2.3")
+        //      edition.set(IntellijEdition.Community)
+        //  }
+        @Suppress("DEPRECATION")
+        intellijIdeaCommunity("2025.2.3")
+        bundledPlugin("com.intellij.java")
+    }
 }
 
-intellij {
-    version.set("2025.1.3")
-    type.set("IC")
-    plugins.set(listOf("java"))
-}
+intellijPlatform {
+    buildSearchableOptions = false
+    instrumentCode = true
+    projectName = project.name
 
-tasks.buildSearchableOptions {
-    enabled = false
+    pluginConfiguration {
+        id = "uniflow"
+        name = "Uniflow"
+        version = project.version.toString()
+    }
 }
