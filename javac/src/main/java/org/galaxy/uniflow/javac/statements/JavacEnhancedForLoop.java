@@ -3,8 +3,8 @@ package org.galaxy.uniflow.javac.statements;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniEnhancedForLoop;
+import org.galaxy.uniflow.api.statements.UniParameter;
 import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
@@ -17,13 +17,13 @@ public class JavacEnhancedForLoop extends JavacElement<JCTree.JCEnhancedForLoop>
     }
 
     @Override
-    public void setVariable(@NotNull UniVariable variable) {
-        tree.var = JavacUnwrapper.unwrap(variable);
+    public void setParameter(@NotNull UniParameter parameter) {
+        tree.var = JavacUnwrapper.unwrap(parameter);
     }
 
     @Override
-    public @NotNull UniVariable getVariable() {
-        return UniflowWrapper.wrap(tree.var);
+    public @NotNull UniParameter getParameter() {
+        return UniflowWrapper.wrapParameter(tree.var);
     }
 
     @Override

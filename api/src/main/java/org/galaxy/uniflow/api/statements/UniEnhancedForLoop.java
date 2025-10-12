@@ -5,9 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniEnhancedForLoop extends UniStatement {
 
-    void setVariable(@NotNull UniVariable variable);
+    void setParameter(@NotNull UniParameter parameter);
 
-    @NotNull UniVariable getVariable();
+    @NotNull UniParameter getParameter();
 
     void setExpression(@NotNull UniExpression expression);
 
