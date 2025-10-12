@@ -28,6 +28,10 @@ public class UniflowWrapper {
         return null;
     }
 
+    public static @NotNull UniExpression wrap(PsiReferenceExpression referenceExpression) {
+        return null;
+    }
+
     public static @NotNull UniModifiers wrap(PsiModifierList modifierList) {
         return null;
     }
