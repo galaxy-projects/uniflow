@@ -27,7 +27,7 @@ public class IJCaseList implements UniList<UniCase> {
 
     @Override
     public boolean isEmpty() {
-        return switchBlock == null;
+        return switchBlock.getBody() == null || switchBlock.getBody().getStatements().length == 0;
     }
 
     @Override
