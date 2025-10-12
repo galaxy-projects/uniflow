@@ -5,6 +5,7 @@ import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
 import org.galaxy.uniflow.api.statements.UniBlock;
@@ -44,6 +45,10 @@ public class IntellijUnwrapper {
         return null;
     }
 
+    public static @NotNull PsiCatchSection unwrap(UniCatch section) {
+        return null;
+    }
+
     public static @NotNull PsiStatement unwrap(UniStatement statement) {
         return null;
     }
@@ -57,6 +62,10 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiTypeElement unwrap(UniType type) {
+        return null;
+    }
+
+    public static @NotNull PsiResourceListElement unwrapResource(UniElement element) {
         return null;
     }
 }

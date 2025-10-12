@@ -7,6 +7,7 @@ import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -68,6 +69,10 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniBlock wrap(PsiCodeBlock block) {
+        return null;
+    }
+
+    public static @NotNull UniCatch wrap(PsiCatchSection section) {
         return null;
     }
 
