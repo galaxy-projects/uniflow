@@ -1,5 +1,7 @@
 package org.galaxy.uniflow.javac.util;
 
+import com.sun.source.tree.CaseTree;
+import com.sun.tools.javac.code.Source;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
@@ -130,9 +132,9 @@ public class UniflowWrapper {
             return new JavacBlock((JCTree.JCBlock) statement);
         else if (statement instanceof JCTree.JCBreak)
             return new JavacBreak((JCTree.JCBreak) statement);
-        else if (statement instanceof JCTree.JCCase)
-            return new JavacCase((JCTree.JCCase) statement);
-        else if (statement instanceof JCTree.JCClassDecl)
+        else if (statement instanceof JCTree.JCCase) {
+            return wrap((JCTree.JCCase) statement);
+        } else if (statement instanceof JCTree.JCClassDecl)
             return new JavacClass((JCTree.JCClassDecl) statement);
         else if (statement instanceof JCTree.JCContinue)
             return new JavacContinue((JCTree.JCContinue) statement);
@@ -224,8 +226,16 @@ public class UniflowWrapper {
         return new JavacSimpleAnnotationHolder(updater, annotations);
     }
 
+    @SuppressWarnings("Since15")
     public static @NotNull UniCase wrap(JCTree.JCCase jcCase) {
-        return new JavacCase(jcCase);
+        if (JavacUniflow.getInstance().source.compareTo(Source.JDK12) >= 0) {
+            if (jcCase.getCaseKind() == CaseTree.CaseKind.RULE)
+                return new JavacCase.JavacRuleCase(jcCase);
+            else if (jcCase.getCaseKind() == CaseTree.CaseKind.STATEMENT)
+                return new JavacCase.JavacStatementCase(jcCase);
+            throw new IllegalArgumentException("Unknown statement: " + jcCase);
+        }
+        return new JavacCase.JavacStatementCase(jcCase);
     }
 
     public static @NotNull UniBlock wrap(JCTree.JCBlock block) {
