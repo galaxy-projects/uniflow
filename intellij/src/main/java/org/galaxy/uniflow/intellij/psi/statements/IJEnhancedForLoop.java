@@ -6,8 +6,8 @@ import com.intellij.psi.PsiForeachStatement;
 import com.intellij.psi.PsiStatement;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniEnhancedForLoop;
+import org.galaxy.uniflow.api.statements.UniParameter;
 import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
@@ -19,14 +19,13 @@ public class IJEnhancedForLoop extends IJStatement<PsiForeachStatement> implemen
         super(element);
     }
 
-    // TODO: change to parameter
     @Override
-    public void setVariable(@NotNull UniVariable variable) {
-        element.getIterationParameter().replace(IntellijUnwrapper.unwrap(variable));
+    public void setParameter(@NotNull UniParameter parameter) {
+        element.getIterationParameter().replace(IntellijUnwrapper.unwrap(parameter));
     }
 
     @Override
-    public @NotNull UniVariable getVariable() {
+    public @NotNull UniParameter getParameter() {
         return UniflowWrapper.wrap(element.getIterationParameter());
     }
 

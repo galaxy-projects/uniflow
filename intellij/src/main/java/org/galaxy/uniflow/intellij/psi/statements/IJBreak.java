@@ -14,20 +14,23 @@ public class IJBreak extends IJStatement<PsiBreakStatement> implements UniBreak 
         super(element);
     }
 
-    // TODO: set to nullable
     @Override
-    public void setLabel(@NotNull String label) {
+    public void setLabel(@Nullable String label) {
         PsiElementFactory factory = IntellijUniflow.getInstance().factory;
 
-        if (element.getLabelIdentifier() != null)
-            element.getLabelIdentifier().replace(factory.createIdentifier(label));
-        else {
-            PsiBreakStatement newBreak = (PsiBreakStatement) factory.createStatementFromText("break " + label + ";",
-                    null);
+        if (label != null) {
+            if (element.getLabelIdentifier() != null)
+                element.getLabelIdentifier().replace(factory.createIdentifier(label));
+            else {
+                PsiBreakStatement newBreak = (PsiBreakStatement) factory.createStatementFromText("break " + label + ";",
+                        null);
 
-            assert newBreak.getLabelIdentifier() != null;
+                assert newBreak.getLabelIdentifier() != null;
 
-            replace(newBreak);
+                replace(newBreak);
+            }
+        } else if (element.getLabelIdentifier() != null) {
+            element.getLabelIdentifier().delete();
         }
     }
 
