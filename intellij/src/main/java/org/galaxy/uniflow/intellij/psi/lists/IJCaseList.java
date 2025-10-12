@@ -1,9 +1,6 @@
 package org.galaxy.uniflow.intellij.psi.lists;
 
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiSwitchBlock;
-import com.intellij.psi.PsiSwitchLabelStatementBase;
-import com.intellij.psi.PsiSwitchStatement;
+import com.intellij.psi.*;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
@@ -11,10 +8,10 @@ import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class IJCaseList implements UniList<UniCase> {
@@ -37,7 +34,7 @@ public class IJCaseList implements UniList<UniCase> {
 
     @Override
     public @NotNull Stream<UniCase> stream() {
-        return bases().map(UniflowWrapper::wrap);
+        return list().stream();
     }
 
     @Override
@@ -111,14 +108,25 @@ public class IJCaseList implements UniList<UniCase> {
     }
 
     private List<UniCase> list() {
-        return stream().collect(Collectors.toList());
-    }
+        PsiCodeBlock body = switchBlock.getBody();
 
-    private Stream<PsiSwitchLabelStatementBase> bases() {
-        if (switchBlock.getBody() != null)
-            return Arrays.stream(switchBlock.getBody().getStatements())
-                    .filter(PsiSwitchLabelStatementBase.class::isInstance)
-                    .map(PsiSwitchLabelStatementBase.class::cast);
-        return Stream.empty();
+        if (body == null) return Collections.emptyList();
+
+        List<UniCase> cases = new ArrayList<>();
+        List<PsiStatement> statements = null;
+        PsiSwitchLabelStatementBase currentCase;
+
+        for (PsiStatement statement : body.getStatements()) {
+            if (statement instanceof PsiSwitchLabelStatementBase) {
+                statements = new ArrayList<>();
+                currentCase = (PsiSwitchLabelStatementBase) statement;
+                cases.add(UniflowWrapper.wrap(currentCase, statements));
+            } else if (statements != null) {
+                statements.add(statement);
+            } else
+                throw new IllegalStateException("No case before statement " + statement.getText());
+        }
+
+        return cases;
     }
 }

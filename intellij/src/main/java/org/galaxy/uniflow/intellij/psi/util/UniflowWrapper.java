@@ -13,9 +13,11 @@ import org.galaxy.uniflow.api.statements.UniParameter;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniType;
+import org.galaxy.uniflow.intellij.psi.statements.IJCase;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 
 public class UniflowWrapper {
@@ -49,8 +51,10 @@ public class UniflowWrapper {
         return null;
     }
 
-    public static @NotNull UniCase wrap(PsiSwitchLabelStatementBase label) {
-        return null;
+    public static @NotNull UniCase wrap(PsiSwitchLabelStatementBase caseLabel, List<PsiStatement> statements) {
+        return caseLabel instanceof PsiSwitchStatement ?
+                new IJCase.IJStatementCase((PsiSwitchLabelStatement) caseLabel, statements) :
+                new IJCase.IJRuleCase((PsiSwitchLabeledRuleStatement) caseLabel);
     }
 
     public static @NotNull UniCaseLabel wrap(PsiCaseLabelElement caseLabel) {
