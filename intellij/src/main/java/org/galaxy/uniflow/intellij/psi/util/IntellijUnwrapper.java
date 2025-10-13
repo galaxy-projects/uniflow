@@ -1,6 +1,7 @@
 package org.galaxy.uniflow.intellij.psi.util;
 
 import com.intellij.psi.*;
+import org.galaxy.uniflow.api.UniClassInitializer;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
@@ -16,6 +17,7 @@ import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
+import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.jetbrains.annotations.NotNull;
 
 public class IntellijUnwrapper {
@@ -52,6 +54,10 @@ public class IntellijUnwrapper {
         return null;
     }
 
+    public static @NotNull PsiClassInitializer unwrap(UniClassInitializer classInitializer) {
+        return null;
+    }
+
     public static @NotNull PsiCodeBlock unwrap(UniBlock block) {
         return null;
     }
@@ -68,6 +74,10 @@ public class IntellijUnwrapper {
         return null;
     }
 
+    public static @NotNull PsiTypeParameter unwrap(UniTypeParameter typeParameter) {
+        return null;
+    }
+
     public static @NotNull PsiElement unwrap(UniElement element) {
         return null;
     }
@@ -77,6 +87,10 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiTypeElement unwrap(UniType type) {
+        return null;
+    }
+
+    public static @NotNull PsiJavaCodeReferenceElement unwrapType(UniType type) {
         return null;
     }
 

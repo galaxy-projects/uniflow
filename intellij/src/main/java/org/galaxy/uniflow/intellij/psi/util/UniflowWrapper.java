@@ -2,6 +2,7 @@ package org.galaxy.uniflow.intellij.psi.util;
 
 import com.intellij.psi.*;
 import org.galaxy.uniflow.api.UniClass;
+import org.galaxy.uniflow.api.UniClassInitializer;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
@@ -19,6 +20,7 @@ import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
+import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.intellij.psi.elements.IJAnnotationAttribute;
 import org.galaxy.uniflow.intellij.psi.statements.IJCase;
 import org.jetbrains.annotations.NotNull;
@@ -64,6 +66,10 @@ public class UniflowWrapper {
                 new IJCase.IJRuleCase((PsiSwitchLabeledRuleStatement) caseLabel);
     }
 
+    public static @NotNull UniTypeParameter wrap(PsiTypeParameter typeParameter) {
+        return null;
+    }
+
     public static @NotNull UniClass wrap(PsiClass psiClass) {
         return null;
     }
@@ -96,6 +102,10 @@ public class UniflowWrapper {
         return null;
     }
 
+    public static @NotNull UniClassInitializer wrap(PsiClassInitializer classInitializer) {
+        return null;
+    }
+
     public static @NotNull UniExpression wrap(PsiJavaModuleReferenceElement moduleReference) {
         return null;
     }
@@ -117,6 +127,14 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniType wrapAsType(PsiTypeElement type) {
+        return null;
+    }
+
+    public static @NotNull UniClassType wrapClassType(@NotNull PsiClass psiClass) {
+        return null;
+    }
+
+    public static @NotNull UniClassType wrapClassType(@NotNull PsiClassType type) {
         return null;
     }
 

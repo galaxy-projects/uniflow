@@ -442,6 +442,11 @@ public interface UniElement {
         CLASS,
 
         /**
+         * Used for instances of {@link UniClassInitializer} representing class initializer
+         */
+        CLASS_INITIALIZER,
+
+        /**
          * Used for instances of {@link UniCompilationUnit}.
          */
         COMPILATION_UNIT,
