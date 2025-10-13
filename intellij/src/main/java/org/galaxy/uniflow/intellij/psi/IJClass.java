@@ -12,8 +12,7 @@ import org.galaxy.uniflow.api.lists.UniMethodList;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
-import org.galaxy.uniflow.intellij.psi.lists.IJReferenceTypeList;
-import org.galaxy.uniflow.intellij.psi.lists.IJTypeParameterList;
+import org.galaxy.uniflow.intellij.psi.lists.*;
 import org.galaxy.uniflow.intellij.psi.lists.statements.IJClassInitializerList;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -77,17 +76,17 @@ public class IJClass extends IJElement<PsiClass> implements UniClass {
 
     @Override
     public @NotNull UniFieldList getFields() {
-        return null;
+        return new IJFieldList(element);
     }
 
     @Override
     public @NotNull UniMethodList getMethods() {
-        return null;
+        return new IJMethodList(element, PsiClass::getMethods);
     }
 
     @Override
     public @NotNull UniMethodList getConstructors() {
-        return null;
+        return new IJMethodList(element, PsiClass::getConstructors);
     }
 
     @Override
@@ -97,7 +96,7 @@ public class IJClass extends IJElement<PsiClass> implements UniClass {
 
     @Override
     public @NotNull UniList<@NotNull UniClass> getInnerClasses() {
-        return null;
+        return new IJInnerClassList(element);
     }
 
     @Override

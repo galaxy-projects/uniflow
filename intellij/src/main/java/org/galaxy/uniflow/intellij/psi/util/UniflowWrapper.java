@@ -1,10 +1,7 @@
 package org.galaxy.uniflow.intellij.psi.util;
 
 import com.intellij.psi.*;
-import org.galaxy.uniflow.api.UniClass;
-import org.galaxy.uniflow.api.UniClassInitializer;
-import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.UniModifiers;
+import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
@@ -14,10 +11,7 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
-import org.galaxy.uniflow.api.statements.UniBlock;
-import org.galaxy.uniflow.api.statements.UniParameter;
-import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.api.statements.UniVariable;
+import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
@@ -98,6 +92,10 @@ public class UniflowWrapper {
         return new IJAnnotationAttribute(pair);
     }
 
+    public static @NotNull UniMethod wrap(PsiMethod method) {
+        return null;
+    }
+
     public static @NotNull UniElement wrap(PsiElement element) {
         return null;
     }
@@ -111,6 +109,10 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniVariable wrap(PsiVariable variable) {
+        return null;
+    }
+
+    public static @NotNull UniField wrap(PsiField field) {
         return null;
     }
 

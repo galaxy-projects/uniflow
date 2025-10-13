@@ -1,8 +1,10 @@
 package org.galaxy.uniflow.intellij.psi.util;
 
 import com.intellij.psi.*;
+import org.galaxy.uniflow.api.UniClass;
 import org.galaxy.uniflow.api.UniClassInitializer;
 import org.galaxy.uniflow.api.UniElement;
+import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCase;
@@ -11,10 +13,7 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
-import org.galaxy.uniflow.api.statements.UniBlock;
-import org.galaxy.uniflow.api.statements.UniParameter;
-import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.api.statements.UniVariable;
+import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
@@ -46,6 +45,10 @@ public class IntellijUnwrapper {
         return null;
     }
 
+    public static @NotNull PsiField unwrap(UniField field) {
+        return null;
+    }
+
     public static @NotNull PsiSwitchLabelStatementBase unwrap(UniCase uniCase) {
         return null;
     }
@@ -66,6 +69,10 @@ public class IntellijUnwrapper {
         return null;
     }
 
+    public static @NotNull PsiClass unwrap(UniClass uniClass) {
+        return null;
+    }
+
     public static @NotNull PsiStatement unwrap(UniStatement statement) {
         return null;
     }
@@ -75,6 +82,10 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiTypeParameter unwrap(UniTypeParameter typeParameter) {
+        return null;
+    }
+
+    public static @NotNull PsiMethod unwrap(UniMethod method) {
         return null;
     }
 
