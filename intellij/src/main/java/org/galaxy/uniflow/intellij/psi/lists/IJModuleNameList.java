@@ -91,7 +91,7 @@ public class IJModuleNameList implements UniList<UniExpression> {
         List<PsiJavaModuleReferenceElement> elements = originalList();
 
         if (index < 0 || index >= elements.size())
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + elements.length);
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + elements.size());
         elements.get(index).delete();
     }
 
