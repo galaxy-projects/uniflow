@@ -12,6 +12,7 @@ import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.intellij.psi.IJElement;
 import org.galaxy.uniflow.intellij.psi.IJModifiers;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
+import org.galaxy.uniflow.intellij.psi.lists.IJDirectiveList;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +46,7 @@ public class IJModule extends IJElement<PsiJavaModule> implements UniModule {
 
     @Override
     public @NotNull UniList<UniDirective> getDirectives() {
-        return null;
+        return new IJDirectiveList(element);
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniParameter;
@@ -60,6 +61,10 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiStatement unwrap(UniStatement statement) {
+        return null;
+    }
+
+    public static @NotNull PsiStatement unwrap(UniDirective directive) {
         return null;
     }
 
