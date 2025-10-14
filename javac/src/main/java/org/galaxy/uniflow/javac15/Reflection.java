@@ -19,7 +19,7 @@ public class Reflection {
         try {
             TREE_MAKER = Class.forName("com.sun.tools.javac.tree.TreeMaker");
             VARIABLE_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCVariableDecl");
-            TREE_MAKER = Class.forName("com.sun.tools.javac.tree.JCTree");
+            TREE_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree");
             EXPRESSION_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCExpression");
             INSTANCEOF_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCInstanceOf");
 
