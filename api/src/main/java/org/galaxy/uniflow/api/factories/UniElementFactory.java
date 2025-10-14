@@ -29,6 +29,10 @@ public interface UniElementFactory {
 
     @NotNull UniJigsawElementFactory asJigsaw();
 
+    boolean supportsJdk10();
+
+    @NotNull UniJdk10ElementFactory asJdk10();
+
     @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
                                                @NotNull List<@NotNull UniImport> imports,
                                                @NotNull List<@NotNull UniClass> classes);
@@ -117,39 +121,23 @@ public interface UniElementFactory {
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,
                                         @NotNull Class<?> type,
-                                        @Nullable UniExpression init,
-                                        boolean useVar);
+                                        @Nullable UniExpression init);
 
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,
                                         @NotNull UniType type,
-                                        @Nullable UniExpression init,
-                                        boolean useVar);
-
-    default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
-                                                @NotNull String name,
-                                                @NotNull Class<?> type,
-                                                @NotNull UniExpression init) {
-        return createVariable(annotations, name, type, init, false);
-    }
-
-    default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
-                                                @NotNull String name,
-                                                @NotNull UniType type,
-                                                @NotNull UniExpression init) {
-        return createVariable(annotations, name, type, init, false);
-    }
+                                        @Nullable UniExpression init);
 
     default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                                 @NotNull String name,
                                                 @NotNull Class<?> type) {
-        return createVariable(annotations, name, type, null, false);
+        return createVariable(annotations, name, type, null);
     }
 
     default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                                 @NotNull String name,
                                                 @NotNull UniType type) {
-        return createVariable(annotations, name, type, null, false);
+        return createVariable(annotations, name, type, null);
     }
 
     @NotNull UniEmpty createSkip();

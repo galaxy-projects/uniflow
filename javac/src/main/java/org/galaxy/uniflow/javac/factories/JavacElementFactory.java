@@ -16,9 +16,9 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
+import org.galaxy.uniflow.api.factories.UniJdk10ElementFactory;
 import org.galaxy.uniflow.api.factories.UniJigsawElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
-import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
 import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
@@ -75,6 +75,16 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
+    public boolean supportsJdk10() {
+        return false;
+    }
+
+    @Override
+    public @NotNull UniJdk10ElementFactory asJdk10() {
+        throw new UnsupportedOperationException(Constants.ERROR_MESSAGE);
+    }
+
+    @Override
     public @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
                                                       @NotNull List<@NotNull UniImport> imports,
                                                       @NotNull List<@NotNull UniClass> classes) {
@@ -86,16 +96,6 @@ public class JavacElementFactory implements UniElementFactory {
         buffer.add(javacPackage.getTree());
         javacImports.map(JavacImport::getTree).forEach(buffer::add);
         javacClasses.map(JavacClass::getTree).forEach(buffer::add);
-        return new JavacCompilationUnit(treeMaker.TopLevel(buffer.toList()));
-    }
-
-    @Override
-    public @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
-                                                      @NotNull List<@NotNull UniModule> modules) {
-        JavacPackage javacPackage = check(packageDecl, JavacPackage.class);
-        ListBuffer<JCTree> buffer = new ListBuffer<>();
-
-        buffer.add(javacPackage.getTree());
         return new JavacCompilationUnit(treeMaker.TopLevel(buffer.toList()));
     }
 
@@ -313,19 +313,17 @@ public class JavacElementFactory implements UniElementFactory {
     public @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                                @NotNull String name,
                                                @NotNull Class<?> type,
-                                               @Nullable UniExpression init,
-                                               boolean useVar) {
+                                               @Nullable UniExpression init) {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
-        return createVariable(annotations, name, typeFactory.createClassType(type), init, useVar);
+        return createVariable(annotations, name, typeFactory.createClassType(type), init);
     }
 
     @Override
     public @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                                @NotNull String name,
                                                @NotNull UniType type,
-                                               @Nullable UniExpression init,
-                                               boolean useVar) {
+                                               @Nullable UniExpression init) {
         Stream<JavacAnnotation> javacAnnotations = checkList(annotations, JavacAnnotation.class);
         JavacExpressionType<?, ?> javacType = check(type, JavacExpressionType.class);
         JavacExpression<?> javacInit = check(init, JavacExpression.class);
@@ -335,7 +333,7 @@ public class JavacElementFactory implements UniElementFactory {
                 NameUtils.name(name),
                 javacType.getExpression(),
                 javacInit != null ? javacInit.getTree() : null,
-                useVar
+                false
         ));
     }
 
@@ -924,7 +922,7 @@ public class JavacElementFactory implements UniElementFactory {
         return list.stream().map(type::cast);
     }
 
-    private <T, R> com.sun.tools.javac.util.List<T> mapToList(Stream<R> stream, Function<? super R, T> mapper) {
+    protected <T, R> com.sun.tools.javac.util.List<T> mapToList(Stream<R> stream, Function<? super R, T> mapper) {
         return stream.map(mapper).collect(com.sun.tools.javac.util.List.collector());
     }
 
