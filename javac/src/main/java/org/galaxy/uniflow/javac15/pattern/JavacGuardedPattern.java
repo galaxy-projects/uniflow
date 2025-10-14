@@ -29,7 +29,7 @@ public class JavacGuardedPattern extends JavacPattern<JCTree.JCPattern> implemen
 
     @Override
     public @NotNull UniPattern getPattern() {
-        return Uniflow15Wrapper.wrap(PATTERN.get(tree));
+        return Uniflow15Wrapper.wrap((JCTree.JCPattern) PATTERN.get(tree));
     }
 
     @Override
