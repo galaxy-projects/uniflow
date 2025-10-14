@@ -1,10 +1,9 @@
-package org.galaxy.uniflow.javac15;
+package org.galaxy.uniflow.javac12;
 
 import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.javac.VersionedWrapper;
 import org.galaxy.uniflow.javac10.Javac10Uniflow;
-import org.galaxy.uniflow.javac12.Uniflow12Wrapper;
 import org.galaxy.uniflow.javac12.factories.Javac12ElementFactory;
 import org.jetbrains.annotations.NotNull;
 
