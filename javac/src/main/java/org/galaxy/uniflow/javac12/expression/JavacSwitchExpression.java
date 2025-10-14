@@ -11,6 +11,7 @@ import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.galaxy.uniflow.javac12.Reflection;
+import org.galaxy.uniflow.javac12.Uniflow12Wrapper;
 import org.galaxy.uniflow.reflection.ReflectClass;
 import org.galaxy.uniflow.reflection.ReflectField;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,7 @@ public class JavacSwitchExpression extends JavacExpression<JCTree.JCSwitchExpres
         return new JavacList<UniEnhancedCase, JCTree.JCCase>(
                 CASES.createGetter(tree),
                 CASES.createSetter(tree),
-                UniflowWrapper::wrap,
+                Uniflow12Wrapper::wrap,
                 JavacUnwrapper::unwrap
         );
     }
