@@ -8,17 +8,13 @@ import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
-import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniFieldSignature;
 import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
-import org.galaxy.uniflow.api.statements.UniBlock;
-import org.galaxy.uniflow.api.statements.UniExpressionStatement;
-import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.api.statements.UniVariable;
+import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
@@ -117,7 +113,7 @@ public class JavacUnwrapper {
         return (JCTree.JCExpressionStatement) unwrap((UniElement) statement);
     }
 
-    public static @NotNull JCTree.JCCase unwrap(UniCase uniCase) {
+    public static @NotNull JCTree.JCCase unwrap(UniCaseBase uniCase) {
         return (JCTree.JCCase) unwrap((UniElement) uniCase);
     }
 

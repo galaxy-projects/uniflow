@@ -1,6 +1,5 @@
 package org.galaxy.uniflow.javac.util;
 
-import com.sun.source.tree.CaseTree;
 import com.sun.tools.javac.code.Source;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
@@ -9,7 +8,6 @@ import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
-import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
@@ -201,16 +199,16 @@ public class UniflowWrapper {
         return new JavacSimpleAnnotationHolder(updater, annotations);
     }
 
-    @SuppressWarnings("Since15")
-    public static @NotNull UniCase wrap(JCTree.JCCase jcCase) {
+    public static @NotNull UniCaseBase wrap(JCTree.JCCase jcCase) {
         if (JavacUniflow.getInstance().source.compareTo(Source.JDK12) >= 0) {
-            if (jcCase.getCaseKind() == CaseTree.CaseKind.RULE)
-                return new JavacCase.JavacRuleCase(jcCase);
-            else if (jcCase.getCaseKind() == CaseTree.CaseKind.STATEMENT)
-                return new JavacCase.JavacStatementCase(jcCase);
+            VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+            UniElement result = wrapper != null ? wrapper.wrap(jcCase) : null;
+
+            if (result != null)
+                return (UniCaseBase) result;
             throw new IllegalArgumentException("Unknown statement: " + jcCase);
         }
-        return new JavacCase.JavacStatementCase(jcCase);
+        return new JavacCase(jcCase);
     }
 
     public static @NotNull UniBlock wrap(JCTree.JCBlock block) {
@@ -232,8 +230,8 @@ public class UniflowWrapper {
     public static @NotNull UniCaseLabel wrap(JCTree.JCCaseLabel caseLabel) {
         if (caseLabel instanceof JCTree.JCDefaultCaseLabel)
             return new JavacDefaultCaseLabel((JCTree.JCDefaultCaseLabel) caseLabel);
-        else if (Reflection.EXPRESSION.isInstance(caseLabel))
-            return wrap(Reflection.EXPRESSION.cast(caseLabel));
+        else if (Reflection.EXPRESSION_TYPE.isInstance(caseLabel))
+            return wrap(Reflection.EXPRESSION_TYPE.cast(caseLabel));
         return new JavacCaseLabel(caseLabel);
     }
 

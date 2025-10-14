@@ -1,8 +1,6 @@
 package org.galaxy.uniflow.javac.factories;
 
-import com.sun.source.tree.CaseTree;
 import com.sun.tools.javac.code.Flags;
-import com.sun.tools.javac.code.Source;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.ListBuffer;
@@ -10,11 +8,11 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
-import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.*;
+import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
 import org.galaxy.uniflow.api.statements.*;
@@ -37,7 +35,9 @@ import org.galaxy.uniflow.javac.types.JavacType;
 import org.galaxy.uniflow.javac.types.JavacTypeParameter;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac15.pattern.JavacPattern;
+import org.galaxy.uniflow.javac15.statements.JavacEnhancedCase;
+import org.galaxy.uniflow.reflection.ReflectClass;
+import org.galaxy.uniflow.reflection.ReflectMethod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,6 +47,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class JavacElementFactory implements UniElementFactory {
+
+    private static final ReflectMethod CREATE_CASE;
 
     protected final TreeMaker treeMaker;
 
@@ -369,43 +371,27 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniSwitch createSwitch(@NotNull UniExpression selector, @NotNull List<@NotNull UniCase> cases) {
+    public @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
+                                           @NotNull List<@NotNull UniEnhancedCase> cases) {
         JavacExpression<?> javacSelector = check(selector, JavacExpression.class);
-        Stream<JavacCase> javacCases = checkList(cases, JavacCase.class);
+        Stream<JavacEnhancedCase> javacCases = checkList(cases, JavacEnhancedCase.class);
 
         return new JavacSwitch(treeMaker.Switch(
                 javacSelector.getTree(),
-                mapToList(javacCases, JavacCase::getTree)
+                mapToList(javacCases, JavacEnhancedCase::getTree)
         ));
     }
 
     @Override
     @SuppressWarnings("rawtypes")
-    public @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
+    public @NotNull UniCase createCase(@NotNull UniCaseLabel label,
                                        @NotNull List<@NotNull UniStatement> statements) {
-        com.sun.tools.javac.util.List<JCTree.JCCaseLabel> caseLabels = createCaseLabels(labels);
+        JCTree.JCCaseLabel javacLabel = createCaseLabel(label);
         Stream<JavacStatement> javacStatements = checkList(statements, JavacStatement.class);
 
-        //noinspection Since15
-        return new JavacCase.JavacStatementCase(treeMaker.Case(
-                CaseTree.CaseKind.STATEMENT,
-                caseLabels,
-                mapToList(javacStatements, st -> (JCTree.JCStatement) st.getTree()),
-                null
-        ));
-    }
-
-    @Override
-    public @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels, @NotNull UniElement body) {
-        com.sun.tools.javac.util.List<JCTree.JCCaseLabel> caseLabels = createCaseLabels(labels);
-        JavacElement<?> javacBody = check(body, JavacElement.class);
-
-        //noinspection Since15
-        return new JavacCase.JavacRuleCase(treeMaker.Case(
-                CaseTree.CaseKind.RULE,
-                caseLabels,
-                com.sun.tools.javac.util.List.nil(),
-                javacBody.getTree()
+        return new JavacCase((JCTree.JCCase) CREATE_CASE.run(treeMaker,
+                javacLabel,
+                javacStatements.map(JavacStatement::getTree).collect(com.sun.tools.javac.util.List.collector())
         ));
     }
 
@@ -820,25 +806,22 @@ public class JavacElementFactory implements UniElementFactory {
         return stream.map(mapper).collect(com.sun.tools.javac.util.List.collector());
     }
 
-    private boolean isSourceNotAtLeast(Source source) {
-        return JavacUniflow.getInstance().source.compareTo(source) < 0;
+    protected JCTree.JCCaseLabel createCaseLabel(@NotNull UniCaseLabel label) {
+        if (label instanceof JavacCaseLabel)
+            return ((JavacCaseLabel) label).getTree();
+        else if (label instanceof JavacDefaultCaseLabel)
+            return ((JavacDefaultCaseLabel) label).getTree();
+        else if (label instanceof JavacExpression<?>)
+            return Reflection.CASE_LABEL_TYPE.cast(((JavacExpression<?>) label).getTree());
+        throw new IllegalArgumentException("Case label " + label + " is invalid");
     }
 
-    private com.sun.tools.javac.util.List<JCTree.JCCaseLabel> createCaseLabels(List<UniCaseLabel> labels) {
-        ListBuffer<JCTree.JCCaseLabel> labelsBuffer = new ListBuffer<>();
-        // labels can be JavacDefaultCaseLabel, JavacCaseLabel, JavacExpression
-        for (UniCaseLabel label : labels) {
-            if (label instanceof JavacCaseLabel)
-                labelsBuffer.add(((JavacCaseLabel) label).getTree());
-            else if (label instanceof JavacDefaultCaseLabel)
-                labelsBuffer.add(((JavacDefaultCaseLabel) label).getTree());
-            else if (label instanceof JavacExpression<?>)
-                labelsBuffer.add(((JavacExpression<?>) label).getTree());
-            else if (label instanceof JavacPattern<?>) // newer versions
-                labelsBuffer.add(((JavacPattern<?>) label).getTree());
-            else
-                throw new IllegalArgumentException("Case label " + label + " is invalid");
+    static {
+        try {
+            ReflectClass type = new ReflectClass(Reflection.TREE_MAKER);
+            CREATE_CASE = type.method("Case", Reflection.EXPRESSION_TYPE, Reflection.LIST_TYPE);
+        } catch (NoSuchMethodException e) {
+            throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE, e);
         }
-        return labelsBuffer.toList();
     }
 }

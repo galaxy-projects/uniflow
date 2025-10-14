@@ -4,7 +4,6 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
-import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
@@ -178,13 +177,9 @@ public interface UniElementFactory {
     @NotNull UniLabel createLabel(@NotNull String name, @NotNull UniStatement body);
 
     @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
-                                    @NotNull List<@NotNull UniCase> cases);
+                                    @NotNull List<@NotNull UniEnhancedCase> cases);
 
-    @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
-                                @NotNull List<@NotNull UniStatement> statements);
-
-    @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
-                                @NotNull UniElement body);
+    @NotNull UniCase createCase(@NotNull UniCaseLabel label, @NotNull List<@NotNull UniStatement> statements);
 
     @NotNull UniSynchronized createSynchronized(@NotNull UniExpression lock, @NotNull UniBlock body);
 

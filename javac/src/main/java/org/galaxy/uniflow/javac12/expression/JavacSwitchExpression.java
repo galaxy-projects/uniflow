@@ -2,10 +2,10 @@ package org.galaxy.uniflow.javac12.expression;
 
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniSwitchExpression;
 import org.galaxy.uniflow.api.factories.UniConstants;
+import org.galaxy.uniflow.api.statements.UniEnhancedCase;
 import org.galaxy.uniflow.javac.expression.JavacExpression;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
@@ -35,8 +35,8 @@ public class JavacSwitchExpression extends JavacExpression<JCTree.JCSwitchExpres
     }
 
     @Override
-    public @NotNull UniList<UniCase> getCases() {
-        return new JavacList<UniCase, JCTree.JCCase>(
+    public @NotNull UniList<UniEnhancedCase> getCases() {
+        return new JavacList<UniEnhancedCase, JCTree.JCCase>(
                 CASES.createGetter(tree),
                 CASES.createSetter(tree),
                 UniflowWrapper::wrap,

@@ -1,8 +1,11 @@
 package org.galaxy.uniflow.javac12;
 
+import com.sun.source.tree.CaseTree;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniElement;
+import org.galaxy.uniflow.api.statements.UniEnhancedCase;
 import org.galaxy.uniflow.javac12.expression.JavacSwitchExpression;
+import org.galaxy.uniflow.javac15.statements.JavacEnhancedCase;
 import org.galaxy.uniflow.javac9.Uniflow9Wrapper;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,8 +15,19 @@ public class Uniflow12Wrapper extends Uniflow9Wrapper {
 
     @Override
     public @Nullable UniElement wrap(JCTree element) {
-        if (element instanceof JCTree.JCSwitchExpression)
+        if (element instanceof JCTree.JCCase)
+            return wrap((JCTree.JCCase) element);
+        else if (element instanceof JCTree.JCSwitchExpression)
             return new JavacSwitchExpression((JCTree.JCSwitchExpression) element);
         return super.wrap(element);
+    }
+
+    @SuppressWarnings("Since15")
+    public static UniEnhancedCase wrap(JCTree.JCCase jcCase) {
+        if (jcCase.getCaseKind() == CaseTree.CaseKind.RULE)
+            return new JavacEnhancedCase.JavacRuleEnhancedCase(jcCase);
+        else if (jcCase.getCaseKind() == CaseTree.CaseKind.STATEMENT)
+            return new JavacEnhancedCase.JavacStatementEnhancedCase(jcCase);
+        return null;
     }
 }
