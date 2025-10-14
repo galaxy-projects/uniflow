@@ -22,13 +22,13 @@ import java.util.List;
 
 public interface UniElementFactory {
 
-    default boolean supportsJigsaw() {
-        return this instanceof UniJigsawElementFactory;
+    default boolean supportsJdk9() {
+        return this instanceof UniJdk9ElementFactory;
     }
 
-    default @NotNull UniJigsawElementFactory asJigsaw() {
-        if (supportsJigsaw())
-            return (UniJigsawElementFactory) this;
+    default @NotNull UniJdk9ElementFactory asJdk9() {
+        if (supportsJdk9())
+            return (UniJdk9ElementFactory) this;
         throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
     }
 

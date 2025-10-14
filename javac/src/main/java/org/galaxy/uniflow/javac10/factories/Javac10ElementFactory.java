@@ -12,14 +12,14 @@ import org.galaxy.uniflow.javac.expression.JavacExpression;
 import org.galaxy.uniflow.javac.statements.JavacVariable;
 import org.galaxy.uniflow.javac.types.JavacExpressionType;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac9.factories.JavacJigsawElementFactory;
+import org.galaxy.uniflow.javac9.factories.Javac9ElementFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Stream;
 
-public class Javac10ElementFactory extends JavacJigsawElementFactory implements UniJdk10ElementFactory {
+public class Javac10ElementFactory extends Javac9ElementFactory implements UniJdk10ElementFactory {
 
     @Override
     public @NotNull UniVariable createVarVariable(@NotNull List<@NotNull UniAnnotation> annotations,

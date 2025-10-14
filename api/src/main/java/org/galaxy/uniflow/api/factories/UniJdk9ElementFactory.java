@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public interface UniJigsawElementFactory extends UniElementFactory {
+public interface UniJdk9ElementFactory extends UniElementFactory {
 
     @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
                                                @NotNull List<@NotNull UniModule> modules);

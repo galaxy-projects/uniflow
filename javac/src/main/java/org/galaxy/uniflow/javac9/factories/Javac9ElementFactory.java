@@ -7,7 +7,7 @@ import com.sun.tools.javac.util.ListBuffer;
 import org.galaxy.uniflow.api.UniCompilationUnit;
 import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.UniPackage;
-import org.galaxy.uniflow.api.factories.UniJigsawElementFactory;
+import org.galaxy.uniflow.api.factories.UniJdk9ElementFactory;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.*;
 import org.galaxy.uniflow.common.EnumUtils;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class JavacJigsawElementFactory extends JavacElementFactory implements UniJigsawElementFactory {
+public class Javac9ElementFactory extends JavacElementFactory implements UniJdk9ElementFactory {
 
     @Override
     public @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,

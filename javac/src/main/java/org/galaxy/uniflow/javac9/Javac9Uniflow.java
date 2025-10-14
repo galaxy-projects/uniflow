@@ -3,7 +3,7 @@ package org.galaxy.uniflow.javac9;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.javac.JavacUniflow;
 import org.galaxy.uniflow.javac.VersionedWrapper;
-import org.galaxy.uniflow.javac9.factories.JavacJigsawElementFactory;
+import org.galaxy.uniflow.javac9.factories.Javac9ElementFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class Javac9Uniflow extends JavacUniflow {
@@ -14,7 +14,7 @@ public class Javac9Uniflow extends JavacUniflow {
 
     @Override
     protected @NotNull UniElementFactory createElementFactory() {
-        return new JavacJigsawElementFactory();
+        return new Javac9ElementFactory();
     }
 
     @Override
