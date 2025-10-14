@@ -16,12 +16,12 @@ import org.galaxy.uniflow.reflection.ReflectClass;
 import org.galaxy.uniflow.reflection.ReflectField;
 import org.jetbrains.annotations.NotNull;
 
-public class JavacSwitchExpression extends JavacExpression<JCTree.JCSwitchExpression> implements UniSwitchExpression {
+public class JavacSwitchExpression extends JavacExpression<JCTree.JCExpression> implements UniSwitchExpression {
 
     private static final ReflectField SELECTOR;
     private static final ReflectField CASES;
 
-    public JavacSwitchExpression(JCTree.@NotNull JCSwitchExpression tree) {
+    public JavacSwitchExpression(JCTree.JCExpression tree) {
         super(tree);
     }
 
@@ -47,7 +47,7 @@ public class JavacSwitchExpression extends JavacExpression<JCTree.JCSwitchExpres
 
     static {
         try {
-            ReflectClass type = new ReflectClass(Reflection.SWITCH_EXPRESSION);
+            ReflectClass type = new ReflectClass(Reflection.SWITCH_EXPRESSION_TYPE);
             SELECTOR = type.field("selector");
             CASES = type.field("cases");
         } catch (NoSuchFieldException e) {

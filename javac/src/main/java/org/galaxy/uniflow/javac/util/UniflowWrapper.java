@@ -79,6 +79,14 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniOperatorExpression wrap(JCTree.JCOperatorExpression expression) {
+        VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+
+        if (wrapper != null) {
+            UniElement result = wrapper.wrap(expression);
+
+            if (result != null)
+                return (UniOperatorExpression) result;
+        }
         if (expression instanceof JCTree.JCBinary)
             return new JavacBinary((JCTree.JCBinary) expression);
         else if (expression instanceof JCTree.JCAssignOp)
@@ -89,6 +97,14 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniExpression wrap(JCTree.JCExpression expression) {
+        VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+
+        if (wrapper != null) {
+            UniElement result = wrapper.wrap(expression);
+
+            if (result != null)
+                return (UniExpression) result;
+        }
         if (expression instanceof JCTree.JCArrayAccess)
             return new JavacArrayAccess((JCTree.JCArrayAccess) expression);
         else if (expression instanceof JCTree.JCAssign)
@@ -123,6 +139,14 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniStatement wrap(JCTree.JCStatement statement) {
+        VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+
+        if (wrapper != null) {
+            UniElement result = wrapper.wrap(statement);
+
+            if (result != null)
+                return (UniStatement) result;
+        }
         if (statement instanceof JCTree.JCAssert)
             return new JavacAssert((JCTree.JCAssert) statement);
         else if (statement instanceof JCTree.JCBlock)

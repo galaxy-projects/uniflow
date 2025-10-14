@@ -19,6 +19,8 @@ public class Uniflow9Wrapper implements VersionedWrapper {
             return wrapModule(element);
         else if (Reflection.DIRECTIVE_TYPE.isInstance(element))
             return wrapDirective(element);
+        else if (element instanceof JCTree.JCCompilationUnit)
+            return new Javac9CompilationUnit((JCTree.JCCompilationUnit) element);
         return null;
     }
 

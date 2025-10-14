@@ -27,7 +27,7 @@ public class Javac15PatternInstanceOf extends JavacInstanceOf implements UniPatt
 
     @Override
     public @Nullable UniPattern getPattern() {
-        return Uniflow15Wrapper.wrap(PATTERN.get(tree));
+        return Uniflow15Wrapper.wrap((JCTree.JCPattern) PATTERN.get(tree));
     }
 
     static {
