@@ -1,22 +1,53 @@
-package org.galaxy.uniflow.javac.factories;
+package org.galaxy.uniflow.javac9.factories;
 
 import com.sun.source.tree.ModuleTree;
+import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
+import com.sun.tools.javac.util.ListBuffer;
+import org.galaxy.uniflow.api.UniCompilationUnit;
 import org.galaxy.uniflow.api.UniModifiers;
-import org.galaxy.uniflow.api.factories.UniModuleFactory;
+import org.galaxy.uniflow.api.UniPackage;
+import org.galaxy.uniflow.api.factories.UniJigsawElementFactory;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.*;
 import org.galaxy.uniflow.common.EnumUtils;
+import org.galaxy.uniflow.javac.JavacPackage;
 import org.galaxy.uniflow.javac.JavacUniflow;
-import org.galaxy.uniflow.javac.modules.JavacModule;
-import org.galaxy.uniflow.javac.modules.directives.*;
+import org.galaxy.uniflow.javac.factories.JavacElementFactory;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
+import org.galaxy.uniflow.javac9.Javac9CompilationUnit;
+import org.galaxy.uniflow.javac9.Javac9Unwrapper;
+import org.galaxy.uniflow.javac9.modules.JavacModule;
+import org.galaxy.uniflow.javac9.modules.directives.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.stream.Stream;
 
-public class JavacModuleFactory implements UniModuleFactory {
+public class JavacJigsawElementFactory extends JavacElementFactory implements UniJigsawElementFactory {
+
+    @Override
+    public boolean supportsJigsaw() {
+        return true;
+    }
+
+    @Override
+    public @NotNull UniJigsawElementFactory asJigsaw() {
+        return this;
+    }
+
+    @Override
+    public @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
+                                                      @NotNull List<@NotNull UniModule> modules) {
+        JavacPackage javacPackage = check(packageDecl, JavacPackage.class);
+        Stream<JavacModule> javacModules = checkList(modules, JavacModule.class);
+        ListBuffer<JCTree> buffer = new ListBuffer<>();
+
+        buffer.add(javacPackage.getTree());
+        javacModules.map(JavacModule::getTree).forEach(buffer::add);
+        return new Javac9CompilationUnit(treeMaker.TopLevel(buffer.toList()));
+    }
 
     @Override
     public @NotNull UniModule createModule(@NotNull UniModifiers modifiers,
@@ -30,7 +61,7 @@ public class JavacModuleFactory implements UniModuleFactory {
                 JavacUnwrapper.unwrap(modifiers),
                 EnumUtils.convert(ModuleTree.ModuleKind.class, kind),
                 treeMaker.Ident(NameUtils.name(name)),
-                directives.stream().map(JavacUnwrapper::unwrap).collect(com.sun.tools.javac.util.List.collector())
+                directives.stream().map(Javac9Unwrapper::unwrap).collect(com.sun.tools.javac.util.List.collector())
         ));
     }
 

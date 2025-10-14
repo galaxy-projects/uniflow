@@ -9,7 +9,6 @@ import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.*;
-import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
 import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
@@ -26,12 +25,13 @@ import java.util.List;
 
 public interface UniElementFactory {
 
+    boolean supportsJigsaw();
+
+    @NotNull UniJigsawElementFactory asJigsaw();
+
     @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
                                                @NotNull List<@NotNull UniImport> imports,
                                                @NotNull List<@NotNull UniClass> classes);
-
-    @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
-                                               @NotNull List<@NotNull UniModule> modules);
 
     @NotNull UniCompilationUnit createTopLevel(@NotNull List<@NotNull UniElement> elements);
 

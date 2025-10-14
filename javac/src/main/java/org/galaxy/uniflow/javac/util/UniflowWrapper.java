@@ -14,9 +14,6 @@ import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniOperatorExpression;
-import org.galaxy.uniflow.api.modules.UniModule;
-import org.galaxy.uniflow.api.modules.directives.UniDirective;
-import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.UniClassType;
@@ -29,11 +26,6 @@ import org.galaxy.uniflow.javac.elements.JavacCaseLabel;
 import org.galaxy.uniflow.javac.elements.JavacCatch;
 import org.galaxy.uniflow.javac.elements.JavacDefaultCaseLabel;
 import org.galaxy.uniflow.javac.expression.*;
-import org.galaxy.uniflow.javac.modules.JavacModule;
-import org.galaxy.uniflow.javac.modules.directives.*;
-import org.galaxy.uniflow.javac.pattern.JavacBindingPattern;
-import org.galaxy.uniflow.javac.pattern.JavacGuardedPattern;
-import org.galaxy.uniflow.javac.pattern.JavacParenthesizedPattern;
 import org.galaxy.uniflow.javac.signatures.JavacOperatorSignature;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.*;
@@ -52,6 +44,14 @@ public class UniflowWrapper {
     // Globals
 
     public static @NotNull UniElement wrap(JCTree element) {
+        VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+
+        if (wrapper != null) {
+            UniElement result = wrapper.wrap(element);
+
+            if (result != null)
+                return result;
+        }
         if (element instanceof JCTree.JCAnnotation)
             return new JavacAnnotation((JCTree.JCAnnotation) element);
         else if (element instanceof JCTree.JCCatch)
@@ -64,8 +64,6 @@ public class UniflowWrapper {
             return wrap((JCTree.JCPattern) element);
         else if (element instanceof JCTree.JCCaseLabel)
             return wrap((JCTree.JCCaseLabel) element);
-        else if (element instanceof JCTree.JCModuleDecl)
-            return new JavacModule((JCTree.JCModuleDecl) element);
         else if (element instanceof JCTree.JCDirective)
             return wrap((JCTree.JCDirective) element);
         else if (element instanceof JCTree.JCCompilationUnit)
@@ -175,30 +173,6 @@ public class UniflowWrapper {
         return new JavacStatement<>(statement);
     }
 
-    public static @NotNull UniPattern wrap(JCTree.JCPattern pattern) {
-        if (pattern instanceof JCTree.JCBindingPattern)
-            return new JavacBindingPattern((JCTree.JCBindingPattern) pattern);
-        else if (pattern instanceof JCTree.JCGuardPattern)
-            return new JavacGuardedPattern((JCTree.JCGuardPattern) pattern);
-        else if (pattern instanceof JCTree.JCParenthesizedPattern)
-            return new JavacParenthesizedPattern((JCTree.JCParenthesizedPattern) pattern);
-        throw new IllegalArgumentException("Unknown pattern: " + pattern);
-    }
-
-    public static @NotNull UniDirective wrap(JCTree.JCDirective directive) {
-        if (directive instanceof JCTree.JCExports)
-            return new JavacExports((JCTree.JCExports) directive);
-        else if (directive instanceof JCTree.JCOpens)
-            return new JavacOpens((JCTree.JCOpens) directive);
-        else if (directive instanceof JCTree.JCProvides)
-            return new JavacProvides((JCTree.JCProvides) directive);
-        else if (directive instanceof JCTree.JCRequires)
-            return new JavacRequires((JCTree.JCRequires) directive);
-        else if (directive instanceof JCTree.JCUses)
-            return new JavacUses((JCTree.JCUses) directive);
-        throw new IllegalArgumentException("Unknown directive: " + directive);
-    }
-
     // Specifics
 
     public static @NotNull UniAnnotation wrap(JCTree.JCAnnotation annotation) {
@@ -264,10 +238,6 @@ public class UniflowWrapper {
 
     public static @NotNull UniTypeParameter wrap(JCTree.JCTypeParameter typeParameter) {
         return new JavacTypeParameter(typeParameter);
-    }
-
-    public static @NotNull UniModule wrap(JCTree.JCModuleDecl module) {
-        return new JavacModule(module);
     }
 
     public static @NotNull UniPackage wrap(JCTree.JCPackageDecl pkg) {

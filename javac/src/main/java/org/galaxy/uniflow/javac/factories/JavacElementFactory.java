@@ -16,6 +16,7 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
+import org.galaxy.uniflow.api.factories.UniJigsawElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.pattern.UniBindingPattern;
@@ -35,11 +36,6 @@ import org.galaxy.uniflow.javac.elements.JavacCaseLabel;
 import org.galaxy.uniflow.javac.elements.JavacCatch;
 import org.galaxy.uniflow.javac.elements.JavacDefaultCaseLabel;
 import org.galaxy.uniflow.javac.expression.*;
-import org.galaxy.uniflow.javac.modules.JavacModule;
-import org.galaxy.uniflow.javac.pattern.JavacBindingPattern;
-import org.galaxy.uniflow.javac.pattern.JavacGuardedPattern;
-import org.galaxy.uniflow.javac.pattern.JavacParenthesizedPattern;
-import org.galaxy.uniflow.javac.pattern.JavacPattern;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.JavacClassType;
 import org.galaxy.uniflow.javac.types.JavacExpressionType;
@@ -47,6 +43,11 @@ import org.galaxy.uniflow.javac.types.JavacType;
 import org.galaxy.uniflow.javac.types.JavacTypeParameter;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
+import org.galaxy.uniflow.javac12.pattern.JavacBindingPattern;
+import org.galaxy.uniflow.javac12.pattern.JavacGuardedPattern;
+import org.galaxy.uniflow.javac12.pattern.JavacParenthesizedPattern;
+import org.galaxy.uniflow.javac12.pattern.JavacPattern;
+import org.galaxy.uniflow.reflection.Constants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,10 +58,20 @@ import java.util.stream.Stream;
 
 public class JavacElementFactory implements UniElementFactory {
 
-    private final TreeMaker treeMaker;
+    protected final TreeMaker treeMaker;
 
     public JavacElementFactory() {
         treeMaker = JavacUniflow.getInstance().treeMaker;
+    }
+
+    @Override
+    public boolean supportsJigsaw() {
+        return false;
+    }
+
+    @Override
+    public @NotNull UniJigsawElementFactory asJigsaw() {
+        throw new UnsupportedOperationException(Constants.ERROR_MESSAGE);
     }
 
     @Override
@@ -82,11 +93,9 @@ public class JavacElementFactory implements UniElementFactory {
     public @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
                                                       @NotNull List<@NotNull UniModule> modules) {
         JavacPackage javacPackage = check(packageDecl, JavacPackage.class);
-        Stream<JavacModule> javacModules = checkList(modules, JavacModule.class);
         ListBuffer<JCTree> buffer = new ListBuffer<>();
 
         buffer.add(javacPackage.getTree());
-        javacModules.map(JavacModule::getTree).forEach(buffer::add);
         return new JavacCompilationUnit(treeMaker.TopLevel(buffer.toList()));
     }
 
@@ -900,14 +909,14 @@ public class JavacElementFactory implements UniElementFactory {
         return new JavacFieldAccess((JCTree.JCFieldAccess) treeMaker.ClassLiteral(javacType.getRawType()));
     }
 
-    private <T> T check(Object element, Class<T> type) {
+    protected <T> T check(Object element, Class<T> type) {
         if (element == null) return null;
         if (!type.isInstance(element))
             throw new IllegalArgumentException("Element " + element + " is not of type " + type);
         return type.cast(element);
     }
 
-    private <T> Stream<T> checkList(List<?> list, Class<T> type) {
+    protected <T> Stream<T> checkList(List<?> list, Class<T> type) {
         for (Object element : list) {
             if (!type.isInstance(element))
                 throw new IllegalArgumentException("Element " + element + " is not of type " + type.getName());

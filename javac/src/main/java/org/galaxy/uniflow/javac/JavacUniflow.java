@@ -5,6 +5,7 @@ import com.sun.tools.javac.code.Source;
 import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.code.Types;
 import com.sun.tools.javac.model.JavacElements;
+import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Names;
@@ -12,6 +13,7 @@ import org.galaxy.uniflow.api.Uniflow;
 import org.galaxy.uniflow.api.factories.*;
 import org.galaxy.uniflow.api.processing.UniProcessingEnvironment;
 import org.galaxy.uniflow.javac.factories.*;
+import org.galaxy.uniflow.javac9.Javac9Uniflow;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.processing.Filer;
@@ -31,7 +33,7 @@ public class JavacUniflow extends Uniflow {
     public Messager messager;
     public JavacElements elements;
 
-    private JavacUniflow(com.sun.tools.javac.processing.JavacProcessingEnvironment processingEnvironment) {
+    public JavacUniflow(com.sun.tools.javac.processing.JavacProcessingEnvironment processingEnvironment) {
         Context context = processingEnvironment.getContext();
 
         treeMaker = TreeMaker.instance(context);
@@ -46,7 +48,7 @@ public class JavacUniflow extends Uniflow {
     }
 
     public @NotNull UniProcessingEnvironment createRoundEnvironment(@NotNull RoundEnvironment roundEnv) {
-        return new JavacProcessingEnvironment(roundEnv);
+        return new JavacProcessingEnvironmentImpl(roundEnv);
     }
 
     @Override
@@ -64,11 +66,8 @@ public class JavacUniflow extends Uniflow {
         return new JavacElementFactory();
     }
 
-    @Override
-    protected @NotNull UniModuleFactory createModuleFactory() {
-        if (source.compareTo(Source.JDK9) < 0)
-            throw new IllegalStateException("Running on " + source + ", needs at least java 9");
-        return new JavacModuleFactory();
+    public VersionedWrapper getVersionedWrapper() {
+        return null;
     }
 
     @Override
@@ -86,8 +85,13 @@ public class JavacUniflow extends Uniflow {
     }
 
     public static @NotNull Uniflow create(@NotNull ProcessingEnvironment environment) {
-        if (!(environment instanceof com.sun.tools.javac.processing.JavacProcessingEnvironment))
+        if (!(environment instanceof JavacProcessingEnvironment))
             throw new IllegalArgumentException("environment must be an instance of JavacProcessingEnvironment");
-        return new JavacUniflow((com.sun.tools.javac.processing.JavacProcessingEnvironment) environment);
+        JavacProcessingEnvironment processingEnvironment = (JavacProcessingEnvironment) environment;
+        Source source = Source.instance(processingEnvironment.getContext());
+
+        if (source.compareTo(Source.JDK9) >= 0)
+            return new Javac9Uniflow(processingEnvironment);
+        return new JavacUniflow(processingEnvironment);
     }
 }

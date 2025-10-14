@@ -12,8 +12,6 @@ import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.expressions.UniExpression;
-import org.galaxy.uniflow.api.modules.directives.UniDirective;
-import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniFieldSignature;
 import org.galaxy.uniflow.api.signatures.UniMethodSignature;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -117,14 +115,6 @@ public class JavacUnwrapper {
 
     public static @NotNull JCTree.JCExpressionStatement unwrap(UniExpressionStatement statement) {
         return (JCTree.JCExpressionStatement) unwrap((UniElement) statement);
-    }
-
-    public static @NotNull JCTree.JCDirective unwrap(UniDirective directive) {
-        return (JCTree.JCDirective) unwrap((UniElement) directive);
-    }
-
-    public static @NotNull JCTree.JCPattern unwrap(UniPattern pattern) {
-        return (JCTree.JCPattern) unwrap((UniElement) pattern);
     }
 
     public static @NotNull JCTree.JCCase unwrap(UniCase uniCase) {

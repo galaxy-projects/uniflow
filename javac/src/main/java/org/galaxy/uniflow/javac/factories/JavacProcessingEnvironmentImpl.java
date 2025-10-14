@@ -24,11 +24,11 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class JavacProcessingEnvironment implements UniProcessingEnvironment {
+public class JavacProcessingEnvironmentImpl implements UniProcessingEnvironment {
 
     private final RoundEnvironment roundEnv;
 
-    public JavacProcessingEnvironment(RoundEnvironment roundEnv) {
+    public JavacProcessingEnvironmentImpl(RoundEnvironment roundEnv) {
         this.roundEnv = roundEnv;
     }
 

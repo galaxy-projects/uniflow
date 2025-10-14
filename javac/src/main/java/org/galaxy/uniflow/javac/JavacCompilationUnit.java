@@ -1,13 +1,13 @@
 package org.galaxy.uniflow.javac;
 
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
+import org.galaxy.uniflow.reflection.Constants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,18 +21,12 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
 
     @Override
     public void setModule(@Nullable UniModule module) {
-        JCTree.JCModuleDecl current = tree.getModuleDecl();
-
-        if (current != null)
-            tree.defs = tree.defs.stream().filter(e -> e != current).collect(List.collector());
-        tree.defs = tree.defs.append(JavacUnwrapper.unwrap(module));
+        throw new UnsupportedOperationException(Constants.ERROR_MESSAGE);
     }
 
     @Override
     public @Nullable UniModule getModule() {
-        JCTree.JCModuleDecl module = tree.getModuleDecl();
-
-        return module != null ? UniflowWrapper.wrap(module) : null;
+        throw new UnsupportedOperationException(Constants.ERROR_MESSAGE);
     }
 
     @Override
