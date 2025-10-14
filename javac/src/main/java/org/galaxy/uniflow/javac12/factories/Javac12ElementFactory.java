@@ -16,16 +16,6 @@ import java.util.stream.Stream;
 public class Javac12ElementFactory extends Javac10ElementFactory implements UniJdk12ElementFactory {
 
     @Override
-    public boolean supportsJdk12() {
-        return true;
-    }
-
-    @Override
-    public @NotNull UniJdk12ElementFactory asJdk12() {
-        return this;
-    }
-
-    @Override
     public @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
                                                                @NotNull List<@NotNull UniCase> cases) {
         JavacExpression<?> javacSelector = check(selector, JavacExpression.class);

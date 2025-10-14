@@ -22,16 +22,6 @@ import java.util.stream.Stream;
 public class Javac10ElementFactory extends JavacJigsawElementFactory implements UniJdk10ElementFactory {
 
     @Override
-    public boolean supportsJdk10() {
-        return true;
-    }
-
-    @Override
-    public @NotNull UniJdk10ElementFactory asJdk10() {
-        return this;
-    }
-
-    @Override
     public @NotNull UniVariable createVarVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                                   @NotNull String name,
                                                   @NotNull Class<?> type,

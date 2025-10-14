@@ -113,40 +113,25 @@ public class JavacElementFactory implements UniElementFactory {
                                          @NotNull List<@NotNull UniType> implementing,
                                          @NotNull List<@NotNull UniVariable> fields,
                                          @NotNull List<@NotNull UniMethod> methods) {
-        return createClass(modifiers, name, typeParameters, extending, implementing,
-                Collections.emptyList(), fields, methods, Collections.emptyList());
+        return createClass(modifiers, name, typeParameters, extending, implementing, fields, methods,
+                Collections.emptyList());
     }
 
     @Override
+    @SuppressWarnings({ "DuplicatedCode", "rawtypes" })
     public @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
                                          @NotNull String name,
                                          @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                          @Nullable UniType extending,
                                          @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniExpression> permitting,
-                                         @NotNull List<@NotNull UniVariable> fields,
-                                         @NotNull List<@NotNull UniMethod> methods) {
-        return createClass(modifiers, name, typeParameters, extending, implementing, permitting,
-                fields, methods, Collections.emptyList());
-    }
-
-    @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
-                                         @NotNull String name,
-                                         @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                         @Nullable UniType extending,
-                                         @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniExpression> permitting,
                                          @NotNull List<@NotNull UniVariable> fields,
                                          @NotNull List<@NotNull UniMethod> methods,
                                          @NotNull List<@NotNull UniClassInitializer> initializers) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
         Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
-        JavacExpressionType<JCTree.JCExpression, ?> javacExtending = check(extending, JavacExpressionType.class);
+        JavacExpressionType javacExtending = check(extending, JavacExpressionType.class);
         Stream<JavacExpressionType> javacImplementing =
                 checkList(implementing, JavacExpressionType.class);
-        Stream<JavacExpression> javacPermitting = checkList(permitting, JavacExpression.class);
         Stream<JavacVariable> javacFields = checkList(fields, JavacVariable.class);
         Stream<JavacMethod> javacMethods = checkList(methods, JavacMethod.class);
         Stream<JavacClassInitializer> javacInitializers = checkList(initializers, JavacClassInitializer.class);
@@ -160,9 +145,8 @@ public class JavacElementFactory implements UniElementFactory {
                 javacModifiers.getTree(),
                 NameUtils.name(name),
                 mapToList(javacTypeParameters, JavacTypeParameter::getTree),
-                javacExtending != null ? javacExtending.getExpression() : null,
+                javacExtending != null ? (JCTree.JCExpression) javacExtending.getExpression() : null,
                 mapToList(javacImplementing, type -> (JCTree.JCExpression) type.getExpression()),
-                mapToList(javacPermitting, permit -> (JCTree.JCExpression) permit.getTree()),
                 buffer.toList()
         ));
     }

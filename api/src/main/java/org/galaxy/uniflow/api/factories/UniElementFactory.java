@@ -26,27 +26,43 @@ import java.util.List;
 public interface UniElementFactory {
 
     default boolean supportsJigsaw() {
-        return false;
+        return this instanceof UniJigsawElementFactory;
     }
 
     default @NotNull UniJigsawElementFactory asJigsaw() {
-        throw new UnsupportedOperationException();
+        if (supportsJigsaw())
+            return (UniJigsawElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
     }
 
     default boolean supportsJdk10() {
-        return false;
+        return this instanceof UniJdk10ElementFactory;
     }
 
     default @NotNull UniJdk10ElementFactory asJdk10() {
-        throw new UnsupportedOperationException();
+        if (supportsJdk10())
+            return (UniJdk10ElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
     }
 
     default boolean supportsJdk12() {
-        return false;
+        return this instanceof UniJdk12ElementFactory;
     }
 
     default @NotNull UniJdk12ElementFactory asJdk12() {
-        throw new UnsupportedOperationException();
+        if (supportsJdk12())
+            return (UniJdk12ElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
+    }
+
+    default boolean supportsJdk15() {
+        return this instanceof UniJdk15ElementFactory;
+    }
+
+    default @NotNull UniJdk15ElementFactory asJdk15() {
+        if (supportsJdk15())
+            return (UniJdk15ElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
     }
 
     @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
@@ -69,24 +85,14 @@ public interface UniElementFactory {
                                   @NotNull List<@NotNull UniVariable> fields,
                                   @NotNull List<@NotNull UniMethod> methods);
 
-    @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
-                                  @NotNull String name,
-                                  @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                  @Nullable UniType extending,
-                                  @NotNull List<@NotNull UniType> implementing,
-                                  @NotNull List<@NotNull UniExpression> permitting,
-                                  @NotNull List<@NotNull UniVariable> fields,
-                                  @NotNull List<@NotNull UniMethod> methods);
-
-    @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
-                                  @NotNull String name,
-                                  @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                  @Nullable UniType extending,
-                                  @NotNull List<@NotNull UniType> implementing,
-                                  @NotNull List<@NotNull UniExpression> permitting,
-                                  @NotNull List<@NotNull UniVariable> fields,
-                                  @NotNull List<@NotNull UniMethod> methods,
-                                  @NotNull List<@NotNull UniClassInitializer> initializers);
+    UniClass createClass(@NotNull UniModifiers modifiers,
+                         @NotNull String name,
+                         @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                         @Nullable UniType extending,
+                         @NotNull List<@NotNull UniType> implementing,
+                         @NotNull List<@NotNull UniVariable> fields,
+                         @NotNull List<@NotNull UniMethod> methods,
+                         @NotNull List<@NotNull UniClassInitializer> initializers);
 
     @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
                                     @NotNull String name,

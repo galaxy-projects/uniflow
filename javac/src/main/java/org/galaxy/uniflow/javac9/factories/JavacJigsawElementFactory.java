@@ -28,16 +28,6 @@ import java.util.stream.Stream;
 public class JavacJigsawElementFactory extends JavacElementFactory implements UniJigsawElementFactory {
 
     @Override
-    public boolean supportsJigsaw() {
-        return true;
-    }
-
-    @Override
-    public @NotNull UniJigsawElementFactory asJigsaw() {
-        return this;
-    }
-
-    @Override
     public @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
                                                       @NotNull List<@NotNull UniModule> modules) {
         JavacPackage javacPackage = check(packageDecl, JavacPackage.class);
