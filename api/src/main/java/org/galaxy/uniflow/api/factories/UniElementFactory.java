@@ -212,8 +212,6 @@ public interface UniElementFactory {
 
     @NotNull UniBreak createBreak(@Nullable String label);
 
-    @NotNull UniYield createYield(@NotNull UniExpression value);
-
     @NotNull UniContinue createContinue(@Nullable String label);
 
     @NotNull UniReturn createReturn(@NotNull UniExpression value);

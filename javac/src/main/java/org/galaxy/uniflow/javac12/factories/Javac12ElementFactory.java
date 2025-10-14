@@ -4,16 +4,25 @@ import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniSwitchExpression;
 import org.galaxy.uniflow.api.factories.UniJdk12ElementFactory;
+import org.galaxy.uniflow.api.statements.UniYield;
 import org.galaxy.uniflow.javac.expression.JavacExpression;
 import org.galaxy.uniflow.javac.statements.JavacCase;
 import org.galaxy.uniflow.javac10.factories.Javac10ElementFactory;
 import org.galaxy.uniflow.javac12.expression.JavacSwitchExpression;
+import org.galaxy.uniflow.javac12.statements.JavacYield;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 public class Javac12ElementFactory extends Javac10ElementFactory implements UniJdk12ElementFactory {
+
+    @Override
+    public @NotNull UniYield createYield(@NotNull UniExpression value) {
+        JavacExpression<?> javacValue = check(value, JavacExpression.class);
+
+        return new JavacYield(treeMaker.Yield(javacValue.getTree()));
+    }
 
     @Override
     public @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,

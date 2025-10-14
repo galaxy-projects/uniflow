@@ -29,6 +29,7 @@ import org.galaxy.uniflow.javac.expression.*;
 import org.galaxy.uniflow.javac.signatures.JavacOperatorSignature;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.*;
+import org.galaxy.uniflow.javac12.statements.JavacYield;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;

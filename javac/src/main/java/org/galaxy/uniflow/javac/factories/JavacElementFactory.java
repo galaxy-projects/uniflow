@@ -501,15 +501,6 @@ public class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniYield createYield(@NotNull UniExpression value) {
-        if (isSourceNotAtLeast(Source.JDK14))
-            throw new IllegalStateException("Yield requires java 14");
-        JavacExpression<?> javacValue = check(value, JavacExpression.class);
-
-        return new JavacYield(treeMaker.Yield(javacValue.getTree()));
-    }
-
-    @Override
     public @NotNull UniContinue createContinue(@Nullable String label) {
         return new JavacContinue(treeMaker.Continue(label != null ? NameUtils.name(label) : null));
     }
