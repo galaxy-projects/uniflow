@@ -25,13 +25,29 @@ import java.util.List;
 
 public interface UniElementFactory {
 
-    boolean supportsJigsaw();
+    default boolean supportsJigsaw() {
+        return false;
+    }
 
-    @NotNull UniJigsawElementFactory asJigsaw();
+    default @NotNull UniJigsawElementFactory asJigsaw() {
+        throw new UnsupportedOperationException();
+    }
 
-    boolean supportsJdk10();
+    default boolean supportsJdk10() {
+        return false;
+    }
 
-    @NotNull UniJdk10ElementFactory asJdk10();
+    default @NotNull UniJdk10ElementFactory asJdk10() {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean supportsJdk12() {
+        return false;
+    }
+
+    default @NotNull UniJdk12ElementFactory asJdk12() {
+        throw new UnsupportedOperationException();
+    }
 
     @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
                                                @NotNull List<@NotNull UniImport> imports,
@@ -161,9 +177,6 @@ public interface UniElementFactory {
 
     @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
                                     @NotNull List<@NotNull UniCase> cases);
-
-    @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
-                                                        @NotNull List<@NotNull UniCase> cases);
 
     @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
                                 @NotNull List<@NotNull UniStatement> statements);

@@ -3,13 +3,13 @@ package org.galaxy.uniflow.javac9.modules.directives;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.modules.directives.UniOpens;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.galaxy.uniflow.javac9.Reflection;
-import org.galaxy.uniflow.reflection.Constants;
 import org.galaxy.uniflow.reflection.ReflectClass;
 import org.galaxy.uniflow.reflection.ReflectField;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +49,7 @@ public class JavacOpens extends JavacElement<JCTree> implements UniOpens {
             QUALIFIER_ID = type.field("qualid");
             MODULE_NAMES = type.field("moduleNames");
         } catch (NoSuchFieldException e) {
-            throw new UnsupportedOperationException(Constants.ERROR_MESSAGE, e);
+            throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE, e);
         }
     }
 }

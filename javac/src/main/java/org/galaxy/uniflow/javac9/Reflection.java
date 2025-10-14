@@ -1,6 +1,6 @@
 package org.galaxy.uniflow.javac9;
 
-import org.galaxy.uniflow.reflection.Constants;
+import org.galaxy.uniflow.api.factories.UniConstants;
 
 public class Reflection {
 
@@ -24,7 +24,7 @@ public class Reflection {
             USES_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCUses");
             COMPILATION_UNIT = Class.forName("com.sun.tools.javac.tree.JCTree$JCCompilationUnit");
         } catch (ClassNotFoundException e) {
-            throw new UnsupportedOperationException(Constants.ERROR_MESSAGE, e);
+            throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE, e);
         }
     }
 }

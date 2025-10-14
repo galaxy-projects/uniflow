@@ -16,8 +16,6 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
-import org.galaxy.uniflow.api.factories.UniJdk10ElementFactory;
-import org.galaxy.uniflow.api.factories.UniJigsawElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
 import org.galaxy.uniflow.api.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
@@ -47,7 +45,6 @@ import org.galaxy.uniflow.javac12.pattern.JavacBindingPattern;
 import org.galaxy.uniflow.javac12.pattern.JavacGuardedPattern;
 import org.galaxy.uniflow.javac12.pattern.JavacParenthesizedPattern;
 import org.galaxy.uniflow.javac12.pattern.JavacPattern;
-import org.galaxy.uniflow.reflection.Constants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,26 +59,6 @@ public class JavacElementFactory implements UniElementFactory {
 
     public JavacElementFactory() {
         treeMaker = JavacUniflow.getInstance().treeMaker;
-    }
-
-    @Override
-    public boolean supportsJigsaw() {
-        return false;
-    }
-
-    @Override
-    public @NotNull UniJigsawElementFactory asJigsaw() {
-        throw new UnsupportedOperationException(Constants.ERROR_MESSAGE);
-    }
-
-    @Override
-    public boolean supportsJdk10() {
-        return false;
-    }
-
-    @Override
-    public @NotNull UniJdk10ElementFactory asJdk10() {
-        throw new UnsupportedOperationException(Constants.ERROR_MESSAGE);
     }
 
     @Override
@@ -420,20 +397,6 @@ public class JavacElementFactory implements UniElementFactory {
         Stream<JavacCase> javacCases = checkList(cases, JavacCase.class);
 
         return new JavacSwitch(treeMaker.Switch(
-                javacSelector.getTree(),
-                mapToList(javacCases, JavacCase::getTree)
-        ));
-    }
-
-    @Override
-    public @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
-                                                               @NotNull List<@NotNull UniCase> cases) {
-        if (isSourceNotAtLeast(Source.JDK14))
-            throw new IllegalStateException("Switch expression requires at least java 14");
-        JavacExpression<?> javacSelector = check(selector, JavacExpression.class);
-        Stream<JavacCase> javacCases = checkList(cases, JavacCase.class);
-
-        return new JavacSwitchExpression(treeMaker.SwitchExpression(
                 javacSelector.getTree(),
                 mapToList(javacCases, JavacCase::getTree)
         ));

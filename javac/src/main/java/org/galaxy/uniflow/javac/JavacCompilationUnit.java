@@ -2,12 +2,12 @@ package org.galaxy.uniflow.javac;
 
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.*;
+import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
-import org.galaxy.uniflow.reflection.Constants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,12 +21,12 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
 
     @Override
     public void setModule(@Nullable UniModule module) {
-        throw new UnsupportedOperationException(Constants.ERROR_MESSAGE);
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
     }
 
     @Override
     public @Nullable UniModule getModule() {
-        throw new UnsupportedOperationException(Constants.ERROR_MESSAGE);
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.common.EnumUtils;
@@ -15,7 +16,6 @@ import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.galaxy.uniflow.javac9.Javac9Unwrapper;
 import org.galaxy.uniflow.javac9.Reflection;
 import org.galaxy.uniflow.javac9.Uniflow9Wrapper;
-import org.galaxy.uniflow.reflection.Constants;
 import org.galaxy.uniflow.reflection.ReflectClass;
 import org.galaxy.uniflow.reflection.ReflectField;
 import org.galaxy.uniflow.reflection.ReflectMethod;
@@ -72,7 +72,7 @@ public class JavacModule extends JavacElement<JCTree> implements UniModule {
             MODIFIERS = type.field("mods");
             DIRECTIVES = type.field("directives");
         } catch (NoSuchMethodException | NoSuchFieldException e) {
-            throw new UnsupportedOperationException(Constants.ERROR_MESSAGE, e);
+            throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE, e);
         }
     }
 }

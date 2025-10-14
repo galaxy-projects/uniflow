@@ -231,8 +231,8 @@ public class UniflowWrapper {
     public static @NotNull UniCaseLabel wrap(JCTree.JCCaseLabel caseLabel) {
         if (caseLabel instanceof JCTree.JCDefaultCaseLabel)
             return new JavacDefaultCaseLabel((JCTree.JCDefaultCaseLabel) caseLabel);
-        else if (caseLabel instanceof JCTree.JCExpression)
-            return wrap((JCTree.JCExpression) caseLabel);
+        else if (Reflection.EXPRESSION.isInstance(caseLabel))
+            return wrap(Reflection.EXPRESSION.cast(caseLabel));
         return new JavacCaseLabel(caseLabel);
     }
 

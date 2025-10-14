@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface UniJdk10ElementFactory extends UniElementFactory {
+public interface UniJdk10ElementFactory extends UniJigsawElementFactory {
 
     @NotNull UniVariable createVarVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                            @NotNull String name,

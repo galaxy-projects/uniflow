@@ -5,6 +5,8 @@ import org.galaxy.uniflow.api.expressions.UniIdentifier;
 
 public final class UniConstants {
 
+    public static final String JAVA_VERSION_ERROR_MESSAGE = "Not supported in this version";
+
     public static final UniIdentifier THIS = Uniflow.getInstance().getElementFactory().createThis();
 
 }

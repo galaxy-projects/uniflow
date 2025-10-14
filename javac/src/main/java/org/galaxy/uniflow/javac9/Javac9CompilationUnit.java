@@ -2,10 +2,10 @@ package org.galaxy.uniflow.javac9;
 
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
+import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.javac.JavacCompilationUnit;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
-import org.galaxy.uniflow.reflection.Constants;
 import org.galaxy.uniflow.reflection.ReflectClass;
 import org.galaxy.uniflow.reflection.ReflectField;
 import org.galaxy.uniflow.reflection.ReflectMethod;
@@ -45,7 +45,7 @@ public class Javac9CompilationUnit extends JavacCompilationUnit {
             DEFINITIONS = type.field("defs");
             GET_MODULE = type.method("getModuleDecl");
         } catch (NoSuchFieldException | NoSuchMethodException e) {
-            throw new UnsupportedOperationException(Constants.ERROR_MESSAGE, e);
+            throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE, e);
         }
     }
 }
