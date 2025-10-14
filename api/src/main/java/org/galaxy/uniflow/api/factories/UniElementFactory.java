@@ -9,9 +9,6 @@ import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.*;
-import org.galaxy.uniflow.api.pattern.UniBindingPattern;
-import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
-import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
@@ -260,12 +257,6 @@ public interface UniElementFactory {
     @NotNull UniInstanceOf createInstanceOf(@NotNull UniExpression expression, @NotNull UniType type);
 
     @NotNull UniInstanceOf createInstanceOf(@NotNull UniExpression expression, @NotNull UniPattern pattern);
-
-    @NotNull UniBindingPattern createBindingPattern(@NotNull UniVariable variable);
-
-    @NotNull UniGuardedPattern createGuardedPattern(@NotNull UniPattern pattern, @NotNull UniExpression expression);
-
-    @NotNull UniParenthesizedPattern createParenthesizedPattern(@NotNull UniPattern pattern);
 
     @NotNull UniArrayAccess createArrayAccess(@NotNull UniExpression array, @NotNull UniExpression index);
 

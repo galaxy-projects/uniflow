@@ -5,6 +5,10 @@ import org.galaxy.uniflow.api.UniClassInitializer;
 import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.pattern.UniBindingPattern;
+import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
+import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
+import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
@@ -30,5 +34,11 @@ public interface UniJdk15ElementFactory extends UniJdk12ElementFactory {
                                   @NotNull List<@NotNull UniVariable> fields,
                                   @NotNull List<@NotNull UniMethod> methods,
                                   @NotNull List<@NotNull UniClassInitializer> initializers);
+
+    @NotNull UniBindingPattern createBindingPattern(@NotNull UniVariable variable);
+
+    @NotNull UniGuardedPattern createGuardedPattern(@NotNull UniPattern pattern, @NotNull UniExpression expression);
+
+    @NotNull UniParenthesizedPattern createParenthesizedPattern(@NotNull UniPattern pattern);
 
 }
