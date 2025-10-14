@@ -8,6 +8,7 @@ import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.expressions.UniInstanceOf;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.factories.UniJdk15ElementFactory;
 import org.galaxy.uniflow.api.pattern.UniBindingPattern;
@@ -28,6 +29,7 @@ import org.galaxy.uniflow.javac.types.JavacTypeParameter;
 import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac12.factories.Javac12ElementFactory;
 import org.galaxy.uniflow.javac15.Reflection;
+import org.galaxy.uniflow.javac15.expressions.Javac15PatternInstanceOf;
 import org.galaxy.uniflow.javac15.pattern.JavacBindingPattern;
 import org.galaxy.uniflow.javac15.pattern.JavacGuardedPattern;
 import org.galaxy.uniflow.javac15.pattern.JavacParenthesizedPattern;
@@ -45,6 +47,7 @@ public class Javac15ElementFactory extends Javac12ElementFactory implements UniJ
     private static final ReflectMethod CREATE_BINDING_PATTERN;
     private static final ReflectMethod CREATE_GUARD_PATTERN;
     private static final ReflectMethod CREATE_PARENTHESIZED_PATTERN;
+    private static final ReflectMethod CREATE_PATTERN_INSTANCEOF;
 
     @Override
     @SuppressWarnings("rawtypes")
@@ -135,12 +138,23 @@ public class Javac15ElementFactory extends Javac12ElementFactory implements UniJ
                 (JCTree.JCPattern) CREATE_PARENTHESIZED_PATTERN.run(treeMaker, javacPattern.getTree()));
     }
 
+    @Override
+    public @NotNull UniInstanceOf createInstanceOf(@NotNull UniExpression expression,
+                                                   @NotNull UniPattern pattern) {
+        JavacExpression<?> javacExpression = check(expression, JavacExpression.class);
+        JavacPattern<?> javacPattern = check(pattern, JavacPattern.class);
+
+        return new Javac15PatternInstanceOf((JCTree.JCInstanceOf)
+                CREATE_PATTERN_INSTANCEOF.run(treeMaker, javacExpression.getTree(), javacPattern.getTree()));
+    }
+
     static {
         try {
             ReflectClass type = new ReflectClass(Reflection.TREE_MAKER);
             CREATE_BINDING_PATTERN = type.method("BindingPattern", Reflection.VARIABLE_TYPE);
             CREATE_GUARD_PATTERN = type.method("GuardPattern", Reflection.PATTERN_TYPE, Reflection.EXPRESSION_TYPE);
             CREATE_PARENTHESIZED_PATTERN = type.method("ParenthesizedPattern", Reflection.PATTERN_TYPE);
+            CREATE_PATTERN_INSTANCEOF = type.method("TypeTest", Reflection.EXPRESSION_TYPE, Reflection.TREE_TYPE);
         } catch (NoSuchMethodException e) {
             throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE, e);
         }

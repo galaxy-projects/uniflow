@@ -3,9 +3,9 @@ package org.galaxy.uniflow.javac15.pattern;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
 import org.galaxy.uniflow.api.pattern.UniPattern;
-import org.galaxy.uniflow.javac12.Uniflow12Wrapper;
 import org.galaxy.uniflow.javac15.Javac15Unwrapper;
 import org.galaxy.uniflow.javac15.Reflection;
+import org.galaxy.uniflow.javac15.Uniflow15Wrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -31,7 +31,7 @@ public class JavacParenthesizedPattern extends JavacPattern<JCTree.JCPattern>
     @Override
     public @NotNull UniPattern getPattern() {
         try {
-            return Uniflow12Wrapper.wrap((JCTree.JCPattern) PATTERN.get(tree));
+            return Uniflow15Wrapper.wrap((JCTree.JCPattern) PATTERN.get(tree));
         } catch (IllegalAccessException e) {
             throw new UnsupportedOperationException(e);
         }

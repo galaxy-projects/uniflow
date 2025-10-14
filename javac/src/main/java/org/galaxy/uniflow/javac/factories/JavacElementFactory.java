@@ -17,7 +17,6 @@ import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
-import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniClassType;
@@ -666,15 +665,6 @@ public class JavacElementFactory implements UniElementFactory {
         JavacType<?, ?> javacType = check(type, JavacType.class);
 
         return new JavacInstanceOf(treeMaker.TypeTest(javacExpression.getTree(), javacType.getExpression()));
-    }
-
-    @Override
-    public @NotNull UniInstanceOf createInstanceOf(@NotNull UniExpression expression,
-                                                   @NotNull UniPattern pattern) {
-        JavacExpression<?> javacExpression = check(expression, JavacExpression.class);
-        JavacPattern<?> javacPattern = check(pattern, JavacPattern.class);
-
-        return new JavacInstanceOf(treeMaker.TypeTest(javacExpression.getTree(), javacPattern.getTree()));
     }
 
     @Override

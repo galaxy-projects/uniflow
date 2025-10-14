@@ -6,7 +6,9 @@ public class Reflection {
 
     public static final Class<?> TREE_MAKER;
     public static final Class<?> VARIABLE_TYPE;
+    public static final Class<?> TREE_TYPE;
     public static final Class<?> EXPRESSION_TYPE;
+    public static final Class<?> INSTANCEOF_TYPE;
 
     public static final Class<?> PATTERN_TYPE;
     public static final Class<?> GUARD_PATTERN_TYPE;
@@ -17,7 +19,9 @@ public class Reflection {
         try {
             TREE_MAKER = Class.forName("com.sun.tools.javac.tree.TreeMaker");
             VARIABLE_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCVariableDecl");
+            TREE_MAKER = Class.forName("com.sun.tools.javac.tree.JCTree");
             EXPRESSION_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCExpression");
+            INSTANCEOF_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCInstanceOf");
 
             PATTERN_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCPattern");
             GUARD_PATTERN_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCGuardPattern");
