@@ -8,7 +8,8 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniSwitchExpression;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.factories.UniJdk12ElementFactory;
-import org.galaxy.uniflow.api.statements.UniEnhancedCase;
+import org.galaxy.uniflow.api.statements.UniJdk15Case;
+import org.galaxy.uniflow.api.statements.UniJdk8Case;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniYield;
 import org.galaxy.uniflow.javac.JavacElement;
@@ -17,9 +18,9 @@ import org.galaxy.uniflow.javac.statements.JavacStatement;
 import org.galaxy.uniflow.javac10.factories.Javac10ElementFactory;
 import org.galaxy.uniflow.javac12.Reflection;
 import org.galaxy.uniflow.javac12.expression.JavacSwitchExpression;
+import org.galaxy.uniflow.javac12.statements.Javac12Case;
 import org.galaxy.uniflow.javac12.statements.JavacYield;
 import org.galaxy.uniflow.javac15.pattern.JavacPattern;
-import org.galaxy.uniflow.javac15.statements.JavacEnhancedCase;
 import org.galaxy.uniflow.reflection.ReflectClass;
 import org.galaxy.uniflow.reflection.ReflectMethod;
 import org.jetbrains.annotations.NotNull;
@@ -40,25 +41,32 @@ public class Javac12ElementFactory extends Javac10ElementFactory implements UniJ
 
     @Override
     public @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
-                                                               @NotNull List<@NotNull UniEnhancedCase> cases) {
+                                                               @NotNull List<@NotNull UniJdk15Case> cases) {
         JavacExpression<?> javacSelector = check(selector, JavacExpression.class);
-        Stream<JavacEnhancedCase> javacCases = checkList(cases, JavacEnhancedCase.class);
+        Stream<Javac12Case> javacCases = checkList(cases, Javac12Case.class);
 
         return new JavacSwitchExpression(treeMaker.SwitchExpression(
                 javacSelector.getTree(),
-                mapToList(javacCases, JavacEnhancedCase::getTree)
+                mapToList(javacCases, Javac12Case::getTree)
         ));
     }
 
     @Override
+    public @NotNull UniJdk8Case createCase(@NotNull UniCaseLabel label,
+                                           @NotNull List<@NotNull UniStatement> statements) {
+        throw new UnsupportedOperationException(
+                "Use UniJdk12ElementFactory#createCase(List<UniCaseLabel>, List<UniStatement>) instead");
+    }
+
+    @Override
     @SuppressWarnings("rawtypes")
-    public @NotNull UniEnhancedCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
-                                               @NotNull List<@NotNull UniStatement> statements) {
+    public @NotNull UniJdk15Case createCase(@NotNull List<@NotNull UniCaseLabel> labels,
+                                            @NotNull List<@NotNull UniStatement> statements) {
         com.sun.tools.javac.util.List<JCTree.JCCaseLabel> caseLabels = createCaseLabels(labels);
         Stream<JavacStatement> javacStatements = checkList(statements, JavacStatement.class);
 
         //noinspection Since15
-        return new JavacEnhancedCase.JavacStatementEnhancedCase((JCTree.JCCase) CREATE_CASE.run(treeMaker,
+        return new Javac12Case.Javac12StatementCase((JCTree.JCCase) CREATE_CASE.run(treeMaker,
                 CaseTree.CaseKind.STATEMENT,
                 caseLabels,
                 mapToList(javacStatements, st -> (JCTree.JCStatement) st.getTree()),
@@ -67,12 +75,12 @@ public class Javac12ElementFactory extends Javac10ElementFactory implements UniJ
     }
 
     @Override
-    public @NotNull UniEnhancedCase createCase(@NotNull List<@NotNull UniCaseLabel> labels, @NotNull UniElement body) {
+    public @NotNull UniJdk15Case createCase(@NotNull List<@NotNull UniCaseLabel> labels, @NotNull UniElement body) {
         com.sun.tools.javac.util.List<JCTree.JCCaseLabel> caseLabels = createCaseLabels(labels);
         JavacElement<?> javacBody = check(body, JavacElement.class);
 
         //noinspection Since15
-        return new JavacEnhancedCase.JavacRuleEnhancedCase((JCTree.JCCase) CREATE_CASE.run(treeMaker,
+        return new Javac12Case.Javac12RuleCase((JCTree.JCCase) CREATE_CASE.run(treeMaker,
                 CaseTree.CaseKind.RULE,
                 caseLabels,
                 com.sun.tools.javac.util.List.nil(),

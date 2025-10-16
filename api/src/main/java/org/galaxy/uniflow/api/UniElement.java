@@ -426,7 +426,7 @@ public interface UniElement {
         BREAK,
 
         /**
-         * Used for instances of {@link UniEnhancedCase}.
+         * Used for instances of {@link UniJdk15Case}.
          */
         CASE,
 

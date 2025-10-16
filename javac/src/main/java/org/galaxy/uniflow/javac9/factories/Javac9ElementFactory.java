@@ -13,9 +13,9 @@ import org.galaxy.uniflow.api.modules.directives.*;
 import org.galaxy.uniflow.common.EnumUtils;
 import org.galaxy.uniflow.javac.JavacPackage;
 import org.galaxy.uniflow.javac.JavacUniflow;
-import org.galaxy.uniflow.javac.factories.JavacElementFactory;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
+import org.galaxy.uniflow.javac8.factories.Javac8ElementFactory;
 import org.galaxy.uniflow.javac9.Javac9CompilationUnit;
 import org.galaxy.uniflow.javac9.Javac9Unwrapper;
 import org.galaxy.uniflow.javac9.modules.JavacModule;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class Javac9ElementFactory extends JavacElementFactory implements UniJdk9ElementFactory {
+public class Javac9ElementFactory extends Javac8ElementFactory implements UniJdk9ElementFactory {
 
     @Override
     public @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,

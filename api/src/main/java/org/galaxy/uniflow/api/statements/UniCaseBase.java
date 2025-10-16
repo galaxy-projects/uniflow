@@ -1,11 +1,12 @@
 package org.galaxy.uniflow.api.statements;
 
-import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
-import org.jetbrains.annotations.NotNull;
-
 public interface UniCaseBase extends UniStatement {
 
-    @NotNull UniList<@NotNull UniCaseLabel> getLabels();
+    default boolean isJdk8() {
+        return this instanceof UniJdk8Case;
+    }
 
+    default boolean isJdk15() {
+        return this instanceof UniJdk15Case;
+    }
 }

@@ -10,6 +10,8 @@ public class Reflection {
     public static final Class<?> EXPRESSION_TYPE;
     public static final Class<?> INSTANCEOF_TYPE;
 
+    public static final Class<?> CASE_TYPE;
+
     public static final Class<?> PATTERN_TYPE;
     public static final Class<?> GUARD_PATTERN_TYPE;
     public static final Class<?> BINDING_PATTERN_TYPE;
@@ -22,6 +24,8 @@ public class Reflection {
             TREE_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree");
             EXPRESSION_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCExpression");
             INSTANCEOF_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCInstanceOf");
+
+            CASE_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCCase");
 
             PATTERN_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCPattern");
             GUARD_PATTERN_TYPE = Class.forName("com.sun.tools.javac.tree.JCTree$JCGuardPattern");
