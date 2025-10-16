@@ -5,7 +5,7 @@ import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.factories.UniConstants;
-import org.galaxy.uniflow.api.statements.UniJdk15Case;
+import org.galaxy.uniflow.api.statements.UniJdk12Case;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
@@ -17,7 +17,7 @@ import org.galaxy.uniflow.reflection.ReflectField;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class Javac12Case extends JavacElement<JCTree.JCCase> implements UniJdk15Case {
+public abstract class Javac12Case extends JavacElement<JCTree.JCCase> implements UniJdk12Case {
 
     private static final ReflectField LABELS;
     private static final ReflectField BODY;

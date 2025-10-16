@@ -6,19 +6,19 @@ import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface UniJdk15Case extends UniCaseBase {
+public interface UniJdk12Case extends UniCaseBase {
 
     @NotNull UniList<@NotNull UniCaseLabel> getLabels();
 
     @NotNull CaseKind getCaseKind();
 
-    interface UniStatementCase extends UniJdk15Case {
+    interface UniStatementCase extends UniJdk12Case {
 
         @NotNull UniList<UniStatement> getStatements();
 
     }
 
-    interface UniRuleCase extends UniJdk15Case {
+    interface UniRuleCase extends UniJdk12Case {
 
         void setBody(@NotNull UniElement body);
 

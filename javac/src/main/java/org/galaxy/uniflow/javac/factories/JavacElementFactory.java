@@ -367,7 +367,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
 
     @Override
     public @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
-                                           @NotNull List<@NotNull UniJdk15Case> cases) {
+                                           @NotNull List<@NotNull UniJdk12Case> cases) {
         JavacExpression<?> javacSelector = check(selector, JavacExpression.class);
         Stream<Javac12Case> javacCases = checkList(cases, Javac12Case.class);
 

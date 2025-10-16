@@ -177,7 +177,7 @@ public interface UniElementFactory {
     @NotNull UniLabel createLabel(@NotNull String name, @NotNull UniStatement body);
 
     @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
-                                    @NotNull List<@NotNull UniJdk15Case> cases);
+                                    @NotNull List<@NotNull UniJdk12Case> cases);
 
     @NotNull UniJdk8Case createCase(@NotNull UniCaseLabel label, @NotNull List<@NotNull UniStatement> statements);
 

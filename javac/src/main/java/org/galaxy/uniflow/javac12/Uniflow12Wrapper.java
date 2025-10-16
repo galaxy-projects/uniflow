@@ -3,7 +3,7 @@ package org.galaxy.uniflow.javac12;
 import com.sun.source.tree.CaseTree;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.statements.UniJdk15Case;
+import org.galaxy.uniflow.api.statements.UniJdk12Case;
 import org.galaxy.uniflow.javac12.expression.JavacSwitchExpression;
 import org.galaxy.uniflow.javac12.statements.Javac12Case;
 import org.galaxy.uniflow.javac12.statements.JavacYield;
@@ -26,7 +26,7 @@ public class Uniflow12Wrapper extends Uniflow9Wrapper {
     }
 
     @SuppressWarnings("Since15")
-    public static UniJdk15Case wrap(JCTree.JCCase jcCase) {
+    public static UniJdk12Case wrap(JCTree.JCCase jcCase) {
         if (jcCase.getCaseKind() == CaseTree.CaseKind.RULE)
             return new Javac12Case.Javac12RuleCase(jcCase);
         else if (jcCase.getCaseKind() == CaseTree.CaseKind.STATEMENT)

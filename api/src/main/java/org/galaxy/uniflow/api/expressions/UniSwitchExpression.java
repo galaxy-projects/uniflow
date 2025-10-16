@@ -1,7 +1,7 @@
 package org.galaxy.uniflow.api.expressions;
 
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.statements.UniJdk15Case;
+import org.galaxy.uniflow.api.statements.UniJdk12Case;
 import org.jetbrains.annotations.NotNull;
 
 public interface UniSwitchExpression extends UniExpression {
@@ -10,6 +10,6 @@ public interface UniSwitchExpression extends UniExpression {
 
     @NotNull UniExpression getSelector();
 
-    @NotNull UniList<UniJdk15Case> getCases();
+    @NotNull UniList<UniJdk12Case> getCases();
 
 }

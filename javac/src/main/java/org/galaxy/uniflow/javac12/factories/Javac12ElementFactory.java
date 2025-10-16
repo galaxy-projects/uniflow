@@ -8,7 +8,7 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniSwitchExpression;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.factories.UniJdk12ElementFactory;
-import org.galaxy.uniflow.api.statements.UniJdk15Case;
+import org.galaxy.uniflow.api.statements.UniJdk12Case;
 import org.galaxy.uniflow.api.statements.UniJdk8Case;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.statements.UniYield;
@@ -41,7 +41,7 @@ public class Javac12ElementFactory extends Javac10ElementFactory implements UniJ
 
     @Override
     public @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
-                                                               @NotNull List<@NotNull UniJdk15Case> cases) {
+                                                               @NotNull List<@NotNull UniJdk12Case> cases) {
         JavacExpression<?> javacSelector = check(selector, JavacExpression.class);
         Stream<Javac12Case> javacCases = checkList(cases, Javac12Case.class);
 
@@ -60,7 +60,7 @@ public class Javac12ElementFactory extends Javac10ElementFactory implements UniJ
 
     @Override
     @SuppressWarnings("rawtypes")
-    public @NotNull UniJdk15Case createCase(@NotNull List<@NotNull UniCaseLabel> labels,
+    public @NotNull UniJdk12Case createCase(@NotNull List<@NotNull UniCaseLabel> labels,
                                             @NotNull List<@NotNull UniStatement> statements) {
         com.sun.tools.javac.util.List<JCTree.JCCaseLabel> caseLabels = createCaseLabels(labels);
         Stream<JavacStatement> javacStatements = checkList(statements, JavacStatement.class);
@@ -75,7 +75,7 @@ public class Javac12ElementFactory extends Javac10ElementFactory implements UniJ
     }
 
     @Override
-    public @NotNull UniJdk15Case createCase(@NotNull List<@NotNull UniCaseLabel> labels, @NotNull UniElement body) {
+    public @NotNull UniJdk12Case createCase(@NotNull List<@NotNull UniCaseLabel> labels, @NotNull UniElement body) {
         com.sun.tools.javac.util.List<JCTree.JCCaseLabel> caseLabels = createCaseLabels(labels);
         JavacElement<?> javacBody = check(body, JavacElement.class);
 

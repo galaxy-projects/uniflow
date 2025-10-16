@@ -6,7 +6,7 @@ public interface UniCaseBase extends UniStatement {
         return this instanceof UniJdk8Case;
     }
 
-    default boolean isJdk15() {
-        return this instanceof UniJdk15Case;
+    default boolean isJdk12() {
+        return this instanceof UniJdk12Case;
     }
 }
