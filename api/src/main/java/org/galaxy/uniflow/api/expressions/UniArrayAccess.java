@@ -4,9 +4,11 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniArrayAccess extends UniExpression {
 
-    void setExpression(@NotNull UniExpression expression);
+    void set(@NotNull UniExpression array, @NotNull UniExpression index);
 
-    @NotNull UniExpression getExpression();
+    void setArray(@NotNull UniExpression array);
+
+    @NotNull UniExpression getArray();
 
     void setIndex(@NotNull UniExpression index);
 

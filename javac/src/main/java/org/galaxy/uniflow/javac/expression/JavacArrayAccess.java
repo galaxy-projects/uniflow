@@ -14,12 +14,18 @@ public class JavacArrayAccess extends JavacExpression<JCTree.JCArrayAccess> impl
     }
 
     @Override
-    public void setExpression(@NotNull UniExpression expression) {
-        tree.indexed = JavacUnwrapper.unwrap(expression);
+    public void set(@NotNull UniExpression array, @NotNull UniExpression index) {
+        setArray(array);
+        setIndex(index);
     }
 
     @Override
-    public @NotNull UniExpression getExpression() {
+    public void setArray(@NotNull UniExpression array) {
+        tree.indexed = JavacUnwrapper.unwrap(array);
+    }
+
+    @Override
+    public @NotNull UniExpression getArray() {
         return UniflowWrapper.wrap(tree.indexed);
     }
 

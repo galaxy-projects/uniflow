@@ -1,10 +1,9 @@
 package org.galaxy.uniflow.api;
 
-import org.galaxy.uniflow.api.types.UniClassType;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface UniMember extends UniElement, UniModifiersHolder {
 
-    @NotNull UniClassType getContainingClass();
+    @Nullable UniClass getEnclosingClass();
 
 }

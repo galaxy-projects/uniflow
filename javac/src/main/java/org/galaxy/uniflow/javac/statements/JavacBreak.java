@@ -14,7 +14,7 @@ public class JavacBreak extends JavacElement<JCTree.JCBreak> implements UniBreak
     }
 
     @Override
-    public void setLabel(@NotNull String label) {
+    public void setLabel(@Nullable String label) {
         tree.label = NameUtils.name(label);
     }
 

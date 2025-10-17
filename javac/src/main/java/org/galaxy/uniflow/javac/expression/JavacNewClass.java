@@ -5,6 +5,7 @@ import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniNewClass;
 import org.galaxy.uniflow.api.types.UniClassType;
+import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
@@ -23,12 +24,12 @@ public class JavacNewClass extends JavacExpression<JCTree.JCNewClass> implements
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniExpression> getTypeArguments() {
+    public @NotNull UniList<@NotNull UniType> getTypeArguments() {
         return new JavacList<>(
                 () -> tree.typeargs,
                 newList -> tree.typeargs = newList,
-                UniflowWrapper::wrap,
-                JavacUnwrapper::unwrap
+                UniflowWrapper::typeFromTree,
+                JavacUnwrapper::typeToTree
         );
     }
 

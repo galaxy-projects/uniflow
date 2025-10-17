@@ -6,7 +6,7 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.lists.UniFieldList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
-import org.galaxy.uniflow.api.statements.UniVariable;
+import org.galaxy.uniflow.api.statements.UniField;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
@@ -95,13 +95,13 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
 
     @Override
     public @NotNull UniFieldList getFields() {
-        JavacList<UniVariable, JCTree.JCVariableDecl> fields = elements().partial(
+        JavacList<UniField, JCTree.JCVariableDecl> fields = elements().partial(
                 JCTree.JCVariableDecl.class::isInstance,
                 JCTree.JCVariableDecl.class::cast,
-                UniflowWrapper::wrap,
+                UniflowWrapper::wrapField,
                 JavacUnwrapper::unwrap
         );
-        return JavacFieldList.from(fields);
+        return JavacFieldList.from(tree, fields);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
         );
-        return JavacMethodList.from(methods);
+        return JavacMethodList.from(tree, methods);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
         );
-        return JavacMethodList.from(methods);
+        return JavacMethodList.from(tree, methods);
     }
 
     @Override

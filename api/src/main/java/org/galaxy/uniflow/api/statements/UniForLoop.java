@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public interface UniForLoop extends UniStatement {
 
-    @NotNull UniList<UniStatement> getInitializer();
+    @NotNull UniList<@NotNull UniStatement> getInitializer();
 
     void setCondition(@NotNull UniExpression condition);
 

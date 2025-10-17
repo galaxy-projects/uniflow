@@ -72,7 +72,7 @@ public interface UniElementFactory {
                                     @NotNull String name,
                                     @NotNull Class<?> returnType,
                                     @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                    @NotNull UniVariable receiveParam,
+                                    @Nullable UniVariable receiveParam,
                                     @NotNull List<@NotNull UniVariable> parameters,
                                     @NotNull List<@NotNull UniExpression> thrown,
                                     @NotNull UniBlock body);
@@ -81,7 +81,7 @@ public interface UniElementFactory {
                                     @NotNull String name,
                                     @NotNull UniType returnType,
                                     @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                    @NotNull UniVariable receiveParam,
+                                    @Nullable UniVariable receiveParam,
                                     @NotNull List<@NotNull UniVariable> parameters,
                                     @NotNull List<@NotNull UniExpression> thrown,
                                     @NotNull UniBlock body);
@@ -104,15 +104,15 @@ public interface UniElementFactory {
                                                  @NotNull List<@NotNull UniExpression> thrown,
                                                  @Nullable UniExpression defaultValue);
 
-    @NotNull UniVariable createField(@NotNull UniModifiers modifiers,
-                                     @NotNull String name,
-                                     @NotNull Class<?> type,
-                                     @Nullable UniExpression init);
+    @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                  @NotNull String name,
+                                  @NotNull Class<?> type,
+                                  @Nullable UniExpression init);
 
-    @NotNull UniVariable createField(@NotNull UniModifiers modifiers,
-                                     @NotNull String name,
-                                     @NotNull UniType type,
-                                     @Nullable UniExpression init);
+    @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                  @NotNull String name,
+                                  @NotNull UniType type,
+                                  @Nullable UniExpression init);
 
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,
@@ -177,9 +177,10 @@ public interface UniElementFactory {
     @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
                                                         @NotNull List<@NotNull UniCase> cases);
 
-    @NotNull UniCase createCase(@NotNull UniCase.CaseKind kind,
-                                @NotNull List<@NotNull UniCaseLabel> labels,
-                                @NotNull List<@NotNull UniStatement> statements,
+    @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
+                                @NotNull List<@NotNull UniStatement> statements);
+
+    @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
                                 @NotNull UniElement body);
 
     @NotNull UniSynchronized createSynchronized(@NotNull UniExpression lock, @NotNull UniBlock body);
@@ -261,6 +262,8 @@ public interface UniElementFactory {
 
     @NotNull UniArrayAccess createArrayAccess(@NotNull UniExpression array, @NotNull UniExpression index);
 
+    @NotNull UniIdentifier createThis();
+
     @NotNull UniIdentifier createIdentifier(@NotNull String name);
 
     @NotNull UniLiteral createNull();
@@ -268,6 +271,9 @@ public interface UniElementFactory {
     @NotNull UniLiteral createLiteral(@NotNull TypeTag tag, @NotNull Object value);
 
     @NotNull UniLiteral createStringLiteral(@NotNull String value);
+
+    @NotNull UniAnnotation createAnnotation(@NotNull Class<?> annotationType,
+                                            @NotNull List<@NotNull UniAnnotationAttribute> attributes);
 
     @NotNull UniAnnotation createAnnotation(@NotNull UniType annotationType,
                                             @NotNull List<@NotNull UniAnnotationAttribute> attributes);
@@ -279,7 +285,11 @@ public interface UniElementFactory {
     @NotNull UniLet createLet(@NotNull List<@NotNull UniStatement> definitions,
                               @NotNull UniExpression expression);
 
+    @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name);
+
     @NotNull UniFieldAccess createFieldAccess(@NotNull UniType selected, @NotNull String name);
+
+    @NotNull UniFieldAccess createFieldAccess(@NotNull UniExpression expression, @NotNull String name);
 
     @NotNull UniFieldAccess createClassLiteral(@NotNull UniClassType type);
 
