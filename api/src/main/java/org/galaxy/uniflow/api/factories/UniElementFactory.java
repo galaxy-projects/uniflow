@@ -4,16 +4,11 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
-import org.galaxy.uniflow.api.elements.UniCase;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
 import org.galaxy.uniflow.api.expressions.*;
-import org.galaxy.uniflow.api.modules.UniModule;
-import org.galaxy.uniflow.api.pattern.UniBindingPattern;
-import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
-import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
-import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniClassType;
@@ -26,12 +21,59 @@ import java.util.List;
 
 public interface UniElementFactory {
 
+    default boolean supportsJdk9() {
+        return this instanceof UniJdk9ElementFactory;
+    }
+
+    default @NotNull UniJdk9ElementFactory asJdk9() {
+        if (supportsJdk9())
+            return (UniJdk9ElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
+    }
+
+    default boolean supportsJdk10() {
+        return this instanceof UniJdk10ElementFactory;
+    }
+
+    default @NotNull UniJdk10ElementFactory asJdk10() {
+        if (supportsJdk10())
+            return (UniJdk10ElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
+    }
+
+    default boolean supportsJdk12() {
+        return this instanceof UniJdk12ElementFactory;
+    }
+
+    default @NotNull UniJdk12ElementFactory asJdk12() {
+        if (supportsJdk12())
+            return (UniJdk12ElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
+    }
+
+    default boolean supportsJdk15() {
+        return this instanceof UniJdk15ElementFactory;
+    }
+
+    default @NotNull UniJdk15ElementFactory asJdk15() {
+        if (supportsJdk15())
+            return (UniJdk15ElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
+    }
+
+    default boolean supportsJdk21() {
+        return this instanceof UniJdk21ElementFactory;
+    }
+
+    default @NotNull UniJdk21ElementFactory asJdk21() {
+        if (supportsJdk21())
+            return (UniJdk21ElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
+    }
+
     @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
                                                @NotNull List<@NotNull UniImport> imports,
                                                @NotNull List<@NotNull UniClass> classes);
-
-    @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
-                                               @NotNull List<@NotNull UniModule> modules);
 
     @NotNull UniCompilationUnit createTopLevel(@NotNull List<@NotNull UniElement> elements);
 
@@ -49,24 +91,14 @@ public interface UniElementFactory {
                                   @NotNull List<@NotNull UniVariable> fields,
                                   @NotNull List<@NotNull UniMethod> methods);
 
-    @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
-                                  @NotNull String name,
-                                  @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                  @Nullable UniType extending,
-                                  @NotNull List<@NotNull UniType> implementing,
-                                  @NotNull List<@NotNull UniExpression> permitting,
-                                  @NotNull List<@NotNull UniVariable> fields,
-                                  @NotNull List<@NotNull UniMethod> methods);
-
-    @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
-                                  @NotNull String name,
-                                  @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                  @Nullable UniType extending,
-                                  @NotNull List<@NotNull UniType> implementing,
-                                  @NotNull List<@NotNull UniExpression> permitting,
-                                  @NotNull List<@NotNull UniVariable> fields,
-                                  @NotNull List<@NotNull UniMethod> methods,
-                                  @NotNull List<@NotNull UniClassInitializer> initializers);
+    UniClass createClass(@NotNull UniModifiers modifiers,
+                         @NotNull String name,
+                         @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                         @Nullable UniType extending,
+                         @NotNull List<@NotNull UniType> implementing,
+                         @NotNull List<@NotNull UniVariable> fields,
+                         @NotNull List<@NotNull UniMethod> methods,
+                         @NotNull List<@NotNull UniClassInitializer> initializers);
 
     @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
                                     @NotNull String name,
@@ -117,39 +149,23 @@ public interface UniElementFactory {
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,
                                         @NotNull Class<?> type,
-                                        @Nullable UniExpression init,
-                                        boolean useVar);
+                                        @Nullable UniExpression init);
 
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,
                                         @NotNull UniType type,
-                                        @Nullable UniExpression init,
-                                        boolean useVar);
-
-    default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
-                                                @NotNull String name,
-                                                @NotNull Class<?> type,
-                                                @NotNull UniExpression init) {
-        return createVariable(annotations, name, type, init, false);
-    }
-
-    default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
-                                                @NotNull String name,
-                                                @NotNull UniType type,
-                                                @NotNull UniExpression init) {
-        return createVariable(annotations, name, type, init, false);
-    }
+                                        @Nullable UniExpression init);
 
     default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                                 @NotNull String name,
                                                 @NotNull Class<?> type) {
-        return createVariable(annotations, name, type, null, false);
+        return createVariable(annotations, name, type, null);
     }
 
     default @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                                 @NotNull String name,
                                                 @NotNull UniType type) {
-        return createVariable(annotations, name, type, null, false);
+        return createVariable(annotations, name, type, null);
     }
 
     @NotNull UniEmpty createSkip();
@@ -172,16 +188,11 @@ public interface UniElementFactory {
     @NotNull UniLabel createLabel(@NotNull String name, @NotNull UniStatement body);
 
     @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
-                                    @NotNull List<@NotNull UniCase> cases);
+                                    @NotNull List<@NotNull UniJdk12Case> cases);
 
-    @NotNull UniSwitchExpression createSwitchExpression(@NotNull UniExpression selector,
-                                                        @NotNull List<@NotNull UniCase> cases);
+    @NotNull UniJdk8Case createCase(@NotNull UniCaseLabel label, @NotNull List<@NotNull UniStatement> statements);
 
-    @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
-                                @NotNull List<@NotNull UniStatement> statements);
-
-    @NotNull UniCase createCase(@NotNull List<@NotNull UniCaseLabel> labels,
-                                @NotNull UniElement body);
+    @NotNull UniDefaultCaseLabel createDefaultCase();
 
     @NotNull UniSynchronized createSynchronized(@NotNull UniExpression lock, @NotNull UniBlock body);
 
@@ -207,8 +218,6 @@ public interface UniElementFactory {
     @NotNull UniExpressionStatement createExecution(@NotNull UniExpression expression);
 
     @NotNull UniBreak createBreak(@Nullable String label);
-
-    @NotNull UniYield createYield(@NotNull UniExpression value);
 
     @NotNull UniContinue createContinue(@Nullable String label);
 
@@ -251,14 +260,6 @@ public interface UniElementFactory {
     @NotNull UniTypeCast createTypeCast(@NotNull UniType type, @NotNull UniExpression expression);
 
     @NotNull UniInstanceOf createInstanceOf(@NotNull UniExpression expression, @NotNull UniType type);
-
-    @NotNull UniInstanceOf createInstanceOf(@NotNull UniExpression expression, @NotNull UniPattern pattern);
-
-    @NotNull UniBindingPattern createBindingPattern(@NotNull UniVariable variable);
-
-    @NotNull UniGuardedPattern createGuardedPattern(@NotNull UniPattern pattern, @NotNull UniExpression expression);
-
-    @NotNull UniParenthesizedPattern createParenthesizedPattern(@NotNull UniPattern pattern);
 
     @NotNull UniArrayAccess createArrayAccess(@NotNull UniExpression array, @NotNull UniExpression index);
 

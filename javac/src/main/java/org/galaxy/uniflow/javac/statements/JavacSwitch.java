@@ -2,8 +2,8 @@ package org.galaxy.uniflow.javac.statements;
 
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.statements.UniCaseBase;
 import org.galaxy.uniflow.api.statements.UniSwitch;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.lists.JavacList;
@@ -28,7 +28,7 @@ public class JavacSwitch extends JavacElement<JCTree.JCSwitch> implements UniSwi
     }
 
     @Override
-    public @NotNull UniList<UniCase> getCases() {
+    public @NotNull UniList<@NotNull UniCaseBase> getCases() {
         return new JavacList<>(
                 () -> tree.cases,
                 newList -> tree.cases = newList,

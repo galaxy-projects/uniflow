@@ -2,9 +2,8 @@ package org.galaxy.uniflow.api;
 
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
-import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.elements.UniCatch;
-import org.galaxy.uniflow.api.elements.UniDefaultCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.UniExports;
@@ -427,7 +426,7 @@ public interface UniElement {
         BREAK,
 
         /**
-         * Used for instances of {@link UniCase}.
+         * Used for instances of {@link UniJdk12Case}.
          */
         CASE,
 
