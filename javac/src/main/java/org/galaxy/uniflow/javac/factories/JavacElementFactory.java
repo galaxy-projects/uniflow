@@ -8,9 +8,10 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
@@ -35,6 +36,7 @@ import org.galaxy.uniflow.javac.types.JavacTypeParameter;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac12.statements.Javac12Case;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -375,6 +377,11 @@ public abstract class JavacElementFactory implements UniElementFactory {
                 javacSelector.getTree(),
                 mapToList(javacCases, Javac12Case::getTree)
         ));
+    }
+
+    @Override
+    public @NotNull UniDefaultCaseLabel createDefaultCase() {
+        return new JavacDefaultCaseLabel(treeMaker.DefaultCaseLabel());
     }
 
     @Override
@@ -769,6 +776,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
         return new JavacFieldAccess((JCTree.JCFieldAccess) treeMaker.ClassLiteral(javacType.getRawType()));
     }
 
+    @Contract("null, _ -> null")
     protected <T> T check(Object element, Class<T> type) {
         if (element == null) return null;
         if (!type.isInstance(element))

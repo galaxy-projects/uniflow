@@ -8,8 +8,8 @@ import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniOperatorExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -28,6 +28,7 @@ import org.galaxy.uniflow.javac.signatures.JavacOperatorSignature;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.*;
 import org.galaxy.uniflow.javac12.statements.JavacYield;
+import org.galaxy.uniflow.javac8.statements.Javac8Case;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -232,7 +233,7 @@ public class UniflowWrapper {
                 return (UniCaseBase) result;
             throw new IllegalArgumentException("Unknown statement: " + jcCase);
         }
-        return new JavacCase(jcCase);
+        return new Javac8Case(jcCase);
     }
 
     public static @NotNull UniBlock wrap(JCTree.JCBlock block) {

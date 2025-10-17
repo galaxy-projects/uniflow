@@ -1,4 +1,4 @@
-package org.galaxy.uniflow.api.elements;
+package org.galaxy.uniflow.api.elements.labels;
 
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.jetbrains.annotations.NotNull;

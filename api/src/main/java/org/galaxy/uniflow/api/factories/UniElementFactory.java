@@ -4,9 +4,10 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
@@ -57,6 +58,16 @@ public interface UniElementFactory {
     default @NotNull UniJdk15ElementFactory asJdk15() {
         if (supportsJdk15())
             return (UniJdk15ElementFactory) this;
+        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
+    }
+
+    default boolean supportsJdk21() {
+        return this instanceof UniJdk21ElementFactory;
+    }
+
+    default @NotNull UniJdk21ElementFactory asJdk21() {
+        if (supportsJdk21())
+            return (UniJdk21ElementFactory) this;
         throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
     }
 
@@ -180,6 +191,8 @@ public interface UniElementFactory {
                                     @NotNull List<@NotNull UniJdk12Case> cases);
 
     @NotNull UniJdk8Case createCase(@NotNull UniCaseLabel label, @NotNull List<@NotNull UniStatement> statements);
+
+    @NotNull UniDefaultCaseLabel createDefaultCase();
 
     @NotNull UniSynchronized createSynchronized(@NotNull UniExpression lock, @NotNull UniBlock body);
 

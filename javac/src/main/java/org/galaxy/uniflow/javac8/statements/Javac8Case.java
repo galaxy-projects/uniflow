@@ -2,7 +2,7 @@ package org.galaxy.uniflow.javac8.statements;
 
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.statements.UniJdk8Case;
 import org.galaxy.uniflow.api.statements.UniStatement;

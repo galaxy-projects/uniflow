@@ -10,9 +10,17 @@ import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Names;
 import org.galaxy.uniflow.api.Uniflow;
-import org.galaxy.uniflow.api.factories.*;
+import org.galaxy.uniflow.api.factories.UniElementFinder;
+import org.galaxy.uniflow.api.factories.UniFiler;
+import org.galaxy.uniflow.api.factories.UniMessenger;
+import org.galaxy.uniflow.api.factories.UniTypeFactory;
 import org.galaxy.uniflow.api.processing.UniProcessingEnvironment;
 import org.galaxy.uniflow.javac.factories.*;
+import org.galaxy.uniflow.javac10.Javac10Uniflow;
+import org.galaxy.uniflow.javac12.Javac12Uniflow;
+import org.galaxy.uniflow.javac15.Javac15Uniflow;
+import org.galaxy.uniflow.javac21.Javac21Uniflow;
+import org.galaxy.uniflow.javac8.Javac8Uniflow;
 import org.galaxy.uniflow.javac9.Javac9Uniflow;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +29,7 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 
-public class JavacUniflow extends Uniflow {
+public abstract class JavacUniflow extends Uniflow {
 
     public TreeMaker treeMaker;
     public Types types;
@@ -61,11 +69,6 @@ public class JavacUniflow extends Uniflow {
         return new JavacTypeFactory();
     }
 
-    @Override
-    protected @NotNull UniElementFactory createElementFactory() {
-        return new JavacElementFactory();
-    }
-
     public VersionedWrapper getVersionedWrapper() {
         return null;
     }
@@ -90,8 +93,26 @@ public class JavacUniflow extends Uniflow {
         JavacProcessingEnvironment processingEnvironment = (JavacProcessingEnvironment) environment;
         Source source = Source.instance(processingEnvironment.getContext());
 
-        if (source.compareTo(Source.JDK9) >= 0)
+        if (isSourceAtLeast(source, "JDK21"))
+            return new Javac21Uniflow(processingEnvironment);
+        else if (isSourceAtLeast(source, "JDK15"))
+            return new Javac15Uniflow(processingEnvironment);
+        else if (isSourceAtLeast(source, "JDK12"))
+            return new Javac12Uniflow(processingEnvironment);
+        else if (isSourceAtLeast(source, "JDK10"))
+            return new Javac10Uniflow(processingEnvironment);
+        else if (isSourceAtLeast(source, "JDK9"))
             return new Javac9Uniflow(processingEnvironment);
-        return new JavacUniflow(processingEnvironment);
+        return new Javac8Uniflow(processingEnvironment);
+    }
+
+    private static boolean isSourceAtLeast(Source source, String sourceName) {
+        try {
+            Source target = Source.valueOf(sourceName);
+
+            return source.compareTo(target) >= 0;
+        } catch (Throwable e) {
+            return false;
+        }
     }
 }

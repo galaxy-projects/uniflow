@@ -2,7 +2,7 @@ package org.galaxy.uniflow.api.statements;
 
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,13 +12,13 @@ public interface UniJdk12Case extends UniCaseBase {
 
     @NotNull CaseKind getCaseKind();
 
-    interface UniStatementCase extends UniJdk12Case {
+    interface UniJdk12StatementCase extends UniJdk12Case {
 
         @NotNull UniList<UniStatement> getStatements();
 
     }
 
-    interface UniRuleCase extends UniJdk12Case {
+    interface UniJdk12RuleCase extends UniJdk12Case {
 
         void setBody(@NotNull UniElement body);
 
@@ -28,11 +28,11 @@ public interface UniJdk12Case extends UniCaseBase {
 
     enum CaseKind {
         /**
-         * @see UniStatementCase
+         * @see UniJdk12StatementCase
          */
         STATEMENT,
         /**
-         * @see UniRuleCase
+         * @see UniJdk12RuleCase
          */
         RULE
     }

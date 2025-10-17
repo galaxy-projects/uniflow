@@ -1,7 +1,7 @@
 package org.galaxy.uniflow.api.factories;
 
 import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniSwitchExpression;
 import org.galaxy.uniflow.api.statements.UniJdk12Case;

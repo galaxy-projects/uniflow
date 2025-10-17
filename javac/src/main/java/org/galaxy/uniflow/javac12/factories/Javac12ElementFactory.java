@@ -3,7 +3,7 @@ package org.galaxy.uniflow.javac12.factories;
 import com.sun.source.tree.CaseTree;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniSwitchExpression;
 import org.galaxy.uniflow.api.factories.UniConstants;

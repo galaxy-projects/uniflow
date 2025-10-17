@@ -3,7 +3,7 @@ package org.galaxy.uniflow.javac12.statements;
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.statements.UniJdk12Case;
 import org.galaxy.uniflow.api.statements.UniStatement;
@@ -48,7 +48,7 @@ public abstract class Javac12Case extends JavacElement<JCTree.JCCase> implements
         }
     }
 
-    public static class Javac12StatementCase extends Javac12Case implements UniStatementCase {
+    public static class Javac12StatementCase extends Javac12Case implements UniJdk12StatementCase {
 
         public Javac12StatementCase(JCTree.@NotNull JCCase tree) {
             super(tree);
@@ -70,7 +70,7 @@ public abstract class Javac12Case extends JavacElement<JCTree.JCCase> implements
         }
     }
 
-    public static class Javac12RuleCase extends Javac12Case implements UniRuleCase {
+    public static class Javac12RuleCase extends Javac12Case implements UniJdk12RuleCase {
 
         public Javac12RuleCase(JCTree.@NotNull JCCase tree) {
             super(tree);

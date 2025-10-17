@@ -14,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 public class JavacBindingPattern extends JavacPattern<JCTree.JCPattern> implements UniBindingPattern {
 
     private static final ReflectField VARIABLE;
-    private static ReflectClass type;
 
     public JavacBindingPattern(JCTree.JCPattern tree) {
         super(tree);
