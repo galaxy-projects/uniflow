@@ -1,10 +1,9 @@
 package org.galaxy.uniflow.javac.files;
 
-import lombok.Getter;
 import org.galaxy.uniflow.api.files.UniFileLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-@Getter
 public class JavacFileLocation implements UniFileLocation {
 
     private final Location location;
@@ -20,7 +19,22 @@ public class JavacFileLocation implements UniFileLocation {
     }
 
     @Override
+    public @NotNull Location getLocation() {
+        return location;
+    }
+
+    @Override
+    public @Nullable CharSequence getModule() {
+        return module;
+    }
+
+    @Override
     public @NotNull CharSequence getPackage() {
         return packageName;
+    }
+
+    @Override
+    public @NotNull CharSequence getName() {
+        return name;
     }
 }
