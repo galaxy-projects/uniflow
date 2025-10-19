@@ -25,11 +25,6 @@ public class IntellijUniflow extends Uniflow {
     }
 
     @Override
-    protected @NotNull UniModuleFactory createModuleFactory() {
-        return null;
-    }
-
-    @Override
     public @NotNull UniFiler createFiler() {
         return null;
     }
@@ -39,7 +34,7 @@ public class IntellijUniflow extends Uniflow {
         return null;
     }
 
-    public static IntellijUniflow getInstance() {
+    public static @NotNull IntellijUniflow getInstance() {
         return (IntellijUniflow) Uniflow.getInstance();
     }
 }

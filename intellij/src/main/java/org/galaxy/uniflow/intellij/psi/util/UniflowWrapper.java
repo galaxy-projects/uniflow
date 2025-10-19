@@ -5,9 +5,8 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
-import org.galaxy.uniflow.api.elements.UniCase;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -54,7 +53,7 @@ public class UniflowWrapper {
         return null;
     }
 
-    public static @NotNull UniCase wrap(PsiSwitchLabelStatementBase caseLabel, List<PsiStatement> statements) {
+    public static @NotNull UniJdk21Case wrap(PsiSwitchLabelStatementBase caseLabel, List<PsiStatement> statements) {
         return caseLabel instanceof PsiSwitchStatement ?
                 new IJCase.IJStatementCase((PsiSwitchLabelStatement) caseLabel, statements) :
                 new IJCase.IJRuleCase((PsiSwitchLabeledRuleStatement) caseLabel);

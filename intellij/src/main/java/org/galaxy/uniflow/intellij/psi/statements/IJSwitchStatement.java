@@ -5,8 +5,8 @@ import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiSwitchBlock;
 import com.intellij.psi.PsiSwitchStatement;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.elements.UniCase;
 import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.statements.UniJdk21Case;
 import org.galaxy.uniflow.api.statements.UniSwitch;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.galaxy.uniflow.intellij.psi.lists.IJCaseList;
@@ -33,7 +33,7 @@ public class IJSwitchStatement extends IJStatement<PsiSwitchStatement> implement
     }
 
     @Override
-    public @NotNull UniList<UniCase> getCases() {
+    public @NotNull UniList<@NotNull UniJdk21Case> getCases() {
         return new IJCaseList(element);
     }
 

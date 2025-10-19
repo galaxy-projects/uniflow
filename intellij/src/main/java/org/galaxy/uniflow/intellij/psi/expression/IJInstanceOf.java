@@ -2,9 +2,10 @@ package org.galaxy.uniflow.intellij.psi.expression;
 
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiInstanceOfExpression;
+import com.intellij.psi.PsiPrimaryPattern;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.expressions.UniExpression;
-import org.galaxy.uniflow.api.expressions.UniInstanceOf;
+import org.galaxy.uniflow.api.expressions.UniPatternInstanceOf;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
@@ -12,7 +13,7 @@ import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class IJInstanceOf extends IJExpression<PsiInstanceOfExpression> implements UniInstanceOf {
+public class IJInstanceOf extends IJExpression<PsiInstanceOfExpression> implements UniPatternInstanceOf {
 
     public IJInstanceOf(PsiInstanceOfExpression element) {
         super(element);
@@ -56,7 +57,9 @@ public class IJInstanceOf extends IJExpression<PsiInstanceOfExpression> implemen
 
     @Override
     public @Nullable UniPattern getPattern() {
-        return UniflowWrapper.wrap(element.getPattern());
+        PsiPrimaryPattern pattern = element.getPattern();
+
+        return pattern != null ? UniflowWrapper.wrap(pattern) : null;
     }
 
     @Override

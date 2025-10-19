@@ -7,9 +7,8 @@ import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
-import org.galaxy.uniflow.api.elements.UniCase;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -49,7 +48,7 @@ public class IntellijUnwrapper {
         return null;
     }
 
-    public static @NotNull PsiSwitchLabelStatementBase unwrap(UniCase uniCase) {
+    public static @NotNull PsiSwitchLabelStatementBase unwrap(UniCaseBase uniCase) {
         return null;
     }
 

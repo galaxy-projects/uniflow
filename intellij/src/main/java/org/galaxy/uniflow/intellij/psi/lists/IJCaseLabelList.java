@@ -4,7 +4,7 @@ import com.intellij.psi.PsiCaseLabelElement;
 import com.intellij.psi.PsiCaseLabelElementList;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiSwitchLabelStatement;
-import org.galaxy.uniflow.api.elements.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
