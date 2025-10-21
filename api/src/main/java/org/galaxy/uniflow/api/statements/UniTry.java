@@ -12,12 +12,12 @@ public interface UniTry extends UniStatement {
 
     @NotNull UniBlock getBody();
 
-    @NotNull UniList<UniCatch> getCatches();
+    @NotNull UniList<@NotNull UniCatch> getCatches();
 
     void setFinally(@Nullable UniBlock finallyBody);
 
     @Nullable UniBlock getFinallyBody();
 
-    @NotNull UniList<UniElement> getResources();
+    @NotNull UniList<@NotNull UniElement> getResources();
 
 }

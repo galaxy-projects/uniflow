@@ -33,7 +33,7 @@ public class IJTry extends IJStatement<PsiTryStatement> implements UniTry {
     }
 
     @Override
-    public @NotNull UniList<UniCatch> getCatches() {
+    public @NotNull UniList<@NotNull UniCatch> getCatches() {
         return IJLists.catches(element);
     }
 

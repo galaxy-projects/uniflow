@@ -36,7 +36,7 @@ public class JavacSwitchExpression extends JavacExpression<JCTree.JCExpression> 
     }
 
     @Override
-    public @NotNull UniList<UniJdk12Case> getCases() {
+    public @NotNull UniList<@NotNull UniJdk12Case> getCases() {
         return new JavacList<UniJdk12Case, JCTree.JCCase>(
                 CASES.createGetter(tree),
                 CASES.createSetter(tree),

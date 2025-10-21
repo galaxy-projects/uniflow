@@ -37,7 +37,7 @@ public class JavacMethodInvocation extends JavacExpression<JCTree.JCMethodInvoca
     }
 
     @Override
-    public @NotNull UniList<UniExpression> getArguments() {
+    public @NotNull UniList<@NotNull UniExpression> getArguments() {
         return new JavacList<>(
                 () -> tree.args,
                 newList -> tree.args = newList,

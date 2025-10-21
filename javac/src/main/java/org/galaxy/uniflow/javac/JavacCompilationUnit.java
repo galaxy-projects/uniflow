@@ -62,7 +62,7 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
     }
 
     @Override
-    public @NotNull UniList<UniElement> getOtherElements() {
+    public @NotNull UniList<@NotNull UniElement> getOtherElements() {
         return elements().partial(
                 e -> !(e instanceof JCTree.JCModuleDecl) && !(e instanceof JCTree.JCPackageDecl) && !(e instanceof JCTree.JCImport) && !(e instanceof JCTree.JCClassDecl),
                 Function.identity(),

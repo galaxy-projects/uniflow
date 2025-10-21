@@ -45,7 +45,7 @@ public class IJModule extends IJElement<PsiJavaModule> implements UniModule {
     }
 
     @Override
-    public @NotNull UniList<UniDirective> getDirectives() {
+    public @NotNull UniList<@NotNull UniDirective> getDirectives() {
         return new IJDirectiveList(element);
     }
 

@@ -15,7 +15,7 @@ public interface UniModule extends UniElement, UniModifiersHolder {
 
     @NotNull UniExpression getName();
 
-    @NotNull UniList<UniDirective> getDirectives();
+    @NotNull UniList<@NotNull UniDirective> getDirectives();
 
     enum ModuleKind {
         OPEN,

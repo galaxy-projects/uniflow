@@ -77,7 +77,7 @@ public abstract class IJCase<T extends PsiSwitchLabelStatementBase> extends IJSt
         }
 
         @Override
-        public @NotNull UniList<UniStatement> getStatements() {
+        public @NotNull UniList<@NotNull UniStatement> getStatements() {
             return new IJCaseStatementList(element, statements);
         }
 

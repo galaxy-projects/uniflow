@@ -52,7 +52,7 @@ public class IJLists {
         );
     }
 
-    public static UniList<UniStatement> block(@NotNull PsiCodeBlock body) {
+    public static UniList<@NotNull UniStatement> block(@NotNull PsiCodeBlock body) {
         return new IJList<>(
                 body,
                 PsiCodeBlock::getStatements,
@@ -82,7 +82,7 @@ public class IJLists {
         );
     }
 
-    public static UniList<UniCatch> catches(PsiTryStatement element) {
+    public static UniList<@NotNull UniCatch> catches(PsiTryStatement element) {
         return new IJList<>(
                 element,
                 PsiTryStatement::getCatchSections,

@@ -54,7 +54,7 @@ public class JavacModule extends JavacElement<JCTree> implements UniModule {
     }
 
     @Override
-    public @NotNull UniList<UniDirective> getDirectives() {
+    public @NotNull UniList<@NotNull UniDirective> getDirectives() {
         return new JavacList<>(
                 DIRECTIVES.createGetter(tree),
                 DIRECTIVES.createSetter(tree),

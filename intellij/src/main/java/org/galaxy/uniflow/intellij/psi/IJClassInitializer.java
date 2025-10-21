@@ -22,7 +22,7 @@ public class IJClassInitializer extends IJElement<PsiClassInitializer> implement
     }
 
     @Override
-    public @NotNull UniList<UniStatement> getStatements() {
+    public @NotNull UniList<@NotNull UniStatement> getStatements() {
         return IJLists.block(element.getBody());
     }
 

@@ -19,7 +19,7 @@ public class JavacForLoop extends JavacElement<JCTree.JCForLoop> implements UniF
     }
 
     @Override
-    public @NotNull UniList<UniStatement> getInitializer() {
+    public @NotNull UniList<@NotNull UniStatement> getInitializer() {
         return new JavacList<>(
                 () -> tree.init,
                 newList -> tree.init = newList,

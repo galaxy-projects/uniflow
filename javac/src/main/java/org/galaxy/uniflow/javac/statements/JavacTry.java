@@ -30,7 +30,7 @@ public class JavacTry extends JavacElement<JCTree.JCTry> implements UniTry {
     }
 
     @Override
-    public @NotNull UniList<UniCatch> getCatches() {
+    public @NotNull UniList<@NotNull UniCatch> getCatches() {
         return new JavacList<>(
                 () -> tree.catchers,
                 newList -> tree.catchers = newList,
@@ -50,7 +50,7 @@ public class JavacTry extends JavacElement<JCTree.JCTry> implements UniTry {
     }
 
     @Override
-    public @NotNull UniList<UniElement> getResources() {
+    public @NotNull UniList<@NotNull UniElement> getResources() {
         return new JavacList<>(
                 () -> tree.resources,
                 newList -> tree.resources = newList,

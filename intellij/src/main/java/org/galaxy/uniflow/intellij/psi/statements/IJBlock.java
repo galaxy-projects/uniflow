@@ -23,7 +23,7 @@ public class IJBlock extends IJElement<PsiCodeBlock> implements UniBlock {
     }
 
     @Override
-    public @NotNull UniList<UniStatement> getStatements() {
+    public @NotNull UniList<@NotNull UniStatement> getStatements() {
         return IJLists.block(element);
     }
 
