@@ -41,7 +41,7 @@ public class IJModule extends IJElement<PsiJavaModule> implements UniModule {
 
     @Override
     public @NotNull UniExpression getName() {
-        return UniflowWrapper.wrap(element.getNameIdentifier());
+        return UniflowWrapper.wrap(element.getNameIdentifier().getReference());
     }
 
     @Override
