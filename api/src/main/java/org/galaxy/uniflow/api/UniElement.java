@@ -10,9 +10,7 @@ import org.galaxy.uniflow.api.modules.directives.UniExports;
 import org.galaxy.uniflow.api.modules.directives.UniProvides;
 import org.galaxy.uniflow.api.modules.directives.UniRequires;
 import org.galaxy.uniflow.api.modules.directives.UniUses;
-import org.galaxy.uniflow.api.pattern.UniBindingPattern;
-import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
-import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
+import org.galaxy.uniflow.api.pattern.*;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.*;
 import org.jetbrains.annotations.NotNull;
@@ -571,6 +569,20 @@ public interface UniElement {
          * @since 17
          */
         PARENTHESIZED_PATTERN,
+
+        /**
+         * Used for instances of {@link UniAnyPattern}
+         *
+         * @since 21
+         */
+        ANY_PATTERN,
+
+        /**
+         * Used for instances of {@link UniDeconstructionPattern}
+         *
+         * @since 21
+         */
+        DECONSTRUCTION_PATTERN,
 
         /**
          * Used for instances of {@link UniDefaultCaseLabel}.

@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class IJUnary extends IJExpression<PsiUnaryExpression> implements UniUnary {
 
-    private static final Map<IElementType, Kind> UNARY_KIND_MAP = new HashMap<>();
+    public static final Map<IElementType, Kind> UNARY_KIND_MAP = new HashMap<>();
 
     public IJUnary(PsiUnaryExpression element) {
         super(element);

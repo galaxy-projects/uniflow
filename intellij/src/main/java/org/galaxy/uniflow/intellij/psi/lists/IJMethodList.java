@@ -11,32 +11,12 @@ import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.function.Function;
 
 public class IJMethodList extends IJList<PsiClass, PsiMethod, UniMethod> implements UniMethodList {
 
-    private final Function<PsiClass, PsiMethod[]> getter;
-
     public IJMethodList(PsiClass psiClass, Function<PsiClass, PsiMethod[]> getter) {
-        super(psiClass, UniMethod[]::new, UniflowWrapper::wrap, IntellijUnwrapper::unwrap);
-        this.getter = getter;
-    }
-
-    @Override
-    protected PsiMethod[] getElements() {
-        return getter.apply(list);
-    }
-
-    @Override
-    protected PsiClass createEmptyList() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void clear() {
-        for (PsiMethod method : getter.apply(list))
-            method.delete();
+        super(psiClass, getter, UniMethod[]::new, UniflowWrapper::wrap, IntellijUnwrapper::unwrap);
     }
 
     @Override
@@ -49,7 +29,7 @@ public class IJMethodList extends IJList<PsiClass, PsiMethod, UniMethod> impleme
 
     @Override
     public @NotNull UniMethod @NotNull [] getMethods(@NotNull String name) {
-        return Arrays.stream(getter.apply(list))
+        return elementStream()
                 .filter(method -> method.getName().equals(name))
                 .map(UniflowWrapper::wrap)
                 .toArray(UniMethod[]::new);
@@ -57,7 +37,7 @@ public class IJMethodList extends IJList<PsiClass, PsiMethod, UniMethod> impleme
 
     @Override
     public @Nullable UniMethod getMethod(@NotNull UniMethodSignature signature) {
-        return Arrays.stream(getter.apply(list))
+        return elementStream()
                 .filter(method -> new IJMethodSignature(method).equals(signature))
                 .findFirst()
                 .map(UniflowWrapper::wrap)

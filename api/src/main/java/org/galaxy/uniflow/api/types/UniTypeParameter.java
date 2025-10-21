@@ -11,10 +11,6 @@ public interface UniTypeParameter extends UniAnnotationHolder, UniElement {
 
     @NotNull String getName();
 
-    void setType(@NotNull UniType type);
-
-    @NotNull UniType getType();
-
     @NotNull UniList<@NotNull UniType> getExtends();
 
 }

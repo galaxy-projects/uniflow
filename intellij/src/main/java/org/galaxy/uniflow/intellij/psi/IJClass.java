@@ -12,8 +12,9 @@ import org.galaxy.uniflow.api.lists.UniMethodList;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
-import org.galaxy.uniflow.intellij.psi.lists.*;
-import org.galaxy.uniflow.intellij.psi.lists.statements.IJClassInitializerList;
+import org.galaxy.uniflow.intellij.psi.lists.IJFieldList;
+import org.galaxy.uniflow.intellij.psi.lists.IJLists;
+import org.galaxy.uniflow.intellij.psi.lists.IJMethodList;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,12 +67,12 @@ public class IJClass extends IJElement<PsiClass> implements UniClass {
 
     @Override
     public @NotNull UniList<@NotNull UniType> getImplements() {
-        return new IJReferenceTypeList(element.getImplementsList());
+        return IJLists.referenceTypeList(element.getImplementsList());
     }
 
     @Override
     public @NotNull UniList<@NotNull UniTypeParameter> getTypeParameters() {
-        return new IJTypeParameterList(element.getTypeParameterList());
+        return IJLists.typeParameters(element.getTypeParameterList());
     }
 
     @Override
@@ -91,12 +92,12 @@ public class IJClass extends IJElement<PsiClass> implements UniClass {
 
     @Override
     public @NotNull UniList<@NotNull UniClassInitializer> getInitializers() {
-        return new IJClassInitializerList(element);
+        return IJLists.classInitializers(element);
     }
 
     @Override
     public @NotNull UniList<@NotNull UniClass> getInnerClasses() {
-        return new IJInnerClassList(element);
+        return IJLists.innerClasses(element);
     }
 
     @Override

@@ -53,7 +53,7 @@ public class IJRequires extends IJDirective<PsiRequiresStatement> implements Uni
 
     @Override
     public @NotNull UniExpression getModuleName() {
-        return UniflowWrapper.wrap(element.getReferenceElement());
+        return UniflowWrapper.wrap(element.getModuleReference());
     }
 
     @Override

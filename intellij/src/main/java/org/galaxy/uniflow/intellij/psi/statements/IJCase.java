@@ -8,7 +8,7 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniJdk21Case;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
-import org.galaxy.uniflow.intellij.psi.lists.IJCaseLabelList;
+import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.galaxy.uniflow.intellij.psi.lists.statements.IJCaseStatementList;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
@@ -25,7 +25,7 @@ public abstract class IJCase<T extends PsiSwitchLabelStatementBase> extends IJSt
 
     @Override
     public @NotNull UniList<@NotNull UniCaseLabel> getLabels() {
-        return new IJCaseLabelList(element.getCaseLabelElementList());
+        return IJLists.caseLabels(element.getCaseLabelElementList());
     }
 
     @Override

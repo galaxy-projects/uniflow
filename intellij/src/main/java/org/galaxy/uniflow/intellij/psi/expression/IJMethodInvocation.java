@@ -5,8 +5,7 @@ import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniMethodInvocation;
 import org.galaxy.uniflow.api.types.UniType;
-import org.galaxy.uniflow.intellij.psi.lists.IJExpressionList;
-import org.galaxy.uniflow.intellij.psi.lists.IJTypeList;
+import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +18,7 @@ public class IJMethodInvocation extends IJExpression<PsiMethodCallExpression> im
 
     @Override
     public @NotNull UniList<@NotNull UniType> getTypeArguments() {
-        return new IJTypeList(element.getTypeArgumentList());
+        return IJLists.types(element.getTypeArgumentList());
     }
 
     @Override
@@ -33,8 +32,8 @@ public class IJMethodInvocation extends IJExpression<PsiMethodCallExpression> im
     }
 
     @Override
-    public @NotNull UniList<UniExpression> getArguments() {
-        return new IJExpressionList(element.getArgumentList());
+    public @NotNull UniList<@NotNull UniExpression> getArguments() {
+        return IJLists.expressions(element.getArgumentList());
     }
 
     @Override

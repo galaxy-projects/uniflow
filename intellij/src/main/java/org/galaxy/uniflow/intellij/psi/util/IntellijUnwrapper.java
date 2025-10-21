@@ -5,17 +5,20 @@ import org.galaxy.uniflow.api.UniClass;
 import org.galaxy.uniflow.api.UniClassInitializer;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniMethod;
+import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
+import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class IntellijUnwrapper {
@@ -24,11 +27,19 @@ public class IntellijUnwrapper {
         return null;
     }
 
+    public static @NotNull PsiAnnotation unwrap(UniAnnotation annotation) {
+        return null;
+    }
+
     public static @NotNull PsiAnnotationMemberValue unwrap(UniAnnotationValue value) {
         return null;
     }
 
     public static @NotNull PsiExpression unwrap(UniExpression expression) {
+        return null;
+    }
+
+    public static @NotNull PsiPattern unwrap(UniPattern pattern) {
         return null;
     }
 
@@ -96,6 +107,10 @@ public class IntellijUnwrapper {
         return null;
     }
 
+    public static @NotNull PsiTypeElement unwrapType(UniExpression expression) {
+        return null;
+    }
+
     public static @NotNull PsiTypeElement unwrap(UniType type) {
         return null;
     }
@@ -109,6 +124,14 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiJavaCodeReferenceElement unwrapReference(UniExpression expression) {
+        return null;
+    }
+
+    public static @NotNull PsiJavaCodeReferenceElement unwrapReference(UniClassType type) {
+        return null;
+    }
+
+    public static @NotNull @NonNls String unwrapTypeName(@NotNull UniClassType type) {
         return null;
     }
 }

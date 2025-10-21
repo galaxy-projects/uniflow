@@ -1,16 +1,15 @@
 package org.galaxy.uniflow.intellij.psi.statements;
 
-import com.intellij.psi.PsiCodeBlock;
+import com.intellij.psi.PsiBlockStatement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.intellij.psi.IJElement;
 import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.jetbrains.annotations.NotNull;
 
-public class IJBlock extends IJElement<PsiCodeBlock> implements UniBlock {
+public class IJBlockStatement extends IJStatement<PsiBlockStatement> implements UniBlock {
 
-    public IJBlock(PsiCodeBlock element) {
+    public IJBlockStatement(PsiBlockStatement element) {
         super(element);
     }
 
@@ -24,7 +23,7 @@ public class IJBlock extends IJElement<PsiCodeBlock> implements UniBlock {
 
     @Override
     public @NotNull UniList<UniStatement> getStatements() {
-        return IJLists.block(element);
+        return IJLists.block(element.getCodeBlock());
     }
 
     @Override

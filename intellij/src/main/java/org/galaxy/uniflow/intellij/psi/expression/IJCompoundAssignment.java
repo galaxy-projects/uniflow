@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class IJCompoundAssignment extends IJExpression<PsiAssignmentExpression> implements UniCompoundAssignment {
 
-    private static final Map<IElementType, Kind> ASSIGNMENT_KIND_MAP = new HashMap<>();
+    public static final Map<IElementType, Kind> ASSIGNMENT_KIND_MAP = new HashMap<>();
 
     public IJCompoundAssignment(PsiAssignmentExpression element) {
         super(element);

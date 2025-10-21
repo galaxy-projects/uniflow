@@ -41,7 +41,7 @@ public abstract class IJStatementListBase<T extends PsiElement> implements UniLi
     public void addFirst(@NotNull UniStatement value) {
         PsiStatement statement = IntellijUnwrapper.unwrap(value);
 
-        statements.add(0, statement);
+        statements.addFirst(statement);
         if (parent.getFirstChild() != null)
             parent.addBefore(statement, parent.getFirstChild());
         else

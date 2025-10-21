@@ -12,28 +12,24 @@ import org.jetbrains.annotations.Nullable;
 public class IJFieldList extends IJList<PsiClass, PsiField, UniField> implements UniFieldList {
 
     public IJFieldList(PsiClass psiClass) {
-        super(psiClass, UniField[]::new, UniflowWrapper::wrap, IntellijUnwrapper::unwrap);
-    }
-
-    @Override
-    protected PsiField[] getElements() {
-        return list.getFields();
-    }
-
-    @Override
-    protected PsiClass createEmptyList() {
-        throw new UnsupportedOperationException();
+        super(psiClass, PsiClass::getFields, UniField[]::new, UniflowWrapper::wrap, IntellijUnwrapper::unwrap);
     }
 
     @Override
     public void clear() {
-        for (PsiField field : list.getFields())
+        PsiField[] fields = getElements();
+
+        if (fields == null) return;
+        for (PsiField field : fields)
             field.delete();
     }
 
     @Override
     public void removeField(@NotNull String name) {
-        for (PsiField field : list.getFields()) {
+        PsiField[] fields = getElements();
+
+        if (fields == null) return;
+        for (PsiField field : fields) {
             if (field.getName().equals(name)) {
                 field.delete();
                 break;
@@ -43,7 +39,10 @@ public class IJFieldList extends IJList<PsiClass, PsiField, UniField> implements
 
     @Override
     public @Nullable UniField getField(@NotNull String name) {
-        for (PsiField field : list.getFields()) {
+        PsiField[] fields = getElements();
+
+        if (fields == null) return null;
+        for (PsiField field : fields) {
             if (field.getName().equals(name))
                 return UniflowWrapper.wrap(field);
         }

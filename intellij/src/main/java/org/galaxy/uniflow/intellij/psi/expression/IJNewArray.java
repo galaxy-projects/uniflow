@@ -8,9 +8,8 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniNewArray;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
-import org.galaxy.uniflow.intellij.psi.lists.IJArrayInitializers;
 import org.galaxy.uniflow.intellij.psi.lists.IJEmptyList;
-import org.galaxy.uniflow.intellij.psi.lists.IJExpressionList;
+import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,12 +27,12 @@ public class IJNewArray extends IJExpression<PsiNewExpression> implements UniNew
 
     @Override
     public @NotNull UniList<@NotNull UniExpression> getDimensions() {
-        return new IJExpressionList(element.getArgumentList());
+        return IJLists.expressions(element.getArgumentList());
     }
 
     @Override
     public @NotNull UniList<@NotNull UniExpression> getInitializers() {
-        return new IJArrayInitializers(element.getArrayInitializer());
+        return IJLists.arrayInitializers(element.getArrayInitializer());
     }
 
     @Override

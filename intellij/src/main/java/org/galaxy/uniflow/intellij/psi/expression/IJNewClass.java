@@ -6,8 +6,7 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniNewClass;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
-import org.galaxy.uniflow.intellij.psi.lists.IJExpressionList;
-import org.galaxy.uniflow.intellij.psi.lists.IJTypeList;
+import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +24,7 @@ public class IJNewClass extends IJExpression<PsiNewExpression> implements UniNew
 
     @Override
     public @NotNull UniList<@NotNull UniType> getTypeArguments() {
-        return new IJTypeList(element.getTypeArgumentList());
+        return IJLists.types(element.getTypeArgumentList());
     }
 
     @Override
@@ -35,7 +34,7 @@ public class IJNewClass extends IJExpression<PsiNewExpression> implements UniNew
 
     @Override
     public @NotNull UniList<@NotNull UniExpression> getArguments() {
-        return new IJExpressionList(element.getArgumentList());
+        return IJLists.expressions(element.getArgumentList());
     }
 
     @Override

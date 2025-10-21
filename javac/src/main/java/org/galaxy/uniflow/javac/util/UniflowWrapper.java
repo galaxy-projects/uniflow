@@ -27,7 +27,6 @@ import org.galaxy.uniflow.javac.expression.*;
 import org.galaxy.uniflow.javac.signatures.JavacOperatorSignature;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.*;
-import org.galaxy.uniflow.javac12.statements.JavacYield;
 import org.galaxy.uniflow.javac8.statements.Javac8Case;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,8 +63,6 @@ public class UniflowWrapper {
             return wrap((JCTree.JCPattern) element);
         else if (element instanceof JCTree.JCCaseLabel)
             return wrap((JCTree.JCCaseLabel) element);
-        else if (element instanceof JCTree.JCDirective)
-            return wrap((JCTree.JCDirective) element);
         else if (element instanceof JCTree.JCCompilationUnit)
             return new JavacCompilationUnit((JCTree.JCCompilationUnit) element);
         else if (element instanceof JCTree.JCImport)
@@ -192,8 +189,6 @@ public class UniflowWrapper {
             return new JavacVariable(var);
         } else if (statement instanceof JCTree.JCWhileLoop)
             return new JavacWhileLoop((JCTree.JCWhileLoop) statement);
-        else if (statement instanceof JCTree.JCYield)
-            return new JavacYield((JCTree.JCYield) statement);
         return new JavacStatement<>(statement);
     }
 

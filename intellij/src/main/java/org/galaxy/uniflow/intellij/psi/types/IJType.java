@@ -5,7 +5,7 @@ import org.galaxy.uniflow.api.types.UniType;
 
 public class IJType<T extends PsiElement> implements UniType {
 
-    private final T element;
+    protected final T element;
 
     public IJType(T element) {
         this.element = element;

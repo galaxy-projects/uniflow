@@ -7,7 +7,7 @@ import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniProvides;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
-import org.galaxy.uniflow.intellij.psi.lists.IJReferenceList;
+import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +47,7 @@ public class IJProvides extends IJDirective<PsiProvidesStatement> implements Uni
 
     @Override
     public @NotNull UniList<@NotNull UniExpression> getImplementationNames() {
-        return new IJReferenceList(element.getImplementationList());
+        return IJLists.referenceList(element.getImplementationList());
     }
 
     @Override

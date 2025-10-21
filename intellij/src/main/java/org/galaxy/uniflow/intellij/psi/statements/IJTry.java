@@ -10,8 +10,7 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniTry;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
-import org.galaxy.uniflow.intellij.psi.lists.IJCatchList;
-import org.galaxy.uniflow.intellij.psi.lists.IJResourceList;
+import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +34,7 @@ public class IJTry extends IJStatement<PsiTryStatement> implements UniTry {
 
     @Override
     public @NotNull UniList<UniCatch> getCatches() {
-        return new IJCatchList(element);
+        return IJLists.catches(element);
     }
 
     @Override
@@ -49,8 +48,8 @@ public class IJTry extends IJStatement<PsiTryStatement> implements UniTry {
     }
 
     @Override
-    public @NotNull UniList<UniElement> getResources() {
-        return new IJResourceList(element.getResourceList());
+    public @NotNull UniList<@NotNull UniElement> getResources() {
+        return IJLists.resources(element.getResourceList());
     }
 
     @Override

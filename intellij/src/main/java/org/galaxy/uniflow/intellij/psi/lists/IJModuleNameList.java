@@ -38,7 +38,7 @@ public class IJModuleNameList implements UniList<UniExpression> {
         List<UniExpression> list = new ArrayList<>();
 
         element.getModuleReferences().forEach(moduleName -> {
-            list.add(UniflowWrapper.wrap(moduleName));
+            list.add(UniflowWrapper.wrap(moduleName.getReference()));
         });
         return list.stream();
     }

@@ -14,13 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class IJDirectiveList implements UniList<UniDirective> {
-
-    private final PsiJavaModule module;
-
-    public IJDirectiveList(PsiJavaModule module) {
-        this.module = module;
-    }
+public record IJDirectiveList(PsiJavaModule module) implements UniList<UniDirective> {
 
     @Override
     public boolean isEmpty() {

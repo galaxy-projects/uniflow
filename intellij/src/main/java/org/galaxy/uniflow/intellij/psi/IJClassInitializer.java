@@ -4,7 +4,7 @@ import com.intellij.psi.PsiClassInitializer;
 import org.galaxy.uniflow.api.UniClassInitializer;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.intellij.psi.lists.statements.IJBlockStatementList;
+import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.jetbrains.annotations.NotNull;
 
 public class IJClassInitializer extends IJElement<PsiClassInitializer> implements UniClassInitializer {
@@ -23,7 +23,7 @@ public class IJClassInitializer extends IJElement<PsiClassInitializer> implement
 
     @Override
     public @NotNull UniList<UniStatement> getStatements() {
-        return new IJBlockStatementList(element.getBody());
+        return IJLists.block(element.getBody());
     }
 
     @Override

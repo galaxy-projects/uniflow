@@ -7,7 +7,7 @@ import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.types.UniClassType;
-import org.galaxy.uniflow.intellij.psi.lists.IJAnnotationList;
+import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +49,7 @@ public class IJModifiers extends IJElement<PsiModifierList> implements UniModifi
 
     @Override
     public @NotNull UniList<@NotNull UniAnnotation> getAnnotations() {
-        return new IJAnnotationList(element);
+        return IJLists.annotations(element);
     }
 
     @Override
