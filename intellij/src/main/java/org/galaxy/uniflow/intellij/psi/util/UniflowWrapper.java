@@ -315,11 +315,11 @@ public class UniflowWrapper {
             return new IJArrayType(array);
         else if (type instanceof PsiWildcardType wildcard)
             return new IJWildcardType(wildcard);
-        else if (type instanceof PsiClassType classType)
-            return new IJClassType(classType);
-        else if (type instanceof PsiDiamondType diamond)
-            return new IJParameterizedType(diamond);
-        else if (type instanceof PsiDisjunctionType disjunction)
+        else if (type instanceof PsiClassType classType) {
+            if (classType.isRaw())
+                return new IJClassType(classType);
+            return new IJParameterizedType(classType);
+        } else if (type instanceof PsiDisjunctionType disjunction)
             return new IJUnionType(disjunction);
         throw new IllegalArgumentException("Unknown type: " + type);
     }
