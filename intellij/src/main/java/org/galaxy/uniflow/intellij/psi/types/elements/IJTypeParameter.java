@@ -1,4 +1,4 @@
-package org.galaxy.uniflow.intellij.psi.types;
+package org.galaxy.uniflow.intellij.psi.types.elements;
 
 import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiTypeParameter;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class IJTypeParameter extends IJType<PsiTypeParameter> implements UniTypeParameter {
+public class IJTypeParameter extends IJElementType<PsiTypeParameter> implements UniTypeParameter {
 
     public IJTypeParameter(PsiTypeParameter typeParameter) {
         super(typeParameter);

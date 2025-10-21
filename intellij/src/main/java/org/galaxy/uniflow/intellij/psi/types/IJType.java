@@ -1,17 +1,17 @@
 package org.galaxy.uniflow.intellij.psi.types;
 
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiType;
 import org.galaxy.uniflow.api.types.UniType;
 
-public class IJType<T extends PsiElement> implements UniType {
+public class IJType<T extends PsiType> implements UniType {
 
-    protected final T element;
+    protected final T type;
 
-    public IJType(T element) {
-        this.element = element;
+    public IJType(T type) {
+        this.type = type;
     }
 
-    public T getElement() {
-        return element;
+    public T getRawType() {
+        return type;
     }
 }

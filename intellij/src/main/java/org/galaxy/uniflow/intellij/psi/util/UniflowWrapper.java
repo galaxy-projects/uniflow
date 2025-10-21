@@ -15,10 +15,7 @@ import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
-import org.galaxy.uniflow.intellij.psi.IJClass;
-import org.galaxy.uniflow.intellij.psi.IJClassInitializer;
-import org.galaxy.uniflow.intellij.psi.IJMethod;
-import org.galaxy.uniflow.intellij.psi.IJModifiers;
+import org.galaxy.uniflow.intellij.psi.*;
 import org.galaxy.uniflow.intellij.psi.elements.*;
 import org.galaxy.uniflow.intellij.psi.expression.*;
 import org.galaxy.uniflow.intellij.psi.modules.IJModule;
@@ -28,7 +25,10 @@ import org.galaxy.uniflow.intellij.psi.pattern.IJBindingPattern;
 import org.galaxy.uniflow.intellij.psi.pattern.IJRecordPattern;
 import org.galaxy.uniflow.intellij.psi.signature.IJOperatorSignature;
 import org.galaxy.uniflow.intellij.psi.statements.*;
-import org.galaxy.uniflow.intellij.psi.types.IJTypeParameter;
+import org.galaxy.uniflow.intellij.psi.types.*;
+import org.galaxy.uniflow.intellij.psi.types.elements.IJExpressionType;
+import org.galaxy.uniflow.intellij.psi.types.elements.IJTypeElementType;
+import org.galaxy.uniflow.intellij.psi.types.elements.IJTypeParameter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -198,15 +198,11 @@ public class UniflowWrapper {
 
     // References
     public static @NotNull UniExpression wrap(PsiJavaCodeReferenceElement classReference) {
-        return null;
-    }
-
-    public static @NotNull UniExpression wrap(PsiReferenceExpression referenceExpression) {
-        return null;
+        return new IJReference(classReference);
     }
 
     public static @NotNull UniExpression wrap(PsiJavaModuleReference moduleReference) {
-        return null;
+        return new IJReference(moduleReference);
     }
 
     // Specifics
@@ -313,26 +309,46 @@ public class UniflowWrapper {
     // Types
 
     public static @NotNull UniType wrap(PsiType type) {
-        return null;
+        if (type instanceof PsiPrimitiveType primitive)
+            return new IJPrimitiveType(primitive);
+        else if (type instanceof PsiArrayType array)
+            return new IJArrayType(array);
+        else if (type instanceof PsiWildcardType wildcard)
+            return new IJWildcardType(wildcard);
+        else if (type instanceof PsiClassType classType)
+            return new IJClassType(classType);
+        else if (type instanceof PsiDiamondType diamond)
+            return new IJParameterizedType(diamond);
+        else if (type instanceof PsiDisjunctionType disjunction)
+            return new IJUnionType(disjunction);
+        throw new IllegalArgumentException("Unknown type: " + type);
     }
 
     public static @NotNull UniType wrapAsType(@Nullable PsiExpression expression) {
-        return null;
+        return new IJExpressionType<>(expression);
     }
 
     public static @NotNull UniType wrapAsType(PsiTypeElement type) {
-        return null;
+        return new IJTypeElementType(type);
     }
 
     public static @NotNull UniClassType wrapClassType(@NotNull PsiClass psiClass) {
-        return null;
+        PsiElementFactory factory = IntellijUniflow.getInstance().factory;
+
+        return new IJClassType(factory.createType(psiClass));
     }
 
     public static @NotNull UniClassType wrapClassType(@NotNull PsiClassType type) {
-        return null;
+        return new IJClassType(type);
     }
 
     public static @NotNull UniClassType wrapClassType(@Nullable PsiJavaCodeReferenceElement codeReference) {
-        return null;
+        if (codeReference == null) throw new IllegalArgumentException("Null code reference");
+        PsiReference reference = codeReference.getReference();
+        PsiElement resolved = reference != null ? reference.resolve() : null;
+
+        if (resolved instanceof PsiClass psiClass)
+            return wrapClassType(psiClass);
+        throw new IllegalArgumentException("Unknown reference: " + codeReference);
     }
 }

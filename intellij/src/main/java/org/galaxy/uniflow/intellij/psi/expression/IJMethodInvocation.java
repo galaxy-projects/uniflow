@@ -1,5 +1,6 @@
 package org.galaxy.uniflow.intellij.psi.expression;
 
+import com.intellij.psi.PsiJavaCodeReferenceElement;
 import com.intellij.psi.PsiMethodCallExpression;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
@@ -28,7 +29,7 @@ public class IJMethodInvocation extends IJExpression<PsiMethodCallExpression> im
 
     @Override
     public @NotNull UniExpression getMethodSelect() {
-        return UniflowWrapper.wrap(element.getMethodExpression());
+        return UniflowWrapper.wrap((PsiJavaCodeReferenceElement) element.getMethodExpression());
     }
 
     @Override

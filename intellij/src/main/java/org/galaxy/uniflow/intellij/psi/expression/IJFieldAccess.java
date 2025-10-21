@@ -7,7 +7,7 @@ import com.intellij.psi.PsiReferenceExpression;
 import org.galaxy.uniflow.api.expressions.UniFieldAccess;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
-import org.galaxy.uniflow.intellij.psi.types.IJExpressionType;
+import org.galaxy.uniflow.intellij.psi.types.elements.IJExpressionType;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
