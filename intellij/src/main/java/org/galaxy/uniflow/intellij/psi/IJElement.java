@@ -11,6 +11,10 @@ public abstract class IJElement<T extends PsiElement> implements UniElement {
         this.element = element;
     }
 
+    public T getElement() {
+        return element;
+    }
+
     @Override
     public int getPosition() {
         return element.getStartOffsetInParent();

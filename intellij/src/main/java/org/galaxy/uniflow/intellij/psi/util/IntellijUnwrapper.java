@@ -18,29 +18,36 @@ import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
+import org.galaxy.uniflow.intellij.psi.IJElement;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 public class IntellijUnwrapper {
 
-    public static @NotNull PsiJavaToken unwrap(UniOperatorSignature signature) {
-        return null;
-    }
-
-    public static @NotNull PsiAnnotation unwrap(UniAnnotation annotation) {
-        return null;
-    }
-
-    public static @NotNull PsiAnnotationMemberValue unwrap(UniAnnotationValue value) {
-        return null;
+    public static @NotNull PsiElement unwrap(UniElement element) {
+        if (element instanceof IJElement<?> ijElement)
+            return ijElement.getElement();
+        throw new IllegalArgumentException("Element must be an IJElement");
     }
 
     public static @NotNull PsiExpression unwrap(UniExpression expression) {
-        return null;
+        return (PsiExpression) unwrap((UniElement) expression);
+    }
+
+    public static @NotNull PsiStatement unwrap(UniStatement statement) {
+        return (PsiStatement) unwrap((UniElement) statement);
+    }
+
+    public static @NotNull PsiAnnotation unwrap(UniAnnotation annotation) {
+        return (PsiAnnotation) unwrap((UniElement) annotation);
+    }
+
+    public static @NotNull PsiAnnotationMemberValue unwrap(UniAnnotationValue value) {
+        return (PsiAnnotationMemberValue) unwrap((UniElement) value);
     }
 
     public static @NotNull PsiPattern unwrap(UniPattern pattern) {
-        return null;
+        return (PsiPattern) unwrap((UniElement) pattern);
     }
 
     public static @NotNull Object unwrap(UniAnnotationAttribute attribute) {
@@ -48,59 +55,51 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiParameter unwrap(UniParameter parameter) {
-        return null;
+        return (PsiParameter) unwrap((UniElement) parameter);
     }
 
     public static @NotNull PsiVariable unwrap(UniVariable variable) {
-        return null;
+        return (PsiVariable) unwrap((UniElement) variable);
     }
 
     public static @NotNull PsiField unwrap(UniField field) {
-        return null;
+        return (PsiField) unwrap((UniElement) field);
     }
 
     public static @NotNull PsiSwitchLabelStatementBase unwrap(UniCaseBase uniCase) {
-        return null;
+        return (PsiSwitchLabelStatementBase) unwrap((UniElement) uniCase);
     }
 
     public static @NotNull PsiCaseLabelElement unwrap(UniCaseLabel label) {
-        return null;
+        return (PsiCaseLabelElement) unwrap((UniElement) label);
     }
 
     public static @NotNull PsiClassInitializer unwrap(UniClassInitializer classInitializer) {
-        return null;
+        return (PsiClassInitializer) unwrap((UniElement) classInitializer);
     }
 
     public static @NotNull PsiCodeBlock unwrap(UniBlock block) {
-        return null;
+        return (PsiCodeBlock) unwrap((UniElement) block);
     }
 
     public static @NotNull PsiCatchSection unwrap(UniCatch section) {
-        return null;
+        return (PsiCatchSection) unwrap((UniElement) section);
     }
 
     public static @NotNull PsiClass unwrap(UniClass uniClass) {
-        return null;
-    }
-
-    public static @NotNull PsiStatement unwrap(UniStatement statement) {
-        return null;
+        return (PsiClass) unwrap((UniElement) uniClass);
     }
 
     public static @NotNull PsiStatement unwrap(UniDirective directive) {
-        return null;
+        return unwrap((UniStatement) directive);
     }
 
     public static @NotNull PsiTypeParameter unwrap(UniTypeParameter typeParameter) {
-        return null;
+        return (PsiTypeParameter) unwrap((UniElement) typeParameter);
     }
 
     public static @NotNull PsiMethod unwrap(UniMethod method) {
-        return null;
-    }
-
-    public static @NotNull PsiElement unwrap(UniElement element) {
-        return null;
+        return (PsiMethod) unwrap((UniElement) method);
     }
 
     public static @NotNull PsiClassType unwrap(UniClassType type) {
@@ -110,6 +109,8 @@ public class IntellijUnwrapper {
     public static @NotNull PsiTypeElement unwrapType(UniExpression expression) {
         return null;
     }
+
+    // Types
 
     public static @NotNull PsiTypeElement unwrap(UniType type) {
         return null;
@@ -132,6 +133,12 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull @NonNls String unwrapTypeName(@NotNull UniClassType type) {
+        PsiClassType classType = unwrap(type);
+
+        return classType.getClassName();
+    }
+
+    public static @NotNull PsiJavaToken unwrap(UniOperatorSignature signature) {
         return null;
     }
 }
