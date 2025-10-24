@@ -4,6 +4,7 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
@@ -176,5 +177,17 @@ public class JavacUnwrapper {
         if (signature instanceof JavacFieldSignature)
             return ((JavacFieldSignature) signature).getSymbol();
         throw new IllegalArgumentException("Signature not supported: " + signature);
+    }
+
+    public static JCTree.JCExpression expressionFromString(String name) {
+        TreeMaker treeMaker = JavacUniflow.getInstance().treeMaker;
+        int dotIndex = name.lastIndexOf('.');
+
+        if (dotIndex < 0)
+            return treeMaker.Ident(NameUtils.name(name));
+        String prefix = name.substring(0, dotIndex);
+        String suffix = name.substring(dotIndex);
+
+        return treeMaker.Select(expressionFromString(prefix), NameUtils.name(suffix));
     }
 }

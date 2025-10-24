@@ -46,7 +46,7 @@ public class IJExports extends IJDirective<PsiPackageAccessibilityStatement> imp
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniExpression> getModuleNames() {
+    public @NotNull UniList<@NotNull String> getModuleNames() {
         return new IJModuleNameList(element);
     }
 

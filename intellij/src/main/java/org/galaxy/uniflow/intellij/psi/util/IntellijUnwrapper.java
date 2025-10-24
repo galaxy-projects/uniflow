@@ -19,6 +19,7 @@ import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.intellij.psi.IJElement;
+import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -130,6 +131,10 @@ public class IntellijUnwrapper {
 
     public static @NotNull PsiJavaCodeReferenceElement unwrapReference(UniClassType type) {
         return null;
+    }
+
+    public static @NotNull PsiJavaModuleReferenceElement unwrapModuleReference(String name) {
+        return IntellijUniflow.getInstance().factory.createModuleReferenceFromText(name, null);
     }
 
     public static @NotNull @NonNls String unwrapTypeName(@NotNull UniClassType type) {

@@ -1,14 +1,13 @@
 package org.galaxy.uniflow.intellij.psi.modules.directives;
 
 import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiRequiresStatement;
-import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniRequires;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
-import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class IJRequires extends IJDirective<PsiRequiresStatement> implements UniRequires {
 
@@ -33,27 +32,21 @@ public class IJRequires extends IJDirective<PsiRequiresStatement> implements Uni
     }
 
     @Override
-    public void setModuleName(@NotNull UniExpression moduleName) {
-        PsiExpression expression = IntellijUnwrapper.unwrap(moduleName);
-
+    public void setModuleName(@NotNull String moduleName) {
         if (element.getReferenceElement() != null)
-            element.getReferenceElement().replace(expression);
+            element.getReferenceElement().replace(IntellijUnwrapper.unwrapModuleReference(moduleName));
         else {
             PsiElementFactory factory = IntellijUniflow.getInstance().factory;
             PsiRequiresStatement newRequires = (PsiRequiresStatement) factory.createModuleStatementFromText(
-                    "requires a;", null);
-
-            assert element.getReferenceElement() != null;
-
-            element.getReferenceElement().replace(newRequires);
+                    "requires %s;".formatted(moduleName), null);
 
             replace(newRequires);
         }
     }
 
     @Override
-    public @NotNull UniExpression getModuleName() {
-        return UniflowWrapper.wrap(element.getModuleReference());
+    public @NotNull String getModuleName() {
+        return Objects.requireNonNull(element.getModuleName());
     }
 
     @Override

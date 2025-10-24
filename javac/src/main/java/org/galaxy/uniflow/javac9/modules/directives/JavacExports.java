@@ -34,12 +34,12 @@ public class JavacExports extends JavacElement<JCTree> implements UniExports {
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniExpression> getModuleNames() {
-        return new JavacList<UniExpression, JCTree.JCExpression>(
+    public @NotNull UniList<@NotNull String> getModuleNames() {
+        return new JavacList<>(
                 MODULE_NAMES.createGetter(tree),
                 MODULE_NAMES.createSetter(tree),
-                UniflowWrapper::wrap,
-                JavacUnwrapper::unwrap
+                UniflowWrapper::expressionToString,
+                JavacUnwrapper::expressionFromString
         );
     }
 

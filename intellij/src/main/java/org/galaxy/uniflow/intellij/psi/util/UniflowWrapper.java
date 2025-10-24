@@ -201,10 +201,6 @@ public class UniflowWrapper {
         return new IJReference(classReference);
     }
 
-    public static @NotNull UniExpression wrap(PsiJavaModuleReference moduleReference) {
-        return new IJReference(moduleReference);
-    }
-
     // Specifics
 
     public static @NotNull UniCaseBase wrap(PsiSwitchLabelStatementBase switchCase) {

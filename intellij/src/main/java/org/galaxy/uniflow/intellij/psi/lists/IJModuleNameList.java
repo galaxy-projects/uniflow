@@ -1,13 +1,10 @@
 package org.galaxy.uniflow.intellij.psi.lists;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiJavaModuleReferenceElement;
 import com.intellij.psi.PsiPackageAccessibilityStatement;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
-import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -15,13 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class IJModuleNameList implements UniList<UniExpression> {
-
-    private final PsiPackageAccessibilityStatement element;
-
-    public IJModuleNameList(PsiPackageAccessibilityStatement element) {
-        this.element = element;
-    }
+public record IJModuleNameList(PsiPackageAccessibilityStatement element) implements UniList<String> {
 
     @Override
     public boolean isEmpty() {
@@ -29,57 +20,58 @@ public class IJModuleNameList implements UniList<UniExpression> {
     }
 
     @Override
-    public @NotNull UniExpression @NotNull [] get() {
-        return stream().toArray(UniExpression[]::new);
+    public @NotNull String @NotNull [] get() {
+        return stream().toArray(String[]::new);
     }
 
     @Override
-    public @NotNull Stream<UniExpression> stream() {
-        List<UniExpression> list = new ArrayList<>();
+    public @NotNull Stream<String> stream() {
+        List<String> list = new ArrayList<>();
 
-        element.getModuleReferences().forEach(moduleName -> {
-            list.add(UniflowWrapper.wrap(moduleName.getReference()));
+        element.getModuleReferences().forEach(moduleRef -> {
+            list.add(moduleRef.getReferenceText());
         });
         return list.stream();
     }
 
     @Override
-    public void addFirst(@NotNull UniExpression value) {
-        PsiExpression expression = IntellijUnwrapper.unwrap(value);
+    public void addFirst(@NotNull String value) {
+        PsiJavaModuleReferenceElement moduleRef = IntellijUnwrapper.unwrapModuleReference(value);
 
         if (element.getFirstChild() != null)
-            element.addBefore(expression, element.getFirstChild());
+            element.addBefore(moduleRef, element.getFirstChild());
         else
-            element.add(expression);
+            element.add(moduleRef);
     }
 
     @Override
-    public void addAfter(@NotNull UniExpression value, @NotNull UniExpression target) {
-        element.addAfter(IntellijUnwrapper.unwrap(value), IntellijUnwrapper.unwrap(target));
+    public void addAfter(@NotNull String value, @NotNull String target) {
+        element.addAfter(IntellijUnwrapper.unwrapModuleReference(value),
+                IntellijUnwrapper.unwrapModuleReference(target));
     }
 
     @Override
-    public void addBefore(@NotNull UniExpression value, @NotNull UniExpression target) {
-        element.addBefore(IntellijUnwrapper.unwrap(value), IntellijUnwrapper.unwrap(target));
+    public void addBefore(@NotNull String value, @NotNull String target) {
+        element.addBefore(IntellijUnwrapper.unwrapModuleReference(value),
+                IntellijUnwrapper.unwrapModuleReference(target));
     }
 
     @Override
-    public void addLast(@NotNull UniExpression value) {
-        element.add(IntellijUnwrapper.unwrap(value));
+    public void addLast(@NotNull String value) {
+        element.add(IntellijUnwrapper.unwrapModuleReference(value));
     }
 
     @Override
-    public void remove(@NotNull UniExpression value) {
-        IntellijUnwrapper.unwrap(value).delete();
+    public void remove(@NotNull String value) {
+        originalList().stream().filter(element -> element.textMatches(value)).findFirst().ifPresent(PsiElement::delete);
     }
 
     @Override
-    public int getIndex(@NotNull UniExpression element) {
-        PsiExpression expression = IntellijUnwrapper.unwrap(element);
+    public int getIndex(@NotNull String element) {
         int index = 0;
 
         for (PsiJavaModuleReferenceElement moduleReference : this.element.getModuleReferences()) {
-            if (moduleReference.isEquivalentTo(expression))
+            if (moduleReference.textMatches(element))
                 return index;
             index++;
         }
@@ -101,7 +93,7 @@ public class IJModuleNameList implements UniList<UniExpression> {
     }
 
     @Override
-    public @NotNull Iterator<UniExpression> iterator() {
+    public @NotNull Iterator<String> iterator() {
         return stream().iterator();
     }
 

@@ -14,7 +14,6 @@ import org.galaxy.uniflow.intellij.psi.IJModifiers;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.galaxy.uniflow.intellij.psi.lists.IJDirectiveList;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
-import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class IJModule extends IJElement<PsiJavaModule> implements UniModule {
@@ -40,8 +39,8 @@ public class IJModule extends IJElement<PsiJavaModule> implements UniModule {
     }
 
     @Override
-    public @NotNull UniExpression getName() {
-        return UniflowWrapper.wrap(element.getNameIdentifier().getReference());
+    public @NotNull String getName() {
+        return element.getName();
     }
 
     @Override

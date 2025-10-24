@@ -37,6 +37,11 @@ public class UniflowWrapper {
     public static @NotNull String expressionToString(JCTree.JCExpression expression) {
         if (expression instanceof JCTree.JCIdent)
             return NameUtils.nameToString(((JCTree.JCIdent) expression).name);
+        else if (expression instanceof JCTree.JCFieldAccess) {
+            JCTree.JCFieldAccess fieldAccess = (JCTree.JCFieldAccess) expression;
+
+            return expressionToString(fieldAccess.selected) + "." + NameUtils.nameToString(fieldAccess.name);
+        }
         throw new IllegalArgumentException("Unknown expression: " + expression);
     }
 

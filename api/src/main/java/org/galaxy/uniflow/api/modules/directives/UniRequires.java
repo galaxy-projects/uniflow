@@ -1,6 +1,5 @@
 package org.galaxy.uniflow.api.modules.directives;
 
-import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.jetbrains.annotations.NotNull;
 
 public interface UniRequires extends UniDirective {
@@ -13,8 +12,8 @@ public interface UniRequires extends UniDirective {
 
     boolean isTransitive();
 
-    void setModuleName(@NotNull UniExpression moduleName);
+    void setModuleName(@NotNull String moduleName);
 
-    @NotNull UniExpression getModuleName();
+    @NotNull String getModuleName();
 
 }

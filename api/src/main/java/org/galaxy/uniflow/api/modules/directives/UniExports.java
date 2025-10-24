@@ -10,6 +10,6 @@ public interface UniExports extends UniDirective {
 
     @NotNull UniExpression getPackageName();
 
-    @NotNull UniList<@NotNull UniExpression> getModuleNames();
+    @NotNull UniList<@NotNull String> getModuleNames();
 
 }

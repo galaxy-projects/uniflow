@@ -13,7 +13,7 @@ public interface UniModule extends UniElement, UniModifiersHolder {
 
     void setName(@NotNull UniExpression name);
 
-    @NotNull UniExpression getName();
+    @NotNull String getName();
 
     @NotNull UniList<@NotNull UniDirective> getDirectives();
 

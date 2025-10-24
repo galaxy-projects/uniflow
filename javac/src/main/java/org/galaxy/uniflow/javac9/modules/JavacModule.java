@@ -49,8 +49,8 @@ public class JavacModule extends JavacElement<JCTree> implements UniModule {
     }
 
     @Override
-    public @NotNull UniExpression getName() {
-        return UniflowWrapper.wrap((JCTree.JCExpression) QUALIFIER_ID.get(tree));
+    public @NotNull String getName() {
+        return UniflowWrapper.expressionToString(QUALIFIER_ID.get(tree));
     }
 
     @Override

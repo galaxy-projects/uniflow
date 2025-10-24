@@ -46,7 +46,7 @@ public class IJOpens extends IJDirective<PsiPackageAccessibilityStatement> imple
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniExpression> getModuleNames() {
+    public @NotNull UniList<@NotNull String> getModuleNames() {
         return new IJModuleNameList(element);
     }
 
