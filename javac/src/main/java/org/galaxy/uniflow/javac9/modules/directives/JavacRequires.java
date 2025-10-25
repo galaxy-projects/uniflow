@@ -1,7 +1,6 @@
 package org.galaxy.uniflow.javac9.modules.directives;
 
 import com.sun.tools.javac.tree.JCTree;
-import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.modules.directives.UniRequires;
 import org.galaxy.uniflow.javac.JavacElement;
@@ -43,13 +42,13 @@ public class JavacRequires extends JavacElement<JCTree> implements UniRequires {
     }
 
     @Override
-    public void setModuleName(@NotNull UniExpression moduleName) {
-        MODULE_NAME.set(tree, JavacUnwrapper.unwrap(moduleName));
+    public void setModuleName(@NotNull String moduleName) {
+        MODULE_NAME.set(tree, JavacUnwrapper.expressionFromString(moduleName));
     }
 
     @Override
-    public @NotNull UniExpression getModuleName() {
-        return UniflowWrapper.wrap((JCTree.JCExpression) MODULE_NAME.get(tree));
+    public @NotNull String getModuleName() {
+        return UniflowWrapper.expressionToString(MODULE_NAME.get(tree));
     }
 
     static {
