@@ -2,6 +2,7 @@ package org.galaxy.uniflow.javac;
 
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.*;
+import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.javac.lists.JavacList;
@@ -42,7 +43,7 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniImport> getImports() {
+    public @NotNull UniList<@NotNull UniImportBase> getImports() {
         return elements().partial(
                 JCTree.JCImport.class::isInstance,
                 JCTree.JCImport.class::cast,

@@ -1,10 +1,10 @@
-package org.galaxy.uniflow.javac;
+package org.galaxy.uniflow.javac.elements.imports;
 
-import com.sun.tools.javac.code.Scope;
 import com.sun.tools.javac.tree.JCTree;
-import org.galaxy.uniflow.api.UniElement;
-import org.galaxy.uniflow.api.UniImport;
+import org.galaxy.uniflow.api.elements.imports.UniImport;
 import org.galaxy.uniflow.api.factories.UniConstants;
+import org.galaxy.uniflow.javac.JavacElement;
+import org.galaxy.uniflow.javac.Reflection;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.galaxy.uniflow.reflection.ReflectClass;
@@ -20,23 +20,13 @@ public class JavacImport extends JavacElement<JCTree.JCImport> implements UniImp
     }
 
     @Override
-    public boolean isGroup() {
-        return tree.importScope instanceof Scope.StarImportScope;
+    public void setClasses(@NotNull String className) {
+        QUALIFIER_ID.set(tree, JavacUnwrapper.expressionFromString(className));
     }
 
     @Override
-    public boolean isStatic() {
-        return tree.isStatic();
-    }
-
-    @Override
-    public void setQualifiedElement(@NotNull UniElement qualifiedElement) {
-        QUALIFIER_ID.set(tree, JavacUnwrapper.unwrap(qualifiedElement));
-    }
-
-    @Override
-    public @NotNull UniElement getQualifiedElement() {
-        return UniflowWrapper.wrap((JCTree) QUALIFIER_ID.get(tree));
+    public @NotNull String getClasses() {
+        return UniflowWrapper.expressionToString(QUALIFIER_ID.get(tree));
     }
 
     static {

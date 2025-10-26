@@ -20,6 +20,7 @@ import org.galaxy.uniflow.javac10.Javac10Uniflow;
 import org.galaxy.uniflow.javac12.Javac12Uniflow;
 import org.galaxy.uniflow.javac15.Javac15Uniflow;
 import org.galaxy.uniflow.javac21.Javac21Uniflow;
+import org.galaxy.uniflow.javac25.Javac25Uniflow;
 import org.galaxy.uniflow.javac8.Javac8Uniflow;
 import org.galaxy.uniflow.javac9.Javac9Uniflow;
 import org.jetbrains.annotations.NotNull;
@@ -93,7 +94,9 @@ public abstract class JavacUniflow extends Uniflow {
         JavacProcessingEnvironment processingEnvironment = (JavacProcessingEnvironment) environment;
         Source source = Source.instance(processingEnvironment.getContext());
 
-        if (isSourceAtLeast(source, "JDK21"))
+        if (isSourceAtLeast(source, "JDK25"))
+            return new Javac25Uniflow(processingEnvironment);
+        else if (isSourceAtLeast(source, "JDK21"))
             return new Javac21Uniflow(processingEnvironment);
         else if (isSourceAtLeast(source, "JDK15"))
             return new Javac15Uniflow(processingEnvironment);
@@ -104,6 +107,10 @@ public abstract class JavacUniflow extends Uniflow {
         else if (isSourceAtLeast(source, "JDK9"))
             return new Javac9Uniflow(processingEnvironment);
         return new Javac8Uniflow(processingEnvironment);
+    }
+
+    public static boolean isCurrentSourceAtLeast(@NotNull String sourceName) {
+        return isSourceAtLeast(getInstance().source, sourceName);
     }
 
     private static boolean isSourceAtLeast(Source source, String sourceName) {

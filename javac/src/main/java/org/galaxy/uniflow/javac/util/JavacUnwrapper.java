@@ -10,6 +10,7 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniFieldSignature;
@@ -155,7 +156,7 @@ public class JavacUnwrapper {
         return (JCTree.JCModifiers) unwrap((UniElement) modifiers);
     }
 
-    public static JCTree.JCImport unwrap(UniImport uniImport) {
+    public static JCTree.JCImport unwrap(UniImportBase uniImport) {
         return (JCTree.JCImport) unwrap((UniElement) uniImport);
     }
 

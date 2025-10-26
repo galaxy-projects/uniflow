@@ -7,6 +7,7 @@ import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.pattern.UniPattern;
@@ -17,6 +18,9 @@ import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.intellij.psi.*;
 import org.galaxy.uniflow.intellij.psi.elements.*;
+import org.galaxy.uniflow.intellij.psi.elements.imports.IJImport;
+import org.galaxy.uniflow.intellij.psi.elements.imports.IJModuleImport;
+import org.galaxy.uniflow.intellij.psi.elements.imports.IJStaticImport;
 import org.galaxy.uniflow.intellij.psi.expression.*;
 import org.galaxy.uniflow.intellij.psi.modules.IJModule;
 import org.galaxy.uniflow.intellij.psi.modules.directives.*;
@@ -202,6 +206,21 @@ public class UniflowWrapper {
     }
 
     // Specifics
+
+    public static @NotNull UniPackage wrap(PsiPackage psiPackage) {
+        return new IJPackage(psiPackage);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public static @NotNull UniImportBase wrap(PsiImportStatementBase importBase) {
+        if (importBase instanceof PsiImportStaticStatement staticImport)
+            return new IJStaticImport(staticImport);
+        else if (importBase instanceof PsiImportStatement justImport)
+            return new IJImport(justImport);
+        else if (importBase instanceof PsiImportModuleStatement importModule) // jdk 25
+            return new IJModuleImport(importModule);
+        throw new IllegalArgumentException("Unknown import: " + importBase);
+    }
 
     public static @NotNull UniCaseBase wrap(PsiSwitchLabelStatementBase switchCase) {
         if (switchCase instanceof PsiSwitchLabeledRuleStatement ruleCase)

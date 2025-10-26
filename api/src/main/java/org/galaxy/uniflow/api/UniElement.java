@@ -3,6 +3,9 @@ package org.galaxy.uniflow.api;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.imports.UniImport;
+import org.galaxy.uniflow.api.elements.imports.UniModuleImport;
+import org.galaxy.uniflow.api.elements.imports.UniStaticImport;
 import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.modules.UniModule;
@@ -496,6 +499,16 @@ public interface UniElement {
          * Used for instances of {@link UniImport}.
          */
         IMPORT,
+
+        /**
+         * Used for instances of {@link UniStaticImport}
+         */
+        IMPORT_STATIC,
+
+        /**
+         * Used for instances of {@link UniModuleImport}
+         */
+        IMPORT_MODULE,
 
         /**
          * Used for instances of {@link UniInstanceOf}.
