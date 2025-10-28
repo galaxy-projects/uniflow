@@ -10,6 +10,9 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniExpressionResource;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
+import org.galaxy.uniflow.api.elements.resources.UniVariableResource;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
@@ -20,6 +23,11 @@ import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.intellij.psi.*;
 import org.galaxy.uniflow.intellij.psi.elements.IJAnnotation;
+import org.galaxy.uniflow.intellij.psi.elements.IJCatch;
+import org.galaxy.uniflow.intellij.psi.elements.IJDefaultCaseLabel;
+import org.galaxy.uniflow.intellij.psi.elements.resources.IJExpressionResource;
+import org.galaxy.uniflow.intellij.psi.elements.resources.IJResource;
+import org.galaxy.uniflow.intellij.psi.elements.resources.IJVariableResource;
 import org.galaxy.uniflow.intellij.psi.expression.IJExpression;
 import org.galaxy.uniflow.intellij.psi.statements.*;
 import org.galaxy.uniflow.intellij.psi.types.IJType;
@@ -327,12 +335,35 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiParserFacade 
 
     @Override
     public @NotNull UniDoWhileLoop createDoWhileLoop(@NotNull UniStatement body, @NotNull UniExpression condition) {
-        return null;
+        IJStatement<?> ijBody = check(body, IJStatement.class);
+        IJExpression<?> ijCondition = check(condition, IJExpression.class);
+
+        PsiDoWhileStatement doWhile = (PsiDoWhileStatement) factory.createStatementFromText(
+                "do {} while (cond);", null);
+
+        assert doWhile.getCondition() != null;
+        assert doWhile.getBody() != null;
+
+        doWhile.getCondition().replace(ijCondition.getElement());
+        doWhile.getBody().replace(ijBody.getElement());
+
+        return new IJDoWhileLoop(doWhile);
     }
 
     @Override
     public @NotNull UniWhileLoop createWhileLoop(@NotNull UniExpression condition, @NotNull UniStatement body) {
-        return null;
+        IJExpression<?> ijCondition = check(condition, IJExpression.class);
+        IJStatement<?> ijBody = check(body, IJStatement.class);
+
+        PsiWhileStatement whileLoop = (PsiWhileStatement) factory.createStatementFromText("while (cond) {}", null);
+
+        assert whileLoop.getCondition() != null;
+        assert whileLoop.getBody() != null;
+
+        whileLoop.getCondition().replace(ijCondition.getElement());
+        whileLoop.getBody().replace(ijBody.getElement());
+
+        return new IJWhileLoop(whileLoop);
     }
 
     @Override
@@ -340,23 +371,61 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiParserFacade 
                                              @NotNull UniExpression condition,
                                              @NotNull List<@NotNull UniExpressionStatement> step,
                                              @NotNull UniStatement body) {
-        return null;
+        IJExpression<?> ijCondition = check(condition, IJExpression.class);
+        IJStatement<?> ijBody = check(body, IJStatement.class);
+        List<UniStatement> stepStatements = step.stream().map(UniStatement.class::cast).toList();
+
+        PsiForStatement forLoop = (PsiForStatement) factory.createStatementFromText("for (;;;) {}", null);
+
+        assert forLoop.getInitialization() != null;
+        assert forLoop.getCondition() != null;
+        assert forLoop.getUpdate() != null;
+        assert forLoop.getBody() != null;
+
+        forLoop.getCondition().replace(ijCondition.getElement());
+        IJForLoop.createConsumer(forLoop.getInitialization()::replace).accept(init);
+        IJForLoop.createConsumer(forLoop.getUpdate()::replace).accept(stepStatements);
+        forLoop.getBody().replace(ijBody.getElement());
+
+        return new IJForLoop(forLoop);
     }
 
     @Override
-    public @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniVariable variable, @NotNull UniExpression iterable,
+    public @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniParameter parameter,
+                                                         @NotNull UniExpression iterable,
                                                          @NotNull UniStatement body) {
-        return null;
+        IJParameter ijParameter = check(parameter, IJParameter.class);
+        IJExpression<?> ijIterable = check(iterable, IJExpression.class);
+        IJStatement<?> ijBody = check(body, IJStatement.class);
+
+        PsiForeachStatement forEach = (PsiForeachStatement) factory.createStatementFromText("for (a : b) {}", null);
+
+        assert forEach.getIteratedValue() != null;
+        assert forEach.getBody() != null;
+
+        forEach.getIterationParameter().replace(ijParameter.getElement());
+        forEach.getIteratedValue().replace(ijIterable.getElement());
+        forEach.getBody().replace(ijBody.getElement());
+
+        return new IJEnhancedForLoop(forEach);
     }
 
     @Override
     public @NotNull UniLabel createLabel(@NotNull String name, @NotNull UniStatement body) {
-        return null;
+        IJStatement<?> ijBody = check(body, IJStatement.class);
+
+        PsiLabeledStatement label = (PsiLabeledStatement) factory.createStatementFromText(name + ": {}", null);
+
+        if (label.getStatement() != null)
+            label.getStatement().replace(ijBody.getElement());
+        else label.add(ijBody.getElement());
+
+        return new IJLabel(label);
     }
 
     @Override
     public @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
-                                           @NotNull List<@NotNull UniJdk12Case> cases) {
+                                           @NotNull List<@NotNull UniJdk8Case> cases) {
         return null;
     }
 
@@ -368,24 +437,82 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiParserFacade 
 
     @Override
     public @NotNull UniDefaultCaseLabel createDefaultCase() {
-        return null;
+        PsiSwitchLabelStatement caseLabel = (PsiSwitchLabelStatement) factory.createStatementFromText(
+                "default: return null;", null);
+        PsiCaseLabelElementList list = caseLabel.getCaseLabelElementList();
+
+        if (list == null) throw new RuntimeException("caseLabel element list is null");
+        PsiCaseLabelElement element = list.getElements()[0];
+
+        if (!(element instanceof PsiDefaultCaseLabelElement defaultCase))
+            throw new RuntimeException("Case label must be default");
+        return new IJDefaultCaseLabel((PsiDefaultCaseLabelElement) defaultCase.copy());
     }
 
     @Override
     public @NotNull UniSynchronized createSynchronized(@NotNull UniExpression lock, @NotNull UniBlock body) {
-        return null;
+        IJExpression<?> ijLock = check(lock, IJExpression.class);
+        IJStatement<?> ijBody = check(body, IJStatement.class);
+
+        PsiSynchronizedStatement sync = (PsiSynchronizedStatement) factory.createStatementFromText(
+                "synchronized (lock) {}", null);
+
+        assert sync.getLockExpression() != null;
+        assert sync.getBody() != null;
+
+        sync.getLockExpression().replace(ijLock.getElement());
+        sync.getBody().replace(ijBody.getElement());
+
+        return new IJSynchronized(sync);
     }
 
     @Override
-    public @NotNull UniTry createTry(@NotNull UniBlock body, @NotNull List<@NotNull UniCatch> catches,
+    public @NotNull UniTry createTry(@NotNull UniBlock body,
+                                     @NotNull List<@NotNull UniCatch> catches,
                                      @Nullable UniBlock finallyBlock) {
-        return null;
+        return createTry(List.of(), body, catches, finallyBlock);
     }
 
     @Override
-    public @NotNull UniTry createTry(@NotNull List<@NotNull UniElement> resources, @NotNull UniBlock body,
-                                     @NotNull List<@NotNull UniCatch> catches, @Nullable UniBlock finallyBlock) {
-        return null;
+    public @NotNull UniExpressionResource createResource(@NotNull UniExpression expression) {
+        return new IJExpressionResource(expression);
+    }
+
+    @Override
+    public @NotNull UniVariableResource createResource(@NotNull UniVariable variable) {
+        return new IJVariableResource(variable);
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public @NotNull UniTry createTry(@NotNull List<@NotNull UniResource> resources,
+                                     @NotNull UniBlock body,
+                                     @NotNull List<@NotNull UniCatch> catches,
+                                     @Nullable UniBlock finallyBlock) {
+        Stream<IJResource> ijResources = checkList(resources, IJResource.class);
+        IJBlock ijBody = check(body, IJBlock.class);
+        Stream<IJCatch> ijCatches = checkList(catches, IJCatch.class);
+        IJBlock ijFinally = check(finallyBlock, IJBlock.class);
+
+        PsiTryStatement result = (PsiTryStatement) factory.createStatementFromText(
+                "try(resources) {} finally {}", null);
+        PsiResourceList resourceList = result.getResourceList();
+
+        assert resourceList != null;
+        assert result.getTryBlock() != null;
+        assert result.getFinallyBlock() != null;
+
+        resourceList.forEach(PsiResourceListElement::delete);
+        ijResources.map(IJResource::getResourceElement).forEach(resourceList::add);
+
+        result.getTryBlock().replace(ijBody.getElement());
+        ijCatches.map(IJCatch::getElement).forEach(element -> result.addBefore(element, result.getFinallyBlock()));
+
+        if (ijFinally != null)
+            result.getFinallyBlock().replace(ijFinally.getElement());
+        else result.getFinallyBlock().delete();
+
+        return new IJTry(result);
     }
 
     @Override

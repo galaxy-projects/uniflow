@@ -8,6 +8,9 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniExpressionResource;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
+import org.galaxy.uniflow.api.elements.resources.UniVariableResource;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
@@ -132,14 +135,14 @@ public interface UniElementFactory extends UniElementFactoryConversion {
                                       @NotNull List<@NotNull UniExpressionStatement> step,
                                       @NotNull UniStatement body);
 
-    @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniVariable variable,
+    @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniParameter variable,
                                                   @NotNull UniExpression iterable,
                                                   @NotNull UniStatement body);
 
     @NotNull UniLabel createLabel(@NotNull String name, @NotNull UniStatement body);
 
     @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
-                                    @NotNull List<@NotNull UniJdk12Case> cases);
+                                    @NotNull List<@NotNull UniJdk8Case> cases);
 
     @NotNull UniJdk8Case createCase(@NotNull UniCaseLabel label, @NotNull List<@NotNull UniStatement> statements);
 
@@ -147,11 +150,15 @@ public interface UniElementFactory extends UniElementFactoryConversion {
 
     @NotNull UniSynchronized createSynchronized(@NotNull UniExpression lock, @NotNull UniBlock body);
 
+    @NotNull UniExpressionResource createResource(@NotNull UniExpression expression);
+
+    @NotNull UniVariableResource createResource(@NotNull UniVariable variable);
+
     @NotNull UniTry createTry(@NotNull UniBlock body,
                               @NotNull List<@NotNull UniCatch> catches,
                               @Nullable UniBlock finallyBlock);
 
-    @NotNull UniTry createTry(@NotNull List<@NotNull UniElement> resources,
+    @NotNull UniTry createTry(@NotNull List<@NotNull UniResource> resources,
                               @NotNull UniBlock body,
                               @NotNull List<@NotNull UniCatch> catches,
                               @Nullable UniBlock finallyBlock);

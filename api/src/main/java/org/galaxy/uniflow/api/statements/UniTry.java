@@ -1,8 +1,8 @@
 package org.galaxy.uniflow.api.statements;
 
-import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +18,6 @@ public interface UniTry extends UniStatement {
 
     @Nullable UniBlock getFinallyBody();
 
-    @NotNull UniList<@NotNull UniElement> getResources();
+    @NotNull UniList<@NotNull UniResource> getResources();
 
 }

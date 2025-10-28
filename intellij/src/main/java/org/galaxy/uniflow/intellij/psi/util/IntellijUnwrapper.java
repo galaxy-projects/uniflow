@@ -11,6 +11,7 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
 import org.galaxy.uniflow.api.pattern.UniPattern;
@@ -21,6 +22,7 @@ import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.intellij.psi.IJElement;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
+import org.galaxy.uniflow.intellij.psi.elements.resources.IJResource;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
@@ -122,8 +124,10 @@ public class IntellijUnwrapper {
         return null;
     }
 
-    public static @NotNull PsiResourceListElement unwrapResource(UniElement element) {
-        return null;
+    public static @NotNull PsiResourceListElement unwrapResource(UniResource element) {
+        if (element instanceof IJResource<?> ijResource)
+            return ijResource.getResourceElement();
+        throw new IllegalArgumentException("Element must be an IJResource");
     }
 
     public static @NotNull PsiJavaCodeReferenceElement unwrapReference(UniExpression expression) {

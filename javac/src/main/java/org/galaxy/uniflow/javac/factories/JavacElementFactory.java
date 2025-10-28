@@ -12,6 +12,9 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniExpressionResource;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
+import org.galaxy.uniflow.api.elements.resources.UniVariableResource;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
@@ -27,6 +30,9 @@ import org.galaxy.uniflow.javac.annotations.JavacAnnotationAttribute;
 import org.galaxy.uniflow.javac.elements.JavacCaseLabel;
 import org.galaxy.uniflow.javac.elements.JavacCatch;
 import org.galaxy.uniflow.javac.elements.JavacDefaultCaseLabel;
+import org.galaxy.uniflow.javac.elements.resources.JavacExpressionResource;
+import org.galaxy.uniflow.javac.elements.resources.JavacResource;
+import org.galaxy.uniflow.javac.elements.resources.JavacVariableResource;
 import org.galaxy.uniflow.javac.expression.*;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.JavacClassType;
@@ -35,7 +41,7 @@ import org.galaxy.uniflow.javac.types.JavacType;
 import org.galaxy.uniflow.javac.types.JavacTypeParameter;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac12.statements.Javac12Case;
+import org.galaxy.uniflow.javac8.statements.Javac8Case;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -344,15 +350,15 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniVariable variable,
+    public @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniParameter variable,
                                                          @NotNull UniExpression iterable,
                                                          @NotNull UniStatement body) {
-        JavacVariable javacVariable = check(variable, JavacVariable.class);
+        JavacParameter javacParameter = check(variable, JavacParameter.class);
         JavacExpression<?> javacIterable = check(iterable, JavacExpression.class);
         JavacStatement<?> javacBody = check(body, JavacStatement.class);
 
         return new JavacEnhancedForLoop(treeMaker.ForeachLoop(
-                javacVariable.getTree(),
+                javacParameter.getTree(),
                 javacIterable.getTree(),
                 javacBody.getTree()
         ));
@@ -370,13 +376,13 @@ public abstract class JavacElementFactory implements UniElementFactory {
 
     @Override
     public @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
-                                           @NotNull List<@NotNull UniJdk12Case> cases) {
+                                           @NotNull List<@NotNull UniJdk8Case> cases) {
         JavacExpression<?> javacSelector = check(selector, JavacExpression.class);
-        Stream<Javac12Case> javacCases = checkList(cases, Javac12Case.class);
+        Stream<Javac8Case> javacCases = checkList(cases, Javac8Case.class);
 
         return new JavacSwitch(treeMaker.Switch(
                 javacSelector.getTree(),
-                mapToList(javacCases, Javac12Case::getTree)
+                mapToList(javacCases, Javac8Case::getTree)
         ));
     }
 
@@ -397,6 +403,16 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
+    public @NotNull UniExpressionResource createResource(@NotNull UniExpression expression) {
+        return new JavacExpressionResource(expression);
+    }
+
+    @Override
+    public @NotNull UniVariableResource createResource(@NotNull UniVariable variable) {
+        return new JavacVariableResource(variable);
+    }
+
+    @Override
     public @NotNull UniTry createTry(@NotNull UniBlock body,
                                      @NotNull List<@NotNull UniCatch> catches,
                                      @Nullable UniBlock finallyBlock) {
@@ -405,17 +421,19 @@ public abstract class JavacElementFactory implements UniElementFactory {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public @NotNull UniTry createTry(@NotNull List<@NotNull UniElement> resources,
+    public @NotNull UniTry createTry(@NotNull List<@NotNull UniResource> resources,
                                      @NotNull UniBlock body,
                                      @NotNull List<@NotNull UniCatch> catches,
                                      @Nullable UniBlock finallyBlock) {
-        Stream<JavacElement> javacResources = checkList(resources, JavacElement.class);
+        Stream<JavacResource> javacResources = checkList(resources, JavacResource.class);
         JavacBlock javacBody = check(body, JavacBlock.class);
         Stream<JavacCatch> javacCatches = checkList(catches, JavacCatch.class);
         JavacBlock javacFinally = check(finallyBlock, JavacBlock.class);
 
         return new JavacTry(treeMaker.Try(
-                mapToList(javacResources, JavacElement::getTree),
+                javacResources.map(JavacResource::getElement)
+                        .map(JavacUnwrapper::unwrap)
+                        .collect(com.sun.tools.javac.util.List.collector()),
                 javacBody.getTree(),
                 mapToList(javacCatches, JavacCatch::getTree),
                 javacFinally != null ? javacFinally.getTree() : null

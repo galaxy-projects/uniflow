@@ -9,6 +9,7 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.pattern.UniPattern;
@@ -22,6 +23,8 @@ import org.galaxy.uniflow.intellij.psi.elements.*;
 import org.galaxy.uniflow.intellij.psi.elements.imports.IJImport;
 import org.galaxy.uniflow.intellij.psi.elements.imports.IJModuleImport;
 import org.galaxy.uniflow.intellij.psi.elements.imports.IJStaticImport;
+import org.galaxy.uniflow.intellij.psi.elements.resources.IJExpressionResource;
+import org.galaxy.uniflow.intellij.psi.elements.resources.IJVariableResource;
 import org.galaxy.uniflow.intellij.psi.expression.*;
 import org.galaxy.uniflow.intellij.psi.modules.IJModule;
 import org.galaxy.uniflow.intellij.psi.modules.directives.*;
@@ -326,6 +329,13 @@ public class UniflowWrapper {
         return new IJParameter(parameter);
     }
 
+    public static @NotNull UniResource wrapResource(PsiResourceListElement resource) {
+        if (resource instanceof PsiResourceVariable psiResourceVariable)
+            return new IJVariableResource(wrap(psiResourceVariable));
+        else if (resource instanceof PsiResourceExpression psiResourceExpression)
+            return new IJExpressionResource(wrap(psiResourceExpression.getExpression()));
+        throw new IllegalArgumentException("Unknown resource type: " + resource.getClass());
+    }
     // Types
 
     public static @NotNull UniType wrap(PsiType type) {

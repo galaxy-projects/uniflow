@@ -4,9 +4,9 @@ import com.intellij.psi.PsiCatchSection;
 import com.intellij.psi.PsiCodeBlock;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiTryStatement;
-import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniTry;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
@@ -48,7 +48,7 @@ public class IJTry extends IJStatement<PsiTryStatement> implements UniTry {
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniElement> getResources() {
+    public @NotNull UniList<@NotNull UniResource> getResources() {
         return IJLists.resources(element.getResourceList());
     }
 

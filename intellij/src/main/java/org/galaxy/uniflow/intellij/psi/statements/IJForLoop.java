@@ -104,22 +104,19 @@ public class IJForLoop extends IJStatement<PsiForStatement> implements UniForLoo
 
         if (element instanceof PsiDeclarationStatement) // multiple
             elements = Arrays.stream(((PsiDeclarationStatement) element).getDeclaredElements());
-        else if (element != null) // unique
-            elements = Stream.of(element);
-        else // none
-            elements = Stream.empty();
+        else elements = Stream.ofNullable(element); // unique & null
         return new IJForStatementList<>(
                 elements.map(UniflowWrapper::wrap).map(componentType::cast),
                 arrayGenerator,
                 createConsumer(updater));
     }
 
-    private <T extends UniStatement> Consumer<List<T>> createConsumer(Consumer<PsiElement> updater) {
+    public static <T extends UniStatement> Consumer<List<T>> createConsumer(Consumer<PsiElement> updater) {
         return elements -> {
             if (elements.isEmpty())
                 updater.accept(null);
             else if (elements.size() == 1)
-                updater.accept(IntellijUnwrapper.unwrap(elements.get(0)));
+                updater.accept(IntellijUnwrapper.unwrap(elements.getFirst()));
             else {
                 StringBuilder sb = new StringBuilder(3 * elements.size() - 2);
 

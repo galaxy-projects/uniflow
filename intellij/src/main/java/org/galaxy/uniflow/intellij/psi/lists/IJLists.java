@@ -3,12 +3,12 @@ package org.galaxy.uniflow.intellij.psi.lists;
 import com.intellij.psi.*;
 import org.galaxy.uniflow.api.UniClass;
 import org.galaxy.uniflow.api.UniClassInitializer;
-import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniStatement;
 import org.galaxy.uniflow.api.types.UniType;
@@ -123,7 +123,7 @@ public class IJLists {
         );
     }
 
-    public static UniList<@NotNull UniElement> resources(PsiResourceList resources) {
+    public static UniList<@NotNull UniResource> resources(PsiResourceList resources) {
         return new IJList<>(
                 resources,
                 list -> {
@@ -132,8 +132,8 @@ public class IJLists {
                     list.forEach(elements::add);
                     return elements.toArray(PsiResourceListElement[]::new);
                 },
-                UniElement[]::new,
-                UniflowWrapper::wrap,
+                UniResource[]::new,
+                UniflowWrapper::wrapResource,
                 IntellijUnwrapper::unwrapResource
         );
     }
