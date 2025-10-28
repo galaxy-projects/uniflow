@@ -9,6 +9,7 @@ import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.modules.directives.UniDirective;
@@ -133,6 +134,10 @@ public class IntellijUnwrapper {
         return null;
     }
 
+    public static @NotNull PsiJavaCodeReferenceElement unwrapReferenceFromType(PsiClassType type) {
+        return null;
+    }
+
     public static @NotNull PsiJavaModuleReferenceElement unwrapModuleReference(String name) {
         return IntellijUniflow.getInstance().factory.createModuleReferenceFromText(name, null);
     }
@@ -144,6 +149,10 @@ public class IntellijUnwrapper {
     }
 
     public static @NotNull PsiJavaToken unwrap(UniOperatorSignature signature) {
+        return null;
+    }
+
+    public static @NotNull PsiImportStatementBase unwrap(UniImportBase importBase) {
         return null;
     }
 }

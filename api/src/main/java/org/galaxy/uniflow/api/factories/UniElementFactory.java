@@ -6,7 +6,6 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
-import org.galaxy.uniflow.api.elements.imports.UniImport;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
 import org.galaxy.uniflow.api.expressions.*;
@@ -22,14 +21,7 @@ import java.util.List;
 
 public interface UniElementFactory extends UniElementFactoryConversion {
 
-    @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
-                                               @NotNull List<@NotNull UniImport> imports,
-                                               @NotNull List<@NotNull UniClass> classes);
-
-    @NotNull UniCompilationUnit createTopLevel(@NotNull List<@NotNull UniElement> elements);
-
-    @NotNull UniPackage createPackage(@NotNull List<@NotNull UniAnnotation> annotations,
-                                      @NotNull String name);
+    @NotNull UniPackage createPackage(@NotNull String name);
 
     @NotNull UniModifiers createModifiers(@NotNull List<@NotNull UniModifier> modifiers,
                                           @NotNull List<@NotNull UniAnnotation> annotations);
@@ -39,24 +31,24 @@ public interface UniElementFactory extends UniElementFactoryConversion {
                                   @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                   @Nullable UniType extending,
                                   @NotNull List<@NotNull UniType> implementing,
-                                  @NotNull List<@NotNull UniVariable> fields,
+                                  @NotNull List<@NotNull UniField> fields,
                                   @NotNull List<@NotNull UniMethod> methods);
 
-    UniClass createClass(@NotNull UniModifiers modifiers,
-                         @NotNull String name,
-                         @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                         @Nullable UniType extending,
-                         @NotNull List<@NotNull UniType> implementing,
-                         @NotNull List<@NotNull UniVariable> fields,
-                         @NotNull List<@NotNull UniMethod> methods,
-                         @NotNull List<@NotNull UniClassInitializer> initializers);
+    @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
+                                  @NotNull String name,
+                                  @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                  @Nullable UniType extending,
+                                  @NotNull List<@NotNull UniType> implementing,
+                                  @NotNull List<@NotNull UniField> fields,
+                                  @NotNull List<@NotNull UniMethod> methods,
+                                  @NotNull List<@NotNull UniClassInitializer> initializers);
 
     @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
                                     @NotNull String name,
                                     @NotNull Class<?> returnType,
                                     @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                     @Nullable UniVariable receiveParam,
-                                    @NotNull List<@NotNull UniVariable> parameters,
+                                    @NotNull List<@NotNull UniParameter> parameters,
                                     @NotNull List<@NotNull UniExpression> thrown,
                                     @NotNull UniBlock body);
 
@@ -65,27 +57,27 @@ public interface UniElementFactory extends UniElementFactoryConversion {
                                     @NotNull UniType returnType,
                                     @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                     @Nullable UniVariable receiveParam,
-                                    @NotNull List<@NotNull UniVariable> parameters,
+                                    @NotNull List<@NotNull UniParameter> parameters,
                                     @NotNull List<@NotNull UniExpression> thrown,
                                     @NotNull UniBlock body);
 
-    @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers,
-                                                 @NotNull String name,
-                                                 @NotNull Class<?> returnType,
-                                                 @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                                 @NotNull UniVariable receiveParam,
-                                                 @NotNull List<@NotNull UniVariable> parameters,
-                                                 @NotNull List<@NotNull UniExpression> thrown,
-                                                 @Nullable UniExpression defaultValue);
+    @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
+                                    @NotNull String name,
+                                    @NotNull Class<?> returnType,
+                                    @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                    @NotNull UniVariable receiveParam,
+                                    @NotNull List<@NotNull UniParameter> parameters,
+                                    @NotNull List<@NotNull UniExpression> thrown,
+                                    @Nullable UniExpression defaultValue);
 
-    @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers,
-                                                 @NotNull String name,
-                                                 @NotNull UniType returnType,
-                                                 @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                                 @NotNull UniVariable receiveParam,
-                                                 @NotNull List<@NotNull UniVariable> parameters,
-                                                 @NotNull List<@NotNull UniExpression> thrown,
-                                                 @Nullable UniExpression defaultValue);
+    @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
+                                    @NotNull String name,
+                                    @NotNull UniType returnType,
+                                    @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                    @NotNull UniVariable receiveParam,
+                                    @NotNull List<@NotNull UniParameter> parameters,
+                                    @NotNull List<@NotNull UniExpression> thrown,
+                                    @Nullable UniExpression defaultValue);
 
     @NotNull UniField createField(@NotNull UniModifiers modifiers,
                                   @NotNull String name,
@@ -118,6 +110,14 @@ public interface UniElementFactory extends UniElementFactoryConversion {
                                                 @NotNull UniType type) {
         return createVariable(annotations, name, type, null);
     }
+
+    @NotNull UniParameter createParameter(@NotNull List<@NotNull UniAnnotation> annotations,
+                                          @NotNull String name,
+                                          @NotNull Class<?> type);
+
+    @NotNull UniParameter createParameter(@NotNull List<@NotNull UniAnnotation> annotations,
+                                          @NotNull String name,
+                                          @NotNull UniType type);
 
     @NotNull UniEmpty createSkip();
 

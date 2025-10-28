@@ -7,8 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 public interface UniCompilationUnit extends UniElement {
 
-    void setModule(@Nullable UniModule module);
-
     @Nullable UniModule getModule();
 
     @Nullable String getPackageName();

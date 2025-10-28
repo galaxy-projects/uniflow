@@ -7,6 +7,7 @@ import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.statements.UniStatement;
@@ -152,6 +153,26 @@ public class IJLists {
                 typeParameters,
                 PsiTypeParameterList::getTypeParameters,
                 UniTypeParameter[]::new,
+                UniflowWrapper::wrap,
+                IntellijUnwrapper::unwrap
+        );
+    }
+
+    public static UniList<@NotNull UniImportBase> imports(PsiImportList imports) {
+        return new IJList<>(
+                imports,
+                PsiImportList::getAllImportStatements,
+                UniImportBase[]::new,
+                UniflowWrapper::wrap,
+                IntellijUnwrapper::unwrap
+        );
+    }
+
+    public static @NotNull UniList<@NotNull UniClass> classes(PsiJavaFile element) {
+        return new IJList<>(
+                element,
+                PsiJavaFile::getClasses,
+                UniClass[]::new,
                 UniflowWrapper::wrap,
                 IntellijUnwrapper::unwrap
         );

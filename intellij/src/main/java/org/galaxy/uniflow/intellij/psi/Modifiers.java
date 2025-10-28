@@ -4,7 +4,7 @@ import com.intellij.psi.PsiModifier;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.jetbrains.annotations.NotNull;
 
-class Modifiers {
+public class Modifiers {
 
     public static UniModifier getUniflowModifier(@NotNull @PsiModifier.ModifierConstant String name) {
         return switch (name) {

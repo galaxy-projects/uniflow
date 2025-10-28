@@ -10,7 +10,6 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
 import org.galaxy.uniflow.api.annotations.UniAnnotationValue;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
-import org.galaxy.uniflow.api.elements.imports.UniImport;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
 import org.galaxy.uniflow.api.expressions.*;
@@ -28,7 +27,6 @@ import org.galaxy.uniflow.javac.annotations.JavacAnnotationAttribute;
 import org.galaxy.uniflow.javac.elements.JavacCaseLabel;
 import org.galaxy.uniflow.javac.elements.JavacCatch;
 import org.galaxy.uniflow.javac.elements.JavacDefaultCaseLabel;
-import org.galaxy.uniflow.javac.elements.imports.JavacImport;
 import org.galaxy.uniflow.javac.expression.*;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.JavacClassType;
@@ -56,34 +54,9 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
-                                                      @NotNull List<@NotNull UniImport> imports,
-                                                      @NotNull List<@NotNull UniClass> classes) {
-        JavacPackage javacPackage = check(packageDecl, JavacPackage.class);
-        Stream<JavacImport> javacImports = checkList(imports, JavacImport.class);
-        Stream<JavacClass> javacClasses = checkList(classes, JavacClass.class);
-        ListBuffer<JCTree> buffer = new ListBuffer<>();
-
-        buffer.add(javacPackage.getTree());
-        javacImports.map(JavacImport::getTree).forEach(buffer::add);
-        javacClasses.map(JavacClass::getTree).forEach(buffer::add);
-        return new JavacCompilationUnit(treeMaker.TopLevel(buffer.toList()));
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public @NotNull UniCompilationUnit createTopLevel(@NotNull List<@NotNull UniElement> elements) {
-        Stream<JavacElement> javacElements = checkList(elements, JavacElement.class);
-
-        return new JavacCompilationUnit(treeMaker.TopLevel(mapToList(javacElements, JavacElement::getTree)));
-    }
-
-    @Override
-    public @NotNull UniPackage createPackage(@NotNull List<@NotNull UniAnnotation> annotations, @NotNull String name) {
-        Stream<JavacAnnotation> javacAnnotations = checkList(annotations, JavacAnnotation.class);
-
+    public @NotNull UniPackage createPackage(@NotNull String name) {
         return new JavacPackage(treeMaker.PackageDecl(
-                mapToList(javacAnnotations, JavacAnnotation::getTree),
+                com.sun.tools.javac.util.List.nil(),
                 treeMaker.Ident(NameUtils.name(name))
         ));
     }
@@ -105,7 +78,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
                                          @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                          @Nullable UniType extending,
                                          @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniVariable> fields,
+                                         @NotNull List<@NotNull UniField> fields,
                                          @NotNull List<@NotNull UniMethod> methods) {
         return createClass(modifiers, name, typeParameters, extending, implementing, fields, methods,
                 Collections.emptyList());
@@ -118,7 +91,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
                                          @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                          @Nullable UniType extending,
                                          @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniVariable> fields,
+                                         @NotNull List<@NotNull UniField> fields,
                                          @NotNull List<@NotNull UniMethod> methods,
                                          @NotNull List<@NotNull UniClassInitializer> initializers) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
@@ -126,12 +99,12 @@ public abstract class JavacElementFactory implements UniElementFactory {
         JavacExpressionType javacExtending = check(extending, JavacExpressionType.class);
         Stream<JavacExpressionType> javacImplementing =
                 checkList(implementing, JavacExpressionType.class);
-        Stream<JavacVariable> javacFields = checkList(fields, JavacVariable.class);
+        Stream<JavacField> javacFields = checkList(fields, JavacField.class);
         Stream<JavacMethod> javacMethods = checkList(methods, JavacMethod.class);
         Stream<JavacClassInitializer> javacInitializers = checkList(initializers, JavacClassInitializer.class);
         ListBuffer<JCTree> buffer = new ListBuffer<>();
 
-        javacFields.map(JavacVariable::getTree).forEach(buffer::add);
+        javacFields.map(JavacField::getTree).forEach(buffer::add);
         javacMethods.map(JavacMethod::getTree).forEach(buffer::add);
         javacInitializers.map(JavacClassInitializer::getTree).forEach(buffer::add);
 
@@ -146,34 +119,35 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers, @NotNull String name,
-                                                        @NotNull Class<?> returnType,
-                                                        @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                                        @NotNull UniVariable receiveParam,
-                                                        @NotNull List<@NotNull UniVariable> parameters,
-                                                        @NotNull List<@NotNull UniExpression> thrown,
-                                                        @Nullable UniExpression defaultValue) {
+    public @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
+                                           @NotNull String name,
+                                           @NotNull Class<?> returnType,
+                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                           @NotNull UniVariable receiveParam,
+                                           @NotNull List<@NotNull UniParameter> parameters,
+                                           @NotNull List<@NotNull UniExpression> thrown,
+                                           @Nullable UniExpression defaultValue) {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
-        return createAnnotationAttribute(modifiers, name, typeFactory.createClassType(returnType), typeParameters,
+        return createMethod(modifiers, name, typeFactory.createClassType(returnType), typeParameters,
                 receiveParam, parameters, thrown, defaultValue);
     }
 
     @Override
     @SuppressWarnings("rawtypes")
-    public @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers, @NotNull String name,
-                                                        @NotNull UniType returnType,
-                                                        @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                                        @NotNull UniVariable receiveParam,
-                                                        @NotNull List<@NotNull UniVariable> parameters,
-                                                        @NotNull List<@NotNull UniExpression> thrown,
-                                                        @Nullable UniExpression defaultValue) {
+    public @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers, @NotNull String name,
+                                           @NotNull UniType returnType,
+                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                           @NotNull UniVariable receiveParam,
+                                           @NotNull List<@NotNull UniParameter> parameters,
+                                           @NotNull List<@NotNull UniExpression> thrown,
+                                           @Nullable UniExpression defaultValue) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
         JavacClassType javacReturnType = check(returnType, JavacClassType.class);
         //noinspection DuplicatedCode
         Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
         JavacVariable javacReceiveParam = check(receiveParam, JavacVariable.class);
-        Stream<JavacVariable> javacParameters = checkList(parameters, JavacVariable.class);
+        Stream<JavacParameter> javacParameters = checkList(parameters, JavacParameter.class);
         Stream<JavacExpression> javacThrown = checkList(thrown, JavacExpression.class);
         JavacExpression<?> javacDefaultValue = check(defaultValue, JavacExpression.class);
 
@@ -196,7 +170,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
                                            @NotNull Class<?> returnType,
                                            @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                            @Nullable UniVariable receiveParam,
-                                           @NotNull List<@NotNull UniVariable> parameters,
+                                           @NotNull List<@NotNull UniParameter> parameters,
                                            @NotNull List<@NotNull UniExpression> thrown,
                                            @NotNull UniBlock body) {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
@@ -212,7 +186,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
                                            @NotNull UniType returnType,
                                            @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                            @Nullable UniVariable receiveParam,
-                                           @NotNull List<@NotNull UniVariable> parameters,
+                                           @NotNull List<@NotNull UniParameter> parameters,
                                            @NotNull List<@NotNull UniExpression> thrown,
                                            @NotNull UniBlock body) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
@@ -220,7 +194,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
         //noinspection DuplicatedCode
         Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
         JavacVariable javacReceiveParam = check(receiveParam, JavacVariable.class);
-        Stream<JavacVariable> javacParameters = checkList(parameters, JavacVariable.class);
+        Stream<JavacParameter> javacParameters = checkList(parameters, JavacParameter.class);
         Stream<JavacExpression> javacThrown = checkList(thrown, JavacExpression.class);
         JavacBlock javacBody = check(body, JavacBlock.class);
 
@@ -288,6 +262,31 @@ public abstract class JavacElementFactory implements UniElementFactory {
                 NameUtils.name(name),
                 javacType.getExpression(),
                 javacInit != null ? javacInit.getTree() : null,
+                false
+        ));
+    }
+
+    @Override
+    public @NotNull UniParameter createParameter(@NotNull List<@NotNull UniAnnotation> annotations,
+                                                 @NotNull String name,
+                                                 @NotNull Class<?> type) {
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
+
+        return createParameter(annotations, name, typeFactory.createClassType(type));
+    }
+
+    @Override
+    public @NotNull UniParameter createParameter(@NotNull List<@NotNull UniAnnotation> annotations,
+                                                 @NotNull String name,
+                                                 @NotNull UniType type) {
+        Stream<JavacAnnotation> javacAnnotations = checkList(annotations, JavacAnnotation.class);
+        JavacExpressionType<?, ?> javacType = check(type, JavacExpressionType.class);
+
+        return new JavacParameter(treeMaker.VarDef(
+                treeMaker.Modifiers(0, mapToList(javacAnnotations, JavacAnnotation::getTree)),
+                NameUtils.name(name),
+                javacType.getExpression(),
+                null,
                 false
         ));
     }

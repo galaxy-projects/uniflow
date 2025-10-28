@@ -21,11 +21,6 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
     }
 
     @Override
-    public void setModule(@Nullable UniModule module) {
-        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
-    }
-
-    @Override
     public @Nullable UniModule getModule() {
         throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
     }

@@ -10,6 +10,7 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.expressions.UniExpression;
+import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
 import org.galaxy.uniflow.api.statements.*;
@@ -58,7 +59,7 @@ public class UniflowWrapper {
             return wrap(caseLabel);
         else if (element instanceof PsiJavaModule module)
             return new IJModule(module);
-        else if (element instanceof PsiImportStatement importStatement)
+        else if (element instanceof PsiImportStatementBase importStatement)
             return wrap(importStatement);
         else if (element instanceof PsiMethod method)
             return wrap(method);
@@ -68,7 +69,7 @@ public class UniflowWrapper {
             return wrap(parameter);
         else if (element instanceof PsiVariable variable)
             return wrap(variable);
-        else if (element instanceof PsiPackage psiPackage)
+        else if (element instanceof PsiPackageStatement psiPackage)
             return wrap(psiPackage);
         throw new IllegalArgumentException("Unknown element: " + element);
     }
@@ -207,7 +208,11 @@ public class UniflowWrapper {
 
     // Specifics
 
-    public static @NotNull UniPackage wrap(PsiPackage psiPackage) {
+    public static @NotNull UniModule wrap(PsiJavaModule module) {
+        return new IJModule(module);
+    }
+
+    public static @NotNull UniPackage wrap(PsiPackageStatement psiPackage) {
         return new IJPackage(psiPackage);
     }
 

@@ -5,7 +5,7 @@ import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.jetbrains.annotations.NotNull;
 
-public interface UniTypeParameter extends UniAnnotationHolder, UniElement {
+public interface UniTypeParameter extends UniAnnotationHolder, UniElement, UniType {
 
     void setName(@NotNull String name);
 
