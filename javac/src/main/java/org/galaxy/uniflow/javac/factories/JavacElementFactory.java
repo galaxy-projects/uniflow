@@ -744,19 +744,6 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public @NotNull UniLet createLet(@NotNull List<@NotNull UniStatement> definitions,
-                                     @NotNull UniExpression expression) {
-        Stream<JavacStatement> javacDefinitions = checkList(definitions, JavacStatement.class);
-        JavacExpression<?> javacExpression = check(expression, JavacExpression.class);
-
-        return new JavacLet(treeMaker.LetExpr(
-                mapToList(javacDefinitions, st -> (JCTree.JCStatement) st.getTree()),
-                javacExpression.getTree()
-        ));
-    }
-
-    @Override
     public @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name) {
         UniType selectedType = Uniflow.getInstance().getTypeFactory().createType(selected);
 

@@ -241,9 +241,6 @@ public interface UniElementFactory extends UniElementFactoryConversion {
 
     @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors);
 
-    @NotNull UniLet createLet(@NotNull List<@NotNull UniStatement> definitions,
-                              @NotNull UniExpression expression);
-
     @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name);
 
     @NotNull UniFieldAccess createFieldAccess(@NotNull UniType selected, @NotNull String name);

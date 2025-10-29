@@ -923,12 +923,6 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFac
     }
 
     @Override
-    public @NotNull UniLet createLet(@NotNull List<@NotNull UniStatement> definitions,
-                                     @NotNull UniExpression expression) {
-        return null;
-    }
-
-    @Override
     public @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name) {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
