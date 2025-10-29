@@ -734,16 +734,6 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors) {
-        Stream<JavacElement> javacErrors = checkList(errors, JavacElement.class);
-
-        return new JavacErroneous(treeMaker.Erroneous(
-                mapToList(javacErrors, JavacElement::getTree)
-        ));
-    }
-
-    @Override
     public @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name) {
         UniType selectedType = Uniflow.getInstance().getTypeFactory().createType(selected);
 

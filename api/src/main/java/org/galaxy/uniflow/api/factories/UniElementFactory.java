@@ -239,8 +239,6 @@ public interface UniElementFactory extends UniElementFactoryConversion {
 
     @NotNull UniAnnotationAttribute createAnnotationAttribute(@NotNull String name, @NotNull UniAnnotationValue value);
 
-    @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors);
-
     @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name);
 
     @NotNull UniFieldAccess createFieldAccess(@NotNull UniType selected, @NotNull String name);

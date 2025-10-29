@@ -918,11 +918,6 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFac
     }
 
     @Override
-    public @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors) {
-        throw new UnsupportedOperationException("Not  supported yet.");
-    }
-
-    @Override
     public @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name) {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
