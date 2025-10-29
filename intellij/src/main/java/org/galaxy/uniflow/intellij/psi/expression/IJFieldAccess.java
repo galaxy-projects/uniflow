@@ -21,9 +21,8 @@ public class IJFieldAccess extends IJExpression<PsiReferenceExpression> implemen
 
     @Override
     public void setSelected(@NotNull UniType selected) {
-        if (!(selected instanceof IJExpressionType<?>))
+        if (!(selected instanceof IJExpressionType<?> type))
             throw new IllegalArgumentException("Selected type must be an IJExpressionType");
-        IJExpressionType<?> type = (IJExpressionType<?>) selected;
 
         if (element.getQualifierExpression() != null)
             element.getQualifierExpression().replace(type.getElement());

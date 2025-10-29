@@ -23,6 +23,7 @@ import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.intellij.psi.*;
 import org.galaxy.uniflow.intellij.psi.elements.IJAnnotation;
+import org.galaxy.uniflow.intellij.psi.elements.IJAnnotationAttribute;
 import org.galaxy.uniflow.intellij.psi.elements.IJCatch;
 import org.galaxy.uniflow.intellij.psi.elements.IJDefaultCaseLabel;
 import org.galaxy.uniflow.intellij.psi.elements.resources.IJExpressionResource;
@@ -30,7 +31,9 @@ import org.galaxy.uniflow.intellij.psi.elements.resources.IJResource;
 import org.galaxy.uniflow.intellij.psi.elements.resources.IJVariableResource;
 import org.galaxy.uniflow.intellij.psi.expression.*;
 import org.galaxy.uniflow.intellij.psi.statements.*;
+import org.galaxy.uniflow.intellij.psi.types.IJClassType;
 import org.galaxy.uniflow.intellij.psi.types.IJType;
+import org.galaxy.uniflow.intellij.psi.types.elements.IJExpressionType;
 import org.galaxy.uniflow.intellij.psi.types.elements.IJTypeParameter;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.jetbrains.annotations.Contract;
@@ -42,7 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record IntellijElementFactory(PsiElementFactory factory, PsiParserFacade parser, PsiFileFactory files)
+public record IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFacade parser, PsiFileFactory files)
         implements UniElementFactory {
 
     // Jdk 8
@@ -841,55 +844,82 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiParserFacade 
 
     @Override
     public @NotNull UniArrayAccess createArrayAccess(@NotNull UniExpression array, @NotNull UniExpression index) {
-        return null;
+        IJExpression<?> ijArray = check(array, IJExpression.class);
+        IJExpression<?> ijIndex = check(index, IJExpression.class);
+        PsiArrayAccessExpression result = (PsiArrayAccessExpression) factory.createExpressionFromText("a[0]", null);
+
+        result.getArrayExpression().replace(ijArray.getElement());
+        if (result.getIndexExpression() != null)
+            result.getIndexExpression().replace(ijIndex.getElement());
+        else result.add(ijArray.getElement());
+
+        return new IJArrayAccess(result);
     }
 
     @Override
     public @NotNull UniIdentifier createThis() {
-        return null;
+        return new IJIdentifier(factory.createIdentifier("this"));
     }
 
     @Override
     public @NotNull UniIdentifier createIdentifier(@NotNull String name) {
-        return null;
+        return new IJIdentifier(factory.createIdentifier(name));
     }
 
     @Override
     public @NotNull UniLiteral createNull() {
-        return null;
+        return new IJLiteral((PsiLiteralExpression) factory.createExpressionFromText("null", null));
     }
 
     @Override
     public @NotNull UniLiteral createLiteral(@NotNull TypeTag tag, @NotNull Object value) {
-        return null;
+        return new IJLiteral((PsiLiteralExpression) factory.createExpressionFromText(String.valueOf(value), null));
     }
 
     @Override
     public @NotNull UniLiteral createStringLiteral(@NotNull String value) {
-        return null;
+        return new IJLiteral((PsiLiteralExpression) factory.createExpressionFromText(value, null));
     }
 
     @Override
     public @NotNull UniAnnotation createAnnotation(@NotNull Class<?> annotationType,
                                                    @NotNull List<@NotNull UniAnnotationAttribute> attributes) {
-        return null;
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
+
+        return createAnnotation(typeFactory.createClassType(annotationType), attributes);
     }
 
     @Override
     public @NotNull UniAnnotation createAnnotation(@NotNull UniType annotationType,
                                                    @NotNull List<@NotNull UniAnnotationAttribute> attributes) {
-        return null;
+        IJClassType ijAnnotationType = check(annotationType, IJClassType.class);
+        Stream<IJAnnotationAttribute> ijAttributes = checkList(attributes, IJAnnotationAttribute.class);
+
+        PsiAnnotation annotation = parser.createAnnotationFromText("@Annotation()", null);
+        PsiAnnotationParameterList parameterList = annotation.getParameterList();
+
+        assert annotation.getNameReferenceElement() != null;
+
+        annotation.getNameReferenceElement().replace(IntellijUnwrapper.unwrapReference(ijAnnotationType));
+        ijAttributes.map(IJAnnotationAttribute::getElement).forEach(parameterList::add);
+
+        return new IJAnnotation(annotation);
     }
 
     @Override
     public @NotNull UniAnnotationAttribute createAnnotationAttribute(@NotNull String name,
                                                                      @NotNull UniAnnotationValue value) {
-        return null;
+        PsiAnnotationMemberValue unwrapped = IntellijUnwrapper.unwrap(value);
+        PsiAnnotation annotation = parser.createAnnotationFromText(
+                "@Annotation(%s = %s)".formatted(name, unwrapped.getText()), null);
+        PsiNameValuePair attribute = annotation.getParameterList().getAttributes()[0];
+
+        return new IJAnnotationAttribute(attribute);
     }
 
     @Override
     public @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors) {
-        return null;
+        throw new UnsupportedOperationException("Not  supported yet.");
     }
 
     @Override
@@ -900,27 +930,42 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiParserFacade 
 
     @Override
     public @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name) {
-        return null;
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
+
+        return createFieldAccess(typeFactory.createClassType(selected), name);
     }
 
     @Override
     public @NotNull UniFieldAccess createFieldAccess(@NotNull UniType selected, @NotNull String name) {
-        return null;
+        IJExpressionType<?> ijType = check(selected, IJExpressionType.class);
+
+        return new IJFieldAccess((PsiReferenceExpression) factory.createExpressionFromText(
+                ijType.getElement().getText() + "." + name, null));
     }
 
     @Override
     public @NotNull UniFieldAccess createFieldAccess(@NotNull UniExpression expression, @NotNull String name) {
-        return null;
+        IJExpression<?> ijExpression = check(expression, IJExpression.class);
+
+        return new IJFieldAccess((PsiReferenceExpression) factory.createExpressionFromText(
+                ijExpression.getElement().getText() + "." + name, null));
     }
 
     @Override
     public @NotNull UniFieldAccess createClassLiteral(@NotNull UniClassType type) {
-        return null;
+        IJClassType ijType = check(type, IJClassType.class);
+        PsiClass resolved = ijType.getRawType().resolve();
+
+        if (resolved == null)
+            throw new IllegalArgumentException("Class " + ijType.getRawType() + " not found");
+        return new IJFieldAccess(factory.createReferenceExpression(resolved));
     }
 
     @Override
     public @NotNull UniFieldAccess createClassLiteral(@NotNull Class<?> type) {
-        return null;
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
+
+        return createClassLiteral(typeFactory.createClassType(type));
     }
 
     @Contract("null, _ -> null")
