@@ -204,14 +204,14 @@ public interface UniElementFactory extends UniElementFactoryConversion {
 
     @NotNull UniAssignment createAssignment(@NotNull UniExpression lhs, @NotNull UniExpression rhs);
 
-    @NotNull UniCompoundAssignment createCompoundAssignment(@NotNull UniElement.Tag opcode,
+    @NotNull UniCompoundAssignment createCompoundAssignment(@NotNull Opcode opcode,
                                                             @NotNull UniExpression lhs,
                                                             @NotNull UniExpression rhs);
 
-    @NotNull UniUnary createUnary(@NotNull UniElement.Tag opcode,
+    @NotNull UniUnary createUnary(@NotNull Opcode opcode,
                                   @NotNull UniExpression argument);
 
-    @NotNull UniBinary createBinary(@NotNull UniElement.Tag opcode,
+    @NotNull UniBinary createBinary(@NotNull Opcode opcode,
                                     @NotNull UniExpression lhs,
                                     @NotNull UniExpression rhs);
 

@@ -3,6 +3,7 @@ package org.galaxy.uniflow.intellij.psi.expression;
 import com.intellij.psi.JavaTokenType;
 import com.intellij.psi.PsiAssignmentExpression;
 import com.intellij.psi.tree.IElementType;
+import org.galaxy.uniflow.api.Opcode;
 import org.galaxy.uniflow.api.expressions.UniCompoundAssignment;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -10,12 +11,14 @@ import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class IJCompoundAssignment extends IJExpression<PsiAssignmentExpression> implements UniCompoundAssignment {
 
     public static final Map<IElementType, Kind> ASSIGNMENT_KIND_MAP = new HashMap<>();
+    public static final Map<Opcode, String> OPCODE_CHAR_MAP = new EnumMap<>(Opcode.class);
 
     public IJCompoundAssignment(PsiAssignmentExpression element) {
         super(element);
@@ -73,5 +76,17 @@ public class IJCompoundAssignment extends IJExpression<PsiAssignmentExpression> 
         ASSIGNMENT_KIND_MAP.put(JavaTokenType.LTLTEQ, Kind.LEFT_SHIFT_ASSIGNMENT);
         ASSIGNMENT_KIND_MAP.put(JavaTokenType.GTGTEQ, Kind.RIGHT_SHIFT_ASSIGNMENT);
         ASSIGNMENT_KIND_MAP.put(JavaTokenType.GTGTGTEQ, Kind.UNSIGNED_RIGHT_SHIFT_ASSIGNMENT);
+
+        OPCODE_CHAR_MAP.put(Opcode.BITOR_ASG, "|=");
+        OPCODE_CHAR_MAP.put(Opcode.BITXOR_ASG, "^=");
+        OPCODE_CHAR_MAP.put(Opcode.BITAND_ASG, "&=");
+        OPCODE_CHAR_MAP.put(Opcode.SL_ASG, "<<=");
+        OPCODE_CHAR_MAP.put(Opcode.SR_ASG, ">>=");
+        OPCODE_CHAR_MAP.put(Opcode.USR_ASG, ">>>=");
+        OPCODE_CHAR_MAP.put(Opcode.PLUS_ASG, "+=");
+        OPCODE_CHAR_MAP.put(Opcode.MINUS_ASG, "-=");
+        OPCODE_CHAR_MAP.put(Opcode.MUL_ASG, "*=");
+        OPCODE_CHAR_MAP.put(Opcode.DIV_ASG, "/=");
+        OPCODE_CHAR_MAP.put(Opcode.MOD_ASG, "%=");
     }
 }

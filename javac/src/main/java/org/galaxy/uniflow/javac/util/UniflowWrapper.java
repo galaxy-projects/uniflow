@@ -10,6 +10,7 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniOperatorExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -25,6 +26,8 @@ import org.galaxy.uniflow.javac.elements.JavacCatch;
 import org.galaxy.uniflow.javac.elements.JavacDefaultCaseLabel;
 import org.galaxy.uniflow.javac.elements.imports.JavacImport;
 import org.galaxy.uniflow.javac.elements.imports.JavacStaticImport;
+import org.galaxy.uniflow.javac.elements.resources.JavacExpressionResource;
+import org.galaxy.uniflow.javac.elements.resources.JavacVariableResource;
 import org.galaxy.uniflow.javac.expression.*;
 import org.galaxy.uniflow.javac.signatures.JavacOperatorSignature;
 import org.galaxy.uniflow.javac.statements.*;
@@ -268,6 +271,14 @@ public class UniflowWrapper {
 
     public static @NotNull UniMethod wrap(JCTree.JCMethodDecl method) {
         return new JavacMethod(method);
+    }
+
+    public static @NotNull UniResource wrapResource(JCTree tree) {
+        if (tree instanceof JCTree.JCVariableDecl)
+            return new JavacVariableResource(wrap((JCTree.JCVariableDecl) tree));
+        else if (tree instanceof JCTree.JCExpression)
+            return new JavacExpressionResource(wrap((JCTree.JCExpression) tree));
+        throw new IllegalArgumentException("Unknown resource: " + tree);
     }
 
     // Types

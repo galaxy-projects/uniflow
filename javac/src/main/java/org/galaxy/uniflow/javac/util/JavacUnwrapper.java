@@ -12,6 +12,7 @@ import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniFieldSignature;
 import org.galaxy.uniflow.api.signatures.UniMethodSignature;
@@ -24,6 +25,7 @@ import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.JavacModifiers;
 import org.galaxy.uniflow.javac.JavacPackage;
 import org.galaxy.uniflow.javac.JavacUniflow;
+import org.galaxy.uniflow.javac.elements.resources.JavacResource;
 import org.galaxy.uniflow.javac.expression.JavacNewArray;
 import org.galaxy.uniflow.javac.signatures.JavacFieldSignature;
 import org.galaxy.uniflow.javac.signatures.JavacMethodSignature;
@@ -158,6 +160,12 @@ public class JavacUnwrapper {
 
     public static JCTree.JCImport unwrap(UniImportBase uniImport) {
         return (JCTree.JCImport) unwrap((UniElement) uniImport);
+    }
+
+    public static JCTree unwrap(@NotNull UniResource resource) {
+        if (resource instanceof JavacResource)
+            return unwrap(((JavacResource<?>) resource).getElement());
+        throw new IllegalArgumentException("Unknown resource: " + resource);
     }
 
     // Signatures

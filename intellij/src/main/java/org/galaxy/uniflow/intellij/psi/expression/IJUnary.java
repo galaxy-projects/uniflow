@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiPostfixExpression;
 import com.intellij.psi.PsiUnaryExpression;
 import com.intellij.psi.tree.IElementType;
+import org.galaxy.uniflow.api.Opcode;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniUnary;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -13,12 +14,14 @@ import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class IJUnary extends IJExpression<PsiUnaryExpression> implements UniUnary {
 
     public static final Map<IElementType, Kind> UNARY_KIND_MAP = new HashMap<>();
+    public static final Map<Opcode, String> OPCODE_CHAR_MAP = new EnumMap<>(Opcode.class);
 
     public IJUnary(PsiUnaryExpression element) {
         super(element);
@@ -78,5 +81,14 @@ public class IJUnary extends IJExpression<PsiUnaryExpression> implements UniUnar
         UNARY_KIND_MAP.put(JavaTokenType.TILDE, Kind.BITWISE_COMPLEMENT);
         UNARY_KIND_MAP.put(JavaTokenType.PLUSPLUS, Kind.PREFIX_INCREMENT);
         UNARY_KIND_MAP.put(JavaTokenType.MINUSMINUS, Kind.PREFIX_DECREMENT);
+
+        OPCODE_CHAR_MAP.put(Opcode.POS, "+a");
+        OPCODE_CHAR_MAP.put(Opcode.NEG, "-a");
+        OPCODE_CHAR_MAP.put(Opcode.NOT, "!a");
+        OPCODE_CHAR_MAP.put(Opcode.COMPL, "~a");
+        OPCODE_CHAR_MAP.put(Opcode.PREINC, "a++");
+        OPCODE_CHAR_MAP.put(Opcode.PREDEC, "a--");
+        OPCODE_CHAR_MAP.put(Opcode.POSTINC, "++a");
+        OPCODE_CHAR_MAP.put(Opcode.POSTDEC, "--a");
     }
 }

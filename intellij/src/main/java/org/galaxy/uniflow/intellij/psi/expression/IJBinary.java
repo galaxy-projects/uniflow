@@ -4,6 +4,7 @@ import com.intellij.psi.JavaTokenType;
 import com.intellij.psi.PsiBinaryExpression;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.tree.IElementType;
+import org.galaxy.uniflow.api.Opcode;
 import org.galaxy.uniflow.api.expressions.UniBinary;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -12,12 +13,14 @@ import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class IJBinary extends IJExpression<PsiBinaryExpression> implements UniBinary {
 
     private static final Map<IElementType, Kind> BINARY_KIND_MAP = new HashMap<>();
+    public static final Map<Opcode, String> OPCODE_CHAR_MAP = new EnumMap<>(Opcode.class);
 
     public IJBinary(PsiBinaryExpression element) {
         super(element);
@@ -95,5 +98,25 @@ public class IJBinary extends IJExpression<PsiBinaryExpression> implements UniBi
         BINARY_KIND_MAP.put(JavaTokenType.LTLT, Kind.LEFT_SHIFT);
         BINARY_KIND_MAP.put(JavaTokenType.GTGT, Kind.RIGHT_SHIFT);
         BINARY_KIND_MAP.put(JavaTokenType.GTGTGT, Kind.UNSIGNED_RIGHT_SHIFT);
+
+        OPCODE_CHAR_MAP.put(Opcode.OR, "a || b");
+        OPCODE_CHAR_MAP.put(Opcode.AND, "a && b");
+        OPCODE_CHAR_MAP.put(Opcode.BITOR, "a | b");
+        OPCODE_CHAR_MAP.put(Opcode.BITAND, "a & b");
+        OPCODE_CHAR_MAP.put(Opcode.BITXOR, "a ^ b");
+        OPCODE_CHAR_MAP.put(Opcode.EQ, "a == b");
+        OPCODE_CHAR_MAP.put(Opcode.NE, "a != b");
+        OPCODE_CHAR_MAP.put(Opcode.LT, "a < b");
+        OPCODE_CHAR_MAP.put(Opcode.LE, "a <= b");
+        OPCODE_CHAR_MAP.put(Opcode.GT, "a > b");
+        OPCODE_CHAR_MAP.put(Opcode.GE, "a >= b");
+        OPCODE_CHAR_MAP.put(Opcode.SL, "a << b");
+        OPCODE_CHAR_MAP.put(Opcode.SR, "a >> b");
+        OPCODE_CHAR_MAP.put(Opcode.USR, "a >>> b");
+        OPCODE_CHAR_MAP.put(Opcode.PLUS, "a + b");
+        OPCODE_CHAR_MAP.put(Opcode.MINUS, "a - b");
+        OPCODE_CHAR_MAP.put(Opcode.MUL, "a * b");
+        OPCODE_CHAR_MAP.put(Opcode.DIV, "a / b");
+        OPCODE_CHAR_MAP.put(Opcode.MOD, "a % b");
     }
 }

@@ -1,9 +1,9 @@
 package org.galaxy.uniflow.javac.statements;
 
 import com.sun.tools.javac.tree.JCTree;
-import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.galaxy.uniflow.api.statements.UniBlock;
 import org.galaxy.uniflow.api.statements.UniTry;
 import org.galaxy.uniflow.javac.JavacElement;
@@ -50,11 +50,11 @@ public class JavacTry extends JavacElement<JCTree.JCTry> implements UniTry {
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniElement> getResources() {
+    public @NotNull UniList<@NotNull UniResource> getResources() {
         return new JavacList<>(
                 () -> tree.resources,
                 newList -> tree.resources = newList,
-                UniflowWrapper::wrap,
+                UniflowWrapper::wrapResource,
                 JavacUnwrapper::unwrap
         );
     }

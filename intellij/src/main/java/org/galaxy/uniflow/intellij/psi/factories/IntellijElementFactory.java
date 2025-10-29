@@ -28,7 +28,7 @@ import org.galaxy.uniflow.intellij.psi.elements.IJDefaultCaseLabel;
 import org.galaxy.uniflow.intellij.psi.elements.resources.IJExpressionResource;
 import org.galaxy.uniflow.intellij.psi.elements.resources.IJResource;
 import org.galaxy.uniflow.intellij.psi.elements.resources.IJVariableResource;
-import org.galaxy.uniflow.intellij.psi.expression.IJExpression;
+import org.galaxy.uniflow.intellij.psi.expression.*;
 import org.galaxy.uniflow.intellij.psi.statements.*;
 import org.galaxy.uniflow.intellij.psi.types.IJType;
 import org.galaxy.uniflow.intellij.psi.types.elements.IJTypeParameter;
@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -517,113 +518,325 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiParserFacade 
 
     @Override
     public @NotNull UniCatch createCatch(@NotNull UniVariable variable, @NotNull UniBlock body) {
-        return null;
+        IJVariable ijVariable = check(variable, IJVariable.class);
+        IJBlock ijBody = check(body, IJBlock.class);
+
+        PsiCatchSection catchSection = factory.createCatchSection(
+                ijVariable.getElement().getType(), variable.getName(), null);
+
+        if (catchSection.getCatchBlock() != null)
+            catchSection.getCatchBlock().replace(ijBody.getElement());
+        else catchSection.add(ijBody.getElement());
+
+        return new IJCatch(catchSection);
     }
 
     @Override
-    public @NotNull UniConditional createTernary(@NotNull UniExpression condition, @NotNull UniExpression thenBlock,
+    public @NotNull UniConditional createTernary(@NotNull UniExpression condition,
+                                                 @NotNull UniExpression thenBlock,
                                                  @NotNull UniExpression elseBlock) {
-        return null;
+        IJExpression<?> ijCondition = check(condition, IJExpression.class);
+        IJExpression<?> ijThenBlock = check(thenBlock, IJExpression.class);
+        IJExpression<?> ijElseBlock = check(elseBlock, IJExpression.class);
+
+        PsiConditionalExpression conditional = (PsiConditionalExpression) factory.createExpressionFromText(
+                "a ? b : c", null);
+
+        assert conditional.getThenExpression() != null;
+        assert conditional.getElseExpression() != null;
+
+        conditional.getCondition().replace(ijCondition.getElement());
+        conditional.getThenExpression().replace(ijThenBlock.getElement());
+        conditional.getElseExpression().replace(ijElseBlock.getElement());
+
+        return new IJConditional(conditional);
     }
 
     @Override
-    public @NotNull UniIf createIf(@NotNull UniExpression condition, @NotNull UniStatement thenBlock,
+    public @NotNull UniIf createIf(@NotNull UniExpression condition,
+                                   @NotNull UniStatement thenBlock,
                                    @Nullable UniStatement elseBlock) {
-        return null;
+        IJExpression<?> ijCondition = check(condition, IJExpression.class);
+        IJStatement<?> ijThenBlock = check(thenBlock, IJStatement.class);
+        IJStatement<?> ijElseBlock = check(elseBlock, IJStatement.class);
+
+        PsiIfStatement result = (PsiIfStatement) factory.createStatementFromText("if (a) {} else {}", null);
+
+        assert result.getCondition() != null;
+        assert result.getThenBranch() != null;
+        assert result.getElseBranch() != null;
+
+        result.getCondition().replace(ijCondition.getElement());
+        result.getThenBranch().replace(ijThenBlock.getElement());
+        if (ijElseBlock != null)
+            result.getElseBranch().replace(ijElseBlock.getElement());
+        else result.getElseBranch().delete();
+
+        return new IJIf(result);
     }
 
     @Override
     public @NotNull UniExpressionStatement createExecution(@NotNull UniExpression expression) {
-        return null;
+        IJExpression<?> ijExpression = check(expression, IJExpression.class);
+        PsiExpression psiExpression = ijExpression.getElement();
+        PsiExpressionStatement result = (PsiExpressionStatement) factory.createStatementFromText("x;", null);
+
+        result.getExpression().replace(psiExpression);
+
+        return new IJExpressionStatement(result);
     }
 
     @Override
     public @NotNull UniBreak createBreak(@Nullable String label) {
-        return null;
+        String breakString = label != null ? "break " + label + ";" : "break;";
+
+        return new IJBreak((PsiBreakStatement) factory.createStatementFromText(breakString, null));
     }
 
     @Override
     public @NotNull UniContinue createContinue(@Nullable String label) {
-        return null;
+        String continueString = label != null ? "continue" + label + ";" : "continue;";
+
+        return new IJContinue((PsiContinueStatement) factory.createStatementFromText(continueString, null));
     }
 
     @Override
     public @NotNull UniReturn createReturn(@NotNull UniExpression value) {
-        return null;
+        IJExpression<?> ijValue = check(value, IJExpression.class);
+        PsiReturnStatement result = (PsiReturnStatement) factory.createStatementFromText("return 0;", null);
+
+        if (result.getReturnValue() != null)
+            result.getReturnValue().replace(ijValue.getElement());
+        else result.add(ijValue.getElement());
+
+        return new IJReturn(result);
     }
 
     @Override
     public @NotNull UniThrow createThrow(@NotNull UniExpression value) {
-        return null;
+        IJExpression<?> ijValue = check(value, IJExpression.class);
+        PsiThrowStatement result = (PsiThrowStatement) factory.createStatementFromText("throw null;", null);
+
+        if (result.getException() != null)
+            result.getException().replace(ijValue.getElement());
+        else result.add(ijValue.getElement());
+
+        return new IJThrow(result);
     }
 
     @Override
     public @NotNull UniAssert createAssert(@NotNull UniExpression condition, @Nullable UniExpression details) {
-        return null;
+        IJExpression<?> ijCondition = check(condition, IJExpression.class);
+        IJExpression<?> ijDetails = check(details, IJExpression.class);
+        PsiAssertStatement result = (PsiAssertStatement) factory.createStatementFromText("assert true : \"\";", null);
+
+        assert result.getAssertCondition() != null;
+        assert result.getAssertDescription() != null;
+
+        result.getAssertCondition().replace(ijCondition.getElement());
+        if (ijDetails != null)
+            result.getAssertDescription().replace(ijDetails.getElement());
+        else result.getAssertDescription().delete();
+
+        return new IJAssert(result);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public @NotNull UniMethodInvocation createMethodInvocation(@NotNull UniExpression method,
                                                                @NotNull List<@NotNull UniType> argumentTypes,
                                                                @NotNull List<@NotNull UniExpression> args) {
-        return null;
+        IJExpression<?> ijMethod = check(method, IJExpression.class);
+        Stream<IJType> ijArgumentTypes = checkList(argumentTypes, IJType.class);
+        Stream<IJExpression> ijArgs = checkList(args, IJExpression.class);
+        PsiReferenceExpression methodRef = (PsiReferenceExpression) ijMethod.getElement();
+
+        PsiMethodCallExpression call = (PsiMethodCallExpression) factory.createStatementFromText("foo()", null);
+        PsiReferenceParameterList typeArgumentList = call.getTypeArgumentList();
+        PsiExpressionList argumentList = call.getArgumentList();
+
+        call.getMethodExpression().replace(methodRef);
+        ijArgumentTypes.map(IntellijUnwrapper::unwrapType).forEach(typeArgumentList::add);
+        ijArgs.map(IJExpression::getElement).forEach(argumentList::add);
+
+        return new IJMethodInvocation(call);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public @NotNull UniNewClass createNewClass(@NotNull UniExpression enclosing,
                                                @NotNull List<@NotNull UniType> argumentTypes,
-                                               @NotNull List<@NotNull UniExpression> args, @NotNull UniType classType) {
-        return null;
+                                               @NotNull List<@NotNull UniExpression> args,
+                                               @NotNull UniType classType) {
+        Stream<IJType> ijArgumentTypes = checkList(argumentTypes, IJType.class);
+        Stream<IJExpression> ijArgs = checkList(args, IJExpression.class);
+        PsiNewExpression result = (PsiNewExpression) factory.createExpressionFromText("new Object()", null);
+        PsiReferenceParameterList typeArgumentList = result.getTypeArgumentList();
+        PsiExpressionList argumentList = result.getArgumentList();
+
+        assert result.getClassReference() != null;
+        assert argumentList != null;
+
+        result.getClassReference().replace(IntellijUnwrapper.unwrapType(classType));
+        ijArgumentTypes.map(IntellijUnwrapper::unwrapType).forEach(typeArgumentList::add);
+        ijArgs.map(IJExpression::getElement).forEach(argumentList::add);
+
+        return new IJNewClass(result);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public @NotNull UniNewArray createNewArrayWithDimension(@NotNull UniType elementType,
                                                             @NotNull List<@NotNull UniExpression> dimensions) {
-        return null;
+        Stream<IJExpression> ijDimensions = checkList(dimensions, IJExpression.class);
+        String dimensionString = "[]".repeat(dimensions.size());
+
+        PsiNewExpression result = (PsiNewExpression) factory.createExpressionFromText(
+                "new Object" + dimensionString, null);
+        Iterator<PsiElement> dimensionIterator = ijDimensions.map(IJExpression::getElement).iterator();
+        PsiExpression[] arrayDimensions = result.getArrayDimensions();
+
+        assert result.getClassReference() != null;
+
+        result.getClassReference().replace(IntellijUnwrapper.unwrapType(elementType));
+        for (int i = 0; i < arrayDimensions.length && dimensionIterator.hasNext(); i++) {
+            arrayDimensions[i].replace(dimensionIterator.next());
+        }
+
+        return new IJNewArray(result);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public @NotNull UniNewArray createNewArrayWithElements(@NotNull UniType elementType,
                                                            @NotNull List<@NotNull UniExpression> elements) {
-        return null;
+        Stream<IJExpression> ijElements = checkList(elements, IJExpression.class);
+
+        PsiNewExpression result = (PsiNewExpression) factory.createExpressionFromText("new Object[] {}", null);
+        PsiArrayInitializerExpression arrayInitializer = result.getArrayInitializer();
+
+        assert result.getClassReference() != null;
+        assert arrayInitializer != null;
+
+        result.getClassReference().replace(IntellijUnwrapper.unwrapType(elementType));
+        ijElements.map(IJExpression::getElement).forEach(arrayInitializer::add);
+
+        return new IJNewArray(result);
     }
 
     @Override
     public @NotNull UniParenthesized createParenthesized(@NotNull UniExpression expression) {
-        return null;
+        IJExpression<?> ijExpression = check(expression, IJExpression.class);
+
+        PsiParenthesizedExpression result = (PsiParenthesizedExpression) factory.createExpressionFromText(
+                "(expr)", null);
+
+        if (result.getExpression() != null)
+            result.getExpression().replace(ijExpression.getElement());
+        else result.add(ijExpression.getElement());
+
+        return new IJParenthesized(result);
     }
 
     @Override
     public @NotNull UniAssignment createAssignment(@NotNull UniExpression lhs, @NotNull UniExpression rhs) {
-        return null;
+        IJExpression<?> ijLeft = check(lhs, IJExpression.class);
+        IJExpression<?> ijRight = check(rhs, IJExpression.class);
+
+        PsiAssignmentExpression result = (PsiAssignmentExpression) factory.createExpressionFromText("a = b", null);
+
+        result.getLExpression().replace(ijLeft.getElement());
+        if (result.getRExpression() != null)
+            result.getRExpression().replace(ijRight.getElement());
+        else result.add(ijRight.getElement());
+
+        return new IJAssignment(result);
     }
 
     @Override
-    public @NotNull UniCompoundAssignment createCompoundAssignment(UniElement.@NotNull Tag opcode,
+    public @NotNull UniCompoundAssignment createCompoundAssignment(@NotNull Opcode opcode,
                                                                    @NotNull UniExpression lhs,
                                                                    @NotNull UniExpression rhs) {
-        return null;
+        String token = IJCompoundAssignment.OPCODE_CHAR_MAP.get(opcode);
+
+        if (token == null) throw new IllegalArgumentException("Opcode " + opcode + " not supported");
+        IJExpression<?> ijLeft = check(lhs, IJExpression.class);
+        IJExpression<?> ijRight = check(rhs, IJExpression.class);
+
+        PsiAssignmentExpression result = (PsiAssignmentExpression) factory.createExpressionFromText(
+                "a %s b".formatted(token), null);
+
+        result.getLExpression().replace(ijLeft.getElement());
+        if (result.getRExpression() != null)
+            result.getRExpression().replace(ijRight.getElement());
+        else result.add(ijRight.getElement());
+
+        return new IJCompoundAssignment(result);
     }
 
     @Override
-    public @NotNull UniUnary createUnary(UniElement.@NotNull Tag opcode, @NotNull UniExpression argument) {
-        return null;
+    public @NotNull UniUnary createUnary(@NotNull Opcode opcode, @NotNull UniExpression argument) {
+        String token = IJUnary.OPCODE_CHAR_MAP.get(opcode);
+
+        if (token == null) throw new IllegalArgumentException("Opcode " + opcode + " not supported");
+        IJExpression<?> ijArgument = check(argument, IJExpression.class);
+
+        PsiUnaryExpression result = (PsiUnaryExpression) factory.createExpressionFromText(token, null);
+
+        if (result.getOperand() != null)
+            result.getOperand().replace(ijArgument.getElement());
+        else result.add(ijArgument.getElement());
+
+        return new IJUnary(result);
     }
 
     @Override
-    public @NotNull UniBinary createBinary(UniElement.@NotNull Tag opcode, @NotNull UniExpression lhs,
+    public @NotNull UniBinary createBinary(@NotNull Opcode opcode,
+                                           @NotNull UniExpression lhs,
                                            @NotNull UniExpression rhs) {
-        return null;
+        String token = IJBinary.OPCODE_CHAR_MAP.get(opcode);
+        if (token == null) throw new IllegalArgumentException("Opcode " + opcode + " not supported");
+        IJExpression<?> ijLeft = check(lhs, IJExpression.class);
+        IJExpression<?> ijRight = check(rhs, IJExpression.class);
+
+        PsiBinaryExpression result = (PsiBinaryExpression) factory.createExpressionFromText(token, null);
+
+        result.getLOperand().replace(ijLeft.getElement());
+        if (result.getROperand() != null)
+            result.getROperand().replace(ijRight.getElement());
+        else result.add(ijRight.getElement());
+
+        return new IJBinary(result);
     }
 
     @Override
     public @NotNull UniTypeCast createTypeCast(@NotNull UniType type, @NotNull UniExpression expression) {
-        return null;
+        IJExpression<?> ijExpression = check(expression, IJExpression.class);
+        PsiTypeCastExpression result = (PsiTypeCastExpression) factory.createExpressionFromText("(String) a", null);
+
+        assert result.getCastType() != null;
+
+        result.getCastType().replace(IntellijUnwrapper.unwrapType(type));
+        if (result.getOperand() != null)
+            result.getOperand().replace(ijExpression.getElement());
+        else result.add(ijExpression.getElement());
+
+        return new IJTypeCast(result);
     }
 
     @Override
     public @NotNull UniInstanceOf createInstanceOf(@NotNull UniExpression expression, @NotNull UniType type) {
-        return null;
+        IJExpression<?> ijExpression = check(expression, IJExpression.class);
+
+        PsiInstanceOfExpression result = (PsiInstanceOfExpression) factory.createExpressionFromText(
+                "a instanceof String", null);
+
+        assert result.getCheckType() != null;
+
+        result.getOperand().replace(ijExpression.getElement());
+        result.getCheckType().replace(IntellijUnwrapper.unwrapType(type));
+
+        return new IJInstanceOf(result);
     }
 
     @Override

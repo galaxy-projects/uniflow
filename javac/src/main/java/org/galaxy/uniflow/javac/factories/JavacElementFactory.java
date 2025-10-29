@@ -606,7 +606,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniCompoundAssignment createCompoundAssignment(UniElement.@NotNull Tag opcode,
+    public @NotNull UniCompoundAssignment createCompoundAssignment(@NotNull Opcode opcode,
                                                                    @NotNull UniExpression lhs,
                                                                    @NotNull UniExpression rhs) {
         JavacExpression<?> javacLhs = check(lhs, JavacExpression.class);
@@ -620,7 +620,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniUnary createUnary(UniElement.@NotNull Tag opcode, @NotNull UniExpression argument) {
+    public @NotNull UniUnary createUnary(@NotNull Opcode opcode, @NotNull UniExpression argument) {
         JavacExpression<?> javacArgument = check(argument, JavacExpression.class);
 
         return new JavacUnary(treeMaker.Unary(
@@ -630,7 +630,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniBinary createBinary(UniElement.@NotNull Tag opcode,
+    public @NotNull UniBinary createBinary(@NotNull Opcode opcode,
                                            @NotNull UniExpression lhs,
                                            @NotNull UniExpression rhs) {
         JavacExpression<?> javacLhs = check(lhs, JavacExpression.class);
