@@ -48,8 +48,17 @@ import java.util.stream.Stream;
 import static org.galaxy.uniflow.intellij.psi.util.IJUtils.check;
 import static org.galaxy.uniflow.intellij.psi.util.IJUtils.checkList;
 
-public record IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFacade parser, PsiFileFactory files)
-        implements UniElementFactory {
+public class IntellijElementFactory implements UniElementFactory {
+
+    protected final PsiElementFactory factory;
+    protected final PsiJavaParserFacade parser;
+    protected final PsiFileFactory files;
+
+    public IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFacade parser, PsiFileFactory files) {
+        this.factory = factory;
+        this.parser = parser;
+        this.files = files;
+    }
 
     @Override
     public @NotNull UniPackage createPackage(@NotNull String name) {
