@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.galaxy.uniflow.javac.util.JavacUtils.*;
+
 public class Javac10ElementFactory extends Javac9ElementFactory implements UniJdk10ElementFactory {
 
     @Override

@@ -25,6 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.galaxy.uniflow.javac.util.JavacUtils.check;
+import static org.galaxy.uniflow.javac.util.JavacUtils.checkList;
+
 public class Javac9ElementFactory extends Javac8ElementFactory implements UniJdk9ElementFactory {
 
     @Override

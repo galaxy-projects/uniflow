@@ -1,24 +1,28 @@
 package org.galaxy.uniflow.intellij.psi;
 
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiClassType;
-import com.intellij.psi.PsiType;
-import org.galaxy.uniflow.api.UniClass;
-import org.galaxy.uniflow.api.UniClassInitializer;
-import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.UniModifiers;
+import com.intellij.psi.*;
+import org.galaxy.uniflow.api.*;
+import org.galaxy.uniflow.api.factories.UniTypeFactory;
+import org.galaxy.uniflow.api.interfaces.UniExpressionSupplier;
 import org.galaxy.uniflow.api.lists.UniFieldList;
 import org.galaxy.uniflow.api.lists.UniMethodList;
+import org.galaxy.uniflow.api.statements.UniField;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
+import org.galaxy.uniflow.intellij.psi.expression.IJExpression;
 import org.galaxy.uniflow.intellij.psi.lists.IJFieldList;
 import org.galaxy.uniflow.intellij.psi.lists.IJLists;
 import org.galaxy.uniflow.intellij.psi.lists.IJMethodList;
+import org.galaxy.uniflow.intellij.psi.statements.IJField;
+import org.galaxy.uniflow.intellij.psi.types.IJType;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+
+import static org.galaxy.uniflow.intellij.psi.util.IJUtils.check;
 
 public class IJClass extends IJElement<PsiClass> implements UniClass {
 
@@ -108,5 +112,58 @@ public class IJClass extends IJElement<PsiClass> implements UniClass {
     @Override
     public @NotNull Kind getKind() {
         return Kind.CLASS;
+    }
+
+    @Override
+    public @NotNull UniMethodBuilder createConstructor() {
+        return new IJMethodBuilder(this, getName(), true);
+    }
+
+    @Override
+    public @NotNull UniMethodBuilder createMethod(@NotNull String name) {
+        return new IJMethodBuilder(this, name, false);
+    }
+
+    @Override
+    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                         @NotNull String name,
+                                         @NotNull Class<?> type,
+                                         @Nullable UniExpressionSupplier init) {
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
+
+        return createField(modifiers, name, typeFactory.createClassType(type), init);
+    }
+
+    @Override
+    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                         @NotNull String name,
+                                         @NotNull UniType type,
+                                         @Nullable UniExpressionSupplier init) {
+        IJModifiers ijModifiers = check(modifiers, IJModifiers.class);
+        IJType<?> ijType = check(type, IJType.class);
+        IJExpression<?> ijInit = check(init, IJExpression.class);
+        PsiElementFactory factory = IntellijUniflow.getInstance().factory;
+
+        PsiField field = factory.createField(name, ijType.getRawType());
+
+        if (field.getModifierList() != null)
+            field.getModifierList().replace(ijModifiers.getElement());
+        else field.add(ijModifiers.getElement());
+
+        if (ijInit != null)
+            field.setInitializer(ijInit.getElement());
+
+        addField(field);
+
+        return new IJField(field);
+    }
+
+    private void addField(PsiField field) {
+        PsiField[] fields = element.getFields();
+
+        if (fields.length == 0)
+            element.add(field);
+        else
+            element.addAfter(field, fields[fields.length - 1]);
     }
 }

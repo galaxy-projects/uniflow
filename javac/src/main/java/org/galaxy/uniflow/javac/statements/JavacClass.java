@@ -2,27 +2,34 @@ package org.galaxy.uniflow.javac.statements;
 
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.tree.TreeMaker;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.elements.UniModifier;
-import org.galaxy.uniflow.api.lists.UniFieldList;
-import org.galaxy.uniflow.api.lists.UniMethodList;
+import org.galaxy.uniflow.api.factories.UniTypeFactory;
+import org.galaxy.uniflow.api.interfaces.UniExpressionSupplier;
 import org.galaxy.uniflow.api.statements.UniField;
 import org.galaxy.uniflow.api.types.UniClassType;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.javac.JavacElement;
+import org.galaxy.uniflow.javac.JavacMethodBuilder;
 import org.galaxy.uniflow.javac.JavacModifiers;
 import org.galaxy.uniflow.javac.JavacUniflow;
+import org.galaxy.uniflow.javac.expression.JavacExpression;
 import org.galaxy.uniflow.javac.lists.JavacFieldList;
 import org.galaxy.uniflow.javac.lists.JavacList;
 import org.galaxy.uniflow.javac.lists.JavacMethodList;
 import org.galaxy.uniflow.javac.types.JavacClassType;
+import org.galaxy.uniflow.javac.types.JavacExpressionType;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
 import org.galaxy.uniflow.javac.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
+
+import static org.galaxy.uniflow.javac.util.JavacUtils.check;
 
 public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniClass {
 
@@ -94,7 +101,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
     }
 
     @Override
-    public @NotNull UniFieldList getFields() {
+    public @NotNull JavacFieldList getFields() {
         JavacList<UniField, JCTree.JCVariableDecl> fields = elements().partial(
                 JCTree.JCVariableDecl.class::isInstance,
                 JCTree.JCVariableDecl.class::cast,
@@ -105,7 +112,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
     }
 
     @Override
-    public @NotNull UniMethodList getMethods() {
+    public @NotNull JavacMethodList getMethods() {
         JavacList<UniMethod, JCTree.JCMethodDecl> methods = elements().partial(
                 method -> method instanceof JCTree.JCMethodDecl && !((JCTree.JCMethodDecl) method).sym.isConstructor(),
                 JCTree.JCMethodDecl.class::cast,
@@ -116,7 +123,7 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
     }
 
     @Override
-    public @NotNull UniMethodList getConstructors() {
+    public @NotNull JavacMethodList getConstructors() {
         JavacList<UniMethod, JCTree.JCMethodDecl> methods = elements().partial(
                 method -> method instanceof JCTree.JCMethodDecl && ((JCTree.JCMethodDecl) method).sym.isConstructor(),
                 JCTree.JCMethodDecl.class::cast,
@@ -157,5 +164,46 @@ public class JavacClass extends JavacElement<JCTree.JCClassDecl> implements UniC
                 UniflowWrapper::wrap,
                 JavacUnwrapper::unwrap
         );
+    }
+
+    @Override
+    public @NotNull UniMethodBuilder createConstructor() {
+        return new JavacMethodBuilder(this, getName(), true);
+    }
+
+    @Override
+    public @NotNull UniMethodBuilder createMethod(@NotNull String name) {
+        return new JavacMethodBuilder(this, name, false);
+    }
+
+    @Override
+    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                         @NotNull String name,
+                                         @NotNull Class<?> type,
+                                         @Nullable UniExpressionSupplier init) {
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
+
+        return createField(modifiers, name, typeFactory.createClassType(type), init);
+    }
+
+    @Override
+    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
+                                         @NotNull String name,
+                                         @NotNull UniType type,
+                                         @Nullable UniExpressionSupplier init) {
+        JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
+        JavacExpressionType<?, ?> javacType = check(type, JavacExpressionType.class);
+        JavacExpression<?> javacInit = init != null ? check(init.get(), JavacExpression.class) : null;
+        TreeMaker treeMaker = JavacUniflow.getInstance().treeMaker;
+
+        JavacField field = new JavacField(treeMaker.VarDef(
+                javacModifiers.getTree(),
+                NameUtils.name(name),
+                javacType.getExpression(),
+                javacInit != null ? javacInit.getTree() : null
+        ));
+
+        getFields().addLast(field);
+        return field;
     }
 }

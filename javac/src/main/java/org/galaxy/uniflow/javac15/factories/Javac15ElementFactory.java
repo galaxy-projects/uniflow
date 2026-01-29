@@ -42,6 +42,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.galaxy.uniflow.javac.util.JavacUtils.*;
+
 public class Javac15ElementFactory extends Javac12ElementFactory implements UniJdk15ElementFactory {
 
     private static final ReflectMethod CREATE_BINDING_PATTERN;

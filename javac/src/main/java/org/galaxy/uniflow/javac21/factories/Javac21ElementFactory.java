@@ -36,6 +36,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.galaxy.uniflow.javac.util.JavacUtils.*;
+
 public class Javac21ElementFactory extends Javac15ElementFactory implements UniJdk21ElementFactory {
 
     private static final ReflectMethod CREATE_CASE;

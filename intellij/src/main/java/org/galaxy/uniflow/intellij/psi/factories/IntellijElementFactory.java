@@ -36,7 +36,6 @@ import org.galaxy.uniflow.intellij.psi.types.IJType;
 import org.galaxy.uniflow.intellij.psi.types.elements.IJExpressionType;
 import org.galaxy.uniflow.intellij.psi.types.elements.IJTypeParameter;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,6 +44,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static org.galaxy.uniflow.intellij.psi.util.IJUtils.check;
+import static org.galaxy.uniflow.intellij.psi.util.IJUtils.checkList;
 
 public record IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFacade parser, PsiFileFactory files)
         implements UniElementFactory {
@@ -141,119 +143,6 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFac
         ijInitializers.map(IJClassInitializer::getElement).forEach(result::add);
 
         return new IJClass(result);
-    }
-
-    @Override
-    public @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
-                                           @NotNull String name,
-                                           @NotNull Class<?> returnType,
-                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                           @Nullable UniVariable receiveParam,
-                                           @NotNull List<@NotNull UniParameter> parameters,
-                                           @NotNull List<@NotNull UniExpression> thrown,
-                                           @NotNull UniBlock body) {
-        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
-
-        return createMethod(modifiers, name, typeFactory.createClassType(returnType), typeParameters, receiveParam,
-                parameters, thrown, body);
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
-                                           @NotNull String name,
-                                           @NotNull UniType returnType,
-                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                           @Nullable UniVariable receiveParam,
-                                           @NotNull List<@NotNull UniParameter> parameters,
-                                           @NotNull List<@NotNull UniExpression> thrown,
-                                           @NotNull UniBlock body) {
-        IJModifiers ijModifiers = check(modifiers, IJModifiers.class);
-        IJType<?> ijReturnType = check(returnType, IJType.class);
-        Stream<IJTypeParameter> ijTypeParameters = checkList(typeParameters, IJTypeParameter.class);
-        Stream<IJParameter> ijParameters = checkList(parameters, IJParameter.class);
-        Stream<IJExpression> ijThrown = checkList(thrown, IJExpression.class);
-        IJBlock ijBody = check(body, IJBlock.class);
-
-        PsiMethod method = factory.createMethod(name, ijReturnType.getRawType());
-        PsiTypeParameterList typeParameterList = factory.createTypeParameterList();
-        PsiParameterList parameterList = method.getParameterList();
-        PsiReferenceList throwsList = method.getThrowsList();
-
-        ijTypeParameters.map(IJTypeParameter::getElement).forEach(typeParameterList::add);
-
-        method.getModifierList().replace(ijModifiers.getElement());
-
-        if (method.getTypeParameterList() != null)
-            method.getTypeParameterList().replace(typeParameterList);
-        else method.add(typeParameterList);
-
-        ijParameters.map(IJParameter::getElement).forEach(parameterList::add);
-        ijThrown.map(IntellijUnwrapper::unwrapReference).forEach(throwsList::add);
-
-        if (method.getBody() != null)
-            method.getBody().replace(ijBody.getElement());
-        else method.add(ijBody.getElement());
-
-        return new IJMethod(method);
-    }
-
-    @Override
-    public @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
-                                           @NotNull String name,
-                                           @NotNull Class<?> returnType,
-                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                           @NotNull UniVariable receiveParam,
-                                           @NotNull List<@NotNull UniParameter> parameters,
-                                           @NotNull List<@NotNull UniExpression> thrown,
-                                           @Nullable UniExpression defaultValue) {
-        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
-
-        return createMethod(modifiers, name, typeFactory.createClassType(returnType), typeParameters,
-                receiveParam, parameters, thrown, defaultValue);
-    }
-
-    @Override
-    public @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
-                                           @NotNull String name,
-                                           @NotNull UniType returnType,
-                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                           @NotNull UniVariable receiveParam,
-                                           @NotNull List<@NotNull UniParameter> parameters,
-                                           @NotNull List<@NotNull UniExpression> thrown,
-                                           @Nullable UniExpression defaultValue) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
-                                         @NotNull String name,
-                                         @NotNull Class<?> type,
-                                         @Nullable UniExpression init) {
-        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
-
-        return createField(modifiers, name, typeFactory.createClassType(type), init);
-    }
-
-    @Override
-    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
-                                         @NotNull String name,
-                                         @NotNull UniType type,
-                                         @Nullable UniExpression init) {
-        IJModifiers ijModifiers = check(modifiers, IJModifiers.class);
-        IJType<?> ijType = check(type, IJType.class);
-        IJExpression<?> ijInit = check(init, IJExpression.class);
-
-        PsiField field = factory.createField(name, ijType.getRawType());
-
-        if (field.getModifierList() != null)
-            field.getModifierList().replace(ijModifiers.getElement());
-        else field.add(ijModifiers.getElement());
-
-        if (ijInit != null)
-            field.setInitializer(ijInit.getElement());
-
-        return new IJField(field);
     }
 
     @Override
@@ -982,21 +871,5 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFac
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
         return createClassLiteral(typeFactory.createClassType(type));
-    }
-
-    @Contract("null, _ -> null")
-    protected <T> T check(Object element, Class<T> type) {
-        if (element == null) return null;
-        if (!type.isInstance(element))
-            throw new IllegalArgumentException("Element " + element + " is not of type " + type);
-        return type.cast(element);
-    }
-
-    protected <T> Stream<T> checkList(List<?> list, Class<T> type) {
-        for (Object element : list) {
-            if (!type.isInstance(element))
-                throw new IllegalArgumentException("Element " + element + " is not of type " + type.getName());
-        }
-        return list.stream().map(type::cast);
     }
 }

@@ -26,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.galaxy.uniflow.javac.util.JavacUtils.*;
+
 public class Javac12ElementFactory extends Javac10ElementFactory implements UniJdk12ElementFactory {
 
     private static final ReflectMethod CREATE_CASE;
