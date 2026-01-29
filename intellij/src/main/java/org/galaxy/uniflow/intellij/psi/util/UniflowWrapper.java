@@ -1,5 +1,7 @@
 package org.galaxy.uniflow.intellij.psi.util;
 
+import com.intellij.openapi.roots.LanguageLevelProjectExtension;
+import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.IElementType;
 import org.galaxy.uniflow.api.*;
@@ -231,6 +233,14 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniCaseBase wrap(PsiSwitchLabelStatementBase switchCase) {
+        LanguageLevel level = LanguageLevelProjectExtension.getInstance(switchCase.getProject()).getLanguageLevel();
+
+        if (level.isLessThan(LanguageLevel.JDK_12)) {
+            if (switchCase instanceof PsiSwitchLabelStatement statementCase)
+                return new IJJava8Case(statementCase, List.of());
+            throw new RuntimeException(
+                    "case of type '" + switchCase.getClass().getName() + "' are not supported in java " + level);
+        }
         if (switchCase instanceof PsiSwitchLabeledRuleStatement ruleCase)
             return new IJCase.IJRuleCase(ruleCase);
         else if (switchCase instanceof PsiSwitchLabelStatement statementCase)
@@ -261,7 +271,13 @@ public class UniflowWrapper {
         return new IJAnnotation(annotation);
     }
 
-    public static @NotNull UniJdk21Case wrap(PsiSwitchLabelStatementBase caseLabel, List<PsiStatement> statements) {
+    public static @NotNull UniJdk8Case wrap8(PsiSwitchLabelStatementBase caseLabel, List<PsiStatement> statements) {
+        if (caseLabel instanceof PsiSwitchLabelStatement statementCase)
+            return new IJJava8Case(statementCase, statements);
+        throw new RuntimeException("case of type '" + caseLabel.getClass().getName() + "' are not supported");
+    }
+
+    public static @NotNull UniJdk12Case wrap12(PsiSwitchLabelStatementBase caseLabel, List<PsiStatement> statements) {
         return caseLabel instanceof PsiSwitchStatement ?
                 new IJCase.IJStatementCase((PsiSwitchLabelStatement) caseLabel, statements) :
                 new IJCase.IJRuleCase((PsiSwitchLabeledRuleStatement) caseLabel);

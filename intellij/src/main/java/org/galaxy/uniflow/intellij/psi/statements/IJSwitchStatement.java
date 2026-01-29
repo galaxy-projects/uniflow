@@ -1,12 +1,16 @@
 package org.galaxy.uniflow.intellij.psi.statements;
 
+import com.intellij.openapi.roots.LanguageLevelProjectExtension;
+import com.intellij.pom.java.LanguageLevel;
 import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiSwitchBlock;
 import com.intellij.psi.PsiSwitchStatement;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
-import org.galaxy.uniflow.api.statements.UniJdk21Case;
+import org.galaxy.uniflow.api.statements.UniCaseBase;
+import org.galaxy.uniflow.api.statements.UniJdk12Case;
+import org.galaxy.uniflow.api.statements.UniJdk8Case;
 import org.galaxy.uniflow.api.statements.UniSwitch;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.galaxy.uniflow.intellij.psi.lists.IJCaseList;
@@ -33,8 +37,13 @@ public class IJSwitchStatement extends IJStatement<PsiSwitchStatement> implement
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniJdk21Case> getCases() {
-        return new IJCaseList(element);
+    public @NotNull UniList<@NotNull UniCaseBase> getCases() {
+        LanguageLevel level = LanguageLevelProjectExtension.getInstance(element.getProject()).getLanguageLevel();
+
+        if (level.isLessThan(LanguageLevel.JDK_12)) {
+            return new IJCaseList<>(element, UniJdk8Case[]::new, UniflowWrapper::wrap8);
+        }
+        return new IJCaseList<>(element, UniJdk12Case[]::new, UniflowWrapper::wrap12);
     }
 
     @Override

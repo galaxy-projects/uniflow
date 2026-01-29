@@ -2,19 +2,23 @@ package org.galaxy.uniflow.intellij.psi.lists;
 
 import com.intellij.psi.*;
 import org.galaxy.uniflow.api.UniList;
-import org.galaxy.uniflow.api.statements.UniJdk21Case;
+import org.galaxy.uniflow.api.statements.UniCaseBase;
 import org.galaxy.uniflow.intellij.psi.IntellijUniflow;
 import org.galaxy.uniflow.intellij.psi.util.IntellijUnwrapper;
-import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
-public record IJCaseList(PsiSwitchBlock switchBlock) implements UniList<UniJdk21Case> {
+public record IJCaseList<T extends UniCaseBase>(PsiSwitchBlock switchBlock,
+                                                IntFunction<T[]> arrayGenerator,
+                                                BiFunction<PsiSwitchLabelStatementBase, List<PsiStatement>, T> wrapperWithStatements)
+        implements UniList<T> {
 
     @Override
     public boolean isEmpty() {
@@ -22,17 +26,17 @@ public record IJCaseList(PsiSwitchBlock switchBlock) implements UniList<UniJdk21
     }
 
     @Override
-    public @NotNull UniJdk21Case @NotNull [] get() {
-        return stream().toArray(UniJdk21Case[]::new);
+    public @NotNull T @NotNull [] get() {
+        return stream().toArray(arrayGenerator);
     }
 
     @Override
-    public @NotNull Stream<UniJdk21Case> stream() {
+    public @NotNull Stream<T> stream() {
         return list().stream();
     }
 
     @Override
-    public void addFirst(@NotNull UniJdk21Case value) {
+    public void addFirst(@NotNull T value) {
         PsiSwitchLabelStatementBase caseLabel = IntellijUnwrapper.unwrap(value);
 
         if (switchBlock.getFirstChild() == null)
@@ -42,7 +46,7 @@ public record IJCaseList(PsiSwitchBlock switchBlock) implements UniList<UniJdk21
     }
 
     @Override
-    public void addAfter(@NotNull UniJdk21Case value, @NotNull UniJdk21Case target) {
+    public void addAfter(@NotNull T value, @NotNull T target) {
         PsiSwitchLabelStatementBase caseLabelValue = IntellijUnwrapper.unwrap(value);
         PsiSwitchLabelStatementBase caseLabelTarget = IntellijUnwrapper.unwrap(target);
 
@@ -50,7 +54,7 @@ public record IJCaseList(PsiSwitchBlock switchBlock) implements UniList<UniJdk21
     }
 
     @Override
-    public void addBefore(@NotNull UniJdk21Case value, @NotNull UniJdk21Case target) {
+    public void addBefore(@NotNull T value, @NotNull T target) {
         PsiSwitchLabelStatementBase caseLabelValue = IntellijUnwrapper.unwrap(value);
         PsiSwitchLabelStatementBase caseLabelTarget = IntellijUnwrapper.unwrap(target);
 
@@ -58,23 +62,23 @@ public record IJCaseList(PsiSwitchBlock switchBlock) implements UniList<UniJdk21
     }
 
     @Override
-    public void addLast(@NotNull UniJdk21Case value) {
+    public void addLast(@NotNull T value) {
         switchBlock.add(IntellijUnwrapper.unwrap(value));
     }
 
     @Override
-    public void remove(@NotNull UniJdk21Case value) {
+    public void remove(@NotNull T value) {
         IntellijUnwrapper.unwrap(value).delete();
     }
 
     @Override
-    public int getIndex(@NotNull UniJdk21Case element) {
+    public int getIndex(@NotNull T element) {
         return list().indexOf(element);
     }
 
     @Override
     public void remove(int index) {
-        List<UniJdk21Case> list = list();
+        List<T> list = list();
 
         if (index < 0 || index >= list.size())
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + list.size());
@@ -97,16 +101,16 @@ public record IJCaseList(PsiSwitchBlock switchBlock) implements UniList<UniJdk21
     }
 
     @Override
-    public @NotNull Iterator<UniJdk21Case> iterator() {
+    public @NotNull Iterator<T> iterator() {
         return list().iterator();
     }
 
-    private List<UniJdk21Case> list() {
+    private List<T> list() {
         PsiCodeBlock body = switchBlock.getBody();
 
         if (body == null) return Collections.emptyList();
 
-        List<UniJdk21Case> cases = new ArrayList<>();
+        List<T> cases = new ArrayList<>();
         List<PsiStatement> statements = null;
         PsiSwitchLabelStatementBase currentCase;
 
@@ -114,7 +118,7 @@ public record IJCaseList(PsiSwitchBlock switchBlock) implements UniList<UniJdk21
             if (statement instanceof PsiSwitchLabelStatementBase) {
                 statements = new ArrayList<>();
                 currentCase = (PsiSwitchLabelStatementBase) statement;
-                cases.add(UniflowWrapper.wrap(currentCase, statements));
+                cases.add(wrapperWithStatements.apply(currentCase, statements));
             } else if (statements != null) {
                 statements.add(statement);
             } else

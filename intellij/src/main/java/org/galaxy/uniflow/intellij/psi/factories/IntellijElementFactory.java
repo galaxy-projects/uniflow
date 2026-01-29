@@ -43,13 +43,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public record IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFacade parser, PsiFileFactory files)
         implements UniElementFactory {
-
-    // Jdk 8
-
 
     @Override
     public @NotNull UniPackage createPackage(@NotNull String name) {
@@ -428,15 +426,44 @@ public record IntellijElementFactory(PsiElementFactory factory, PsiJavaParserFac
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
                                            @NotNull List<@NotNull UniJdk8Case> cases) {
-        return null;
+        IJExpression<?> ijSelector = check(selector, IJExpression.class);
+        Stream<IJCase> ijCases = checkList(cases, IJCase.class);
+
+        PsiSwitchStatement newSwitch = (PsiSwitchStatement) factory.createStatementFromText("switch(cond) {}", null);
+        PsiCodeBlock body = newSwitch.getBody();
+
+        assert newSwitch.getExpression() != null;
+        assert ijSelector.getElement() != null;
+        assert body != null;
+
+        newSwitch.getExpression().replace(ijSelector.getElement());
+        ijCases.map(IJCase::getElement)
+                .filter(Objects::nonNull)
+                .forEach(body::add);
+
+        return new IJSwitchStatement(newSwitch);
     }
 
     @Override
     public @NotNull UniJdk8Case createCase(@NotNull UniCaseLabel label,
                                            @NotNull List<@NotNull UniStatement> statements) {
-        return null;
+        List<PsiStatement> psiStatements = checkList(statements, IJStatement.class)
+                .map(statement -> (PsiStatement) statement.getElement())
+                .toList();
+
+        PsiSwitchLabelStatement newCase = (PsiSwitchLabelStatement) factory.createStatementFromText(
+                "case \"hello\":", null);
+
+        assert newCase.getCaseLabelElementList() != null;
+        newCase.getCaseLabelElementList().getElements()[0].delete();
+        newCase.getCaseLabelElementList().add(IntellijUnwrapper.unwrap(label));
+
+        psiStatements.forEach(newCase::add);
+
+        return new IJJava8Case(newCase, psiStatements);
     }
 
     @Override

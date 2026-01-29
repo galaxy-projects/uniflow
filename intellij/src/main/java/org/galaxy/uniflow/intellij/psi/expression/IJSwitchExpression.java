@@ -4,7 +4,7 @@ import com.intellij.psi.PsiSwitchExpression;
 import org.galaxy.uniflow.api.UniList;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniSwitchExpression;
-import org.galaxy.uniflow.api.statements.UniJdk21Case;
+import org.galaxy.uniflow.api.statements.UniJdk12Case;
 import org.galaxy.uniflow.intellij.psi.lists.IJCaseList;
 import org.galaxy.uniflow.intellij.psi.statements.IJSwitchStatement;
 import org.galaxy.uniflow.intellij.psi.util.UniflowWrapper;
@@ -27,8 +27,8 @@ public class IJSwitchExpression extends IJExpression<PsiSwitchExpression> implem
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniJdk21Case> getCases() {
-        return new IJCaseList(element);
+    public @NotNull UniList<@NotNull UniJdk12Case> getCases() {
+        return new IJCaseList<>(element, UniJdk12Case[]::new, UniflowWrapper::wrap12);
     }
 
     @Override
