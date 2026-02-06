@@ -1,11 +1,10 @@
-package org.galaxy.uniflow.intellij.psi.elements;
+package org.galaxy.uniflow.intellij.psi.elements.labels;
 
 import com.intellij.psi.PsiCaseLabelElement;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
-import org.galaxy.uniflow.intellij.psi.IJElement;
 import org.jetbrains.annotations.NotNull;
 
-public class IJCaseLabel extends IJElement<PsiCaseLabelElement> implements UniCaseLabel {
+public class IJCaseLabel extends IJCaseLabelBase<PsiCaseLabelElement> implements UniCaseLabel {
 
     public IJCaseLabel(PsiCaseLabelElement element) {
         super(element);

@@ -33,17 +33,13 @@ public interface UniElementFactory extends UniElementFactoryConversion {
                                   @NotNull String name,
                                   @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                   @Nullable UniType extending,
-                                  @NotNull List<@NotNull UniType> implementing,
-                                  @NotNull List<@NotNull UniField> fields,
-                                  @NotNull List<@NotNull UniMethod> methods);
+                                  @NotNull List<@NotNull UniType> implementing);
 
     @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
                                   @NotNull String name,
                                   @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                   @Nullable UniType extending,
                                   @NotNull List<@NotNull UniType> implementing,
-                                  @NotNull List<@NotNull UniField> fields,
-                                  @NotNull List<@NotNull UniMethod> methods,
                                   @NotNull List<@NotNull UniClassInitializer> initializers);
 
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,

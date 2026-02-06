@@ -1,10 +1,8 @@
 package org.galaxy.uniflow.javac15.factories;
 
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.util.ListBuffer;
 import org.galaxy.uniflow.api.UniClass;
 import org.galaxy.uniflow.api.UniClassInitializer;
-import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.expressions.UniExpression;
@@ -15,16 +13,13 @@ import org.galaxy.uniflow.api.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
 import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
 import org.galaxy.uniflow.api.pattern.UniPattern;
-import org.galaxy.uniflow.api.statements.UniField;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
 import org.galaxy.uniflow.javac.JavacClassInitializer;
-import org.galaxy.uniflow.javac.JavacMethod;
 import org.galaxy.uniflow.javac.JavacModifiers;
 import org.galaxy.uniflow.javac.expression.JavacExpression;
 import org.galaxy.uniflow.javac.statements.JavacClass;
-import org.galaxy.uniflow.javac.statements.JavacField;
 import org.galaxy.uniflow.javac.statements.JavacVariable;
 import org.galaxy.uniflow.javac.types.JavacExpressionType;
 import org.galaxy.uniflow.javac.types.JavacTypeParameter;
@@ -57,12 +52,10 @@ public class Javac15ElementFactory extends Javac12ElementFactory implements UniJ
     public @NotNull UniClass createRecord(@NotNull UniModifiers modifiers, @NotNull String name,
                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                           @NotNull List<@NotNull UniType> implementing,
-                                          @NotNull List<@NotNull UniField> fields,
-                                          @NotNull List<@NotNull UniMethod> methods,
                                           @NotNull List<@NotNull UniClassInitializer> initializers) {
         modifiers.addModifier(UniModifier.RECORD);
 
-        return createClass(modifiers, name, typeParameters, null, implementing, fields, methods, initializers);
+        return createClass(modifiers, name, typeParameters, null, implementing, initializers);
     }
 
     @Override
@@ -73,8 +66,6 @@ public class Javac15ElementFactory extends Javac12ElementFactory implements UniJ
                                          @Nullable UniType extending,
                                          @NotNull List<@NotNull UniType> implementing,
                                          @NotNull List<@NotNull UniExpression> permitting,
-                                         @NotNull List<@NotNull UniField> fields,
-                                         @NotNull List<@NotNull UniMethod> methods,
                                          @NotNull List<@NotNull UniClassInitializer> initializers) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
         Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
@@ -82,14 +73,7 @@ public class Javac15ElementFactory extends Javac12ElementFactory implements UniJ
         Stream<JavacExpressionType> javacImplementing =
                 checkList(implementing, JavacExpressionType.class);
         Stream<JavacExpression> javacPermitting = checkList(permitting, JavacExpression.class);
-        Stream<JavacField> javacFields = checkList(fields, JavacField.class);
-        Stream<JavacMethod> javacMethods = checkList(methods, JavacMethod.class);
         Stream<JavacClassInitializer> javacInitializers = checkList(initializers, JavacClassInitializer.class);
-        ListBuffer<JCTree> buffer = new ListBuffer<>();
-
-        javacFields.map(JavacVariable::getTree).forEach(buffer::add);
-        javacMethods.map(JavacMethod::getTree).forEach(buffer::add);
-        javacInitializers.map(JavacClassInitializer::getTree).forEach(buffer::add);
 
         return new JavacClass(treeMaker.ClassDef(
                 javacModifiers.getTree(),
@@ -98,7 +82,7 @@ public class Javac15ElementFactory extends Javac12ElementFactory implements UniJ
                 javacExtending != null ? (JCTree.JCExpression) javacExtending.getExpression() : null,
                 mapToList(javacImplementing, type -> (JCTree.JCExpression) type.getExpression()),
                 mapToList(javacPermitting, permit -> (JCTree.JCExpression) permit.getTree()),
-                buffer.toList()
+                mapToList(javacInitializers, JavacClassInitializer::getTree)
         ));
     }
 

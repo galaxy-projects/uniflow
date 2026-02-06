@@ -25,7 +25,7 @@ import org.galaxy.uniflow.intellij.psi.*;
 import org.galaxy.uniflow.intellij.psi.elements.IJAnnotation;
 import org.galaxy.uniflow.intellij.psi.elements.IJAnnotationAttribute;
 import org.galaxy.uniflow.intellij.psi.elements.IJCatch;
-import org.galaxy.uniflow.intellij.psi.elements.IJDefaultCaseLabel;
+import org.galaxy.uniflow.intellij.psi.elements.labels.IJDefaultCaseLabel;
 import org.galaxy.uniflow.intellij.psi.elements.resources.IJExpressionResource;
 import org.galaxy.uniflow.intellij.psi.elements.resources.IJResource;
 import org.galaxy.uniflow.intellij.psi.elements.resources.IJVariableResource;
@@ -88,43 +88,22 @@ public class IntellijElementFactory implements UniElementFactory {
                                          @NotNull String name,
                                          @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                          @Nullable UniType extending,
-                                         @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniField> fields,
-                                         @NotNull List<@NotNull UniMethod> methods) {
-        return createClass(modifiers, name, typeParameters, extending, implementing, fields, methods,
-                Collections.emptyList());
+                                         @NotNull List<@NotNull UniType> implementing) {
+        return createClass(modifiers, name, typeParameters, extending, implementing, Collections.emptyList());
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
     public @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
                                          @NotNull String name,
                                          @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                          @Nullable UniType extending,
                                          @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniField> fields,
-                                         @NotNull List<@NotNull UniMethod> methods,
                                          @NotNull List<@NotNull UniClassInitializer> initializers) {
-        IJModifiers ijModifiers = check(modifiers, IJModifiers.class);
-        Stream<IJTypeParameter> ijTypeParameters = checkList(typeParameters, IJTypeParameter.class);
         IJType<?> ijExtending = check(extending, IJType.class);
-        Stream<IJType> ijImplementing = checkList(implementing, IJType.class);
-        Stream<IJField> ijFields = checkList(fields, IJField.class);
-        Stream<IJMethod> ijMethods = checkList(methods, IJMethod.class);
-        Stream<IJClassInitializer> ijInitializers = checkList(initializers, IJClassInitializer.class);
 
-        PsiTypeParameterList typeParameterList = factory.createTypeParameterList();
         PsiClass result = factory.createClass(name);
 
-        ijTypeParameters.map(IJTypeParameter::getElement).forEach(typeParameterList::add);
-
-        if (result.getModifierList() != null)
-            result.getModifierList().replace(ijModifiers.getElement());
-        else result.add(ijModifiers.getElement());
-
-        if (result.getTypeParameterList() != null)
-            result.getTypeParameterList().replace(typeParameterList);
-        else result.add(typeParameterList);
+        setupClass(result, modifiers, typeParameters, implementing, initializers);
 
         if (ijExtending != null && ijExtending.getRawType() instanceof PsiClassType type) {
             PsiReferenceList extendsList = factory.createReferenceList(
@@ -134,22 +113,6 @@ public class IntellijElementFactory implements UniElementFactory {
                 result.getExtendsList().replace(extendsList);
             else result.add(extendsList);
         }
-
-        PsiReferenceList implementationList = factory.createReferenceList(
-                ijImplementing.filter(type -> type.getRawType() instanceof PsiClassType)
-                        .map(IJType::getRawType)
-                        .map(PsiClassType.class::cast)
-                        .map(IntellijUnwrapper::unwrapReferenceFromType)
-                        .toArray(PsiJavaCodeReferenceElement[]::new)
-        );
-
-        if (result.getImplementsList() != null)
-            result.getImplementsList().replace(implementationList);
-        else result.add(implementationList);
-
-        ijFields.map(IJField::getElement).forEach(result::add);
-        ijMethods.map(IJMethod::getElement).forEach(result::add);
-        ijInitializers.map(IJClassInitializer::getElement).forEach(result::add);
 
         return new IJClass(result);
     }
@@ -880,5 +843,46 @@ public class IntellijElementFactory implements UniElementFactory {
         UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
 
         return createClassLiteral(typeFactory.createClassType(type));
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected void setupClass(PsiClass result,
+                              UniModifiers modifiers,
+                              List<@NotNull UniTypeParameter> typeParameters,
+                              List<UniType> implementing,
+                              List<UniClassInitializer> initializers) {
+        IJModifiers ijModifiers = check(modifiers, IJModifiers.class);
+        Stream<IJClassInitializer> ijInitializers = checkList(initializers, IJClassInitializer.class);
+
+        if (result.getModifierList() != null)
+            result.getModifierList().replace(ijModifiers.getElement());
+        else result.add(ijModifiers.getElement());
+
+        if (!typeParameters.isEmpty()) {
+            Stream<IJTypeParameter> ijTypeParameters = checkList(typeParameters, IJTypeParameter.class);
+            PsiTypeParameterList typeParameterList = factory.createTypeParameterList();
+
+            ijTypeParameters.map(IJTypeParameter::getElement).forEach(typeParameterList::add);
+            if (result.getTypeParameterList() != null)
+                result.getTypeParameterList().replace(typeParameterList);
+            else result.add(typeParameterList);
+        }
+
+        if (!implementing.isEmpty()) {
+            Stream<IJType> ijImplementing = checkList(implementing, IJType.class);
+            PsiReferenceList implementationList = factory.createReferenceList(
+                    ijImplementing.filter(type -> type.getRawType() instanceof PsiClassType)
+                            .map(IJType::getRawType)
+                            .map(PsiClassType.class::cast)
+                            .map(IntellijUnwrapper::unwrapReferenceFromType)
+                            .toArray(PsiJavaCodeReferenceElement[]::new)
+            );
+
+            if (result.getImplementsList() != null)
+                result.getImplementsList().replace(implementationList);
+            else result.add(implementationList);
+        }
+
+        ijInitializers.map(IJClassInitializer::getElement).forEach(result::add);
     }
 }

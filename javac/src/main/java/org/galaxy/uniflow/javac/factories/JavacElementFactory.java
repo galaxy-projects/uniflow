@@ -3,7 +3,6 @@ package org.galaxy.uniflow.javac.factories;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
-import com.sun.tools.javac.util.ListBuffer;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
@@ -83,11 +82,8 @@ public abstract class JavacElementFactory implements UniElementFactory {
                                          @NotNull String name,
                                          @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                          @Nullable UniType extending,
-                                         @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniField> fields,
-                                         @NotNull List<@NotNull UniMethod> methods) {
-        return createClass(modifiers, name, typeParameters, extending, implementing, fields, methods,
-                Collections.emptyList());
+                                         @NotNull List<@NotNull UniType> implementing) {
+        return createClass(modifiers, name, typeParameters, extending, implementing, Collections.emptyList());
     }
 
     @Override
@@ -97,22 +93,13 @@ public abstract class JavacElementFactory implements UniElementFactory {
                                          @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                          @Nullable UniType extending,
                                          @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniField> fields,
-                                         @NotNull List<@NotNull UniMethod> methods,
                                          @NotNull List<@NotNull UniClassInitializer> initializers) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
         Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
         JavacExpressionType javacExtending = check(extending, JavacExpressionType.class);
         Stream<JavacExpressionType> javacImplementing =
                 checkList(implementing, JavacExpressionType.class);
-        Stream<JavacField> javacFields = checkList(fields, JavacField.class);
-        Stream<JavacMethod> javacMethods = checkList(methods, JavacMethod.class);
         Stream<JavacClassInitializer> javacInitializers = checkList(initializers, JavacClassInitializer.class);
-        ListBuffer<JCTree> buffer = new ListBuffer<>();
-
-        javacFields.map(JavacField::getTree).forEach(buffer::add);
-        javacMethods.map(JavacMethod::getTree).forEach(buffer::add);
-        javacInitializers.map(JavacClassInitializer::getTree).forEach(buffer::add);
 
         return new JavacClass(treeMaker.ClassDef(
                 javacModifiers.getTree(),
@@ -120,7 +107,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
                 mapToList(javacTypeParameters, JavacTypeParameter::getTree),
                 javacExtending != null ? (JCTree.JCExpression) javacExtending.getExpression() : null,
                 mapToList(javacImplementing, type -> (JCTree.JCExpression) type.getExpression()),
-                buffer.toList()
+                mapToList(javacInitializers, JavacClassInitializer::getTree)
         ));
     }
 
