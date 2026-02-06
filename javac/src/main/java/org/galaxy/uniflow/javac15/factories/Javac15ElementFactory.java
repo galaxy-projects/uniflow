@@ -15,6 +15,7 @@ import org.galaxy.uniflow.api.pattern.UniBindingPattern;
 import org.galaxy.uniflow.api.pattern.UniGuardedPattern;
 import org.galaxy.uniflow.api.pattern.UniParenthesizedPattern;
 import org.galaxy.uniflow.api.pattern.UniPattern;
+import org.galaxy.uniflow.api.statements.UniField;
 import org.galaxy.uniflow.api.statements.UniVariable;
 import org.galaxy.uniflow.api.types.UniType;
 import org.galaxy.uniflow.api.types.UniTypeParameter;
@@ -23,6 +24,7 @@ import org.galaxy.uniflow.javac.JavacMethod;
 import org.galaxy.uniflow.javac.JavacModifiers;
 import org.galaxy.uniflow.javac.expression.JavacExpression;
 import org.galaxy.uniflow.javac.statements.JavacClass;
+import org.galaxy.uniflow.javac.statements.JavacField;
 import org.galaxy.uniflow.javac.statements.JavacVariable;
 import org.galaxy.uniflow.javac.types.JavacExpressionType;
 import org.galaxy.uniflow.javac.types.JavacTypeParameter;
@@ -52,28 +54,15 @@ public class Javac15ElementFactory extends Javac12ElementFactory implements UniJ
     private static final ReflectMethod CREATE_PATTERN_INSTANCEOF;
 
     @Override
-    @SuppressWarnings("rawtypes")
     public @NotNull UniClass createRecord(@NotNull UniModifiers modifiers, @NotNull String name,
                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                           @NotNull List<@NotNull UniType> implementing,
-                                          @NotNull List<@NotNull UniVariable> fields) {
+                                          @NotNull List<@NotNull UniField> fields,
+                                          @NotNull List<@NotNull UniMethod> methods,
+                                          @NotNull List<@NotNull UniClassInitializer> initializers) {
         modifiers.addModifier(UniModifier.RECORD);
 
-        JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
-        Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
-        Stream<JavacExpressionType> javacImplementing =
-                checkList(implementing, JavacExpressionType.class);
-        Stream<JavacVariable> javacFields = checkList(fields, JavacVariable.class);
-
-        return new JavacClass(treeMaker.ClassDef(
-                javacModifiers.getTree(),
-                NameUtils.name(name),
-                mapToList(javacTypeParameters, JavacTypeParameter::getTree),
-                null,
-                mapToList(javacImplementing, type -> (JCTree.JCExpression) type.getExpression()),
-                com.sun.tools.javac.util.List.nil(),
-                mapToList(javacFields, JavacVariable::getTree)
-        ));
+        return createClass(modifiers, name, typeParameters, null, implementing, fields, methods, initializers);
     }
 
     @Override
@@ -84,7 +73,7 @@ public class Javac15ElementFactory extends Javac12ElementFactory implements UniJ
                                          @Nullable UniType extending,
                                          @NotNull List<@NotNull UniType> implementing,
                                          @NotNull List<@NotNull UniExpression> permitting,
-                                         @NotNull List<@NotNull UniVariable> fields,
+                                         @NotNull List<@NotNull UniField> fields,
                                          @NotNull List<@NotNull UniMethod> methods,
                                          @NotNull List<@NotNull UniClassInitializer> initializers) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
@@ -93,7 +82,7 @@ public class Javac15ElementFactory extends Javac12ElementFactory implements UniJ
         Stream<JavacExpressionType> javacImplementing =
                 checkList(implementing, JavacExpressionType.class);
         Stream<JavacExpression> javacPermitting = checkList(permitting, JavacExpression.class);
-        Stream<JavacVariable> javacFields = checkList(fields, JavacVariable.class);
+        Stream<JavacField> javacFields = checkList(fields, JavacField.class);
         Stream<JavacMethod> javacMethods = checkList(methods, JavacMethod.class);
         Stream<JavacClassInitializer> javacInitializers = checkList(initializers, JavacClassInitializer.class);
         ListBuffer<JCTree> buffer = new ListBuffer<>();

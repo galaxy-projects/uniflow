@@ -6,14 +6,14 @@ import org.galaxy.uniflow.api.pattern.UniPattern;
 import org.galaxy.uniflow.javac15.Javac15Unwrapper;
 import org.galaxy.uniflow.javac15.Reflection;
 import org.galaxy.uniflow.javac15.Uniflow15Wrapper;
+import org.galaxy.uniflow.reflection.ReflectClass;
+import org.galaxy.uniflow.reflection.ReflectField;
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Field;
 
 public class JavacParenthesizedPattern extends JavacPattern<JCTree.JCPattern>
         implements UniParenthesizedPattern {
 
-    private static final Field PATTERN;
+    private static final ReflectField PATTERN;
 
     public JavacParenthesizedPattern(@NotNull JCTree.JCPattern tree) {
         super(tree);
@@ -21,25 +21,18 @@ public class JavacParenthesizedPattern extends JavacPattern<JCTree.JCPattern>
 
     @Override
     public void setPattern(@NotNull UniPattern pattern) {
-        try {
-            PATTERN.set(tree, Javac15Unwrapper.unwrap(pattern));
-        } catch (IllegalAccessException e) {
-            throw new UnsupportedOperationException(e);
-        }
+        PATTERN.set(tree, Javac15Unwrapper.unwrap(pattern));
     }
 
     @Override
     public @NotNull UniPattern getPattern() {
-        try {
-            return Uniflow15Wrapper.wrap((JCTree.JCPattern) PATTERN.get(tree));
-        } catch (IllegalAccessException e) {
-            throw new UnsupportedOperationException(e);
-        }
+        return Uniflow15Wrapper.wrap((JCTree.JCPattern) PATTERN.get(tree));
     }
 
     static {
         try {
-            PATTERN = Reflection.PARENTHESIZED_PATTERN_TYPE.getDeclaredField("pattern");
+            ReflectClass type = new ReflectClass(Reflection.PARENTHESIZED_PATTERN_TYPE);
+            PATTERN = type.field("pattern");
         } catch (NoSuchFieldException e) {
             throw new UnsupportedOperationException("Not supported in this java version");
         }
