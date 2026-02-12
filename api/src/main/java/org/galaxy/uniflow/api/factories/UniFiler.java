@@ -10,6 +10,8 @@ import java.util.function.Supplier;
 
 public interface UniFiler {
 
+    boolean doesSupports(@NotNull UniFileLocation.Location location);
+
     @NotNull UniFileLocation createLocation(@NotNull CharSequence name);
 
     @NotNull UniFileLocation createLocation(@NotNull CharSequence packageName,
@@ -31,6 +33,10 @@ public interface UniFiler {
                                             @NotNull CharSequence name);
 
     @NotNull UniJavaFile createSourceFile(@NotNull CharSequence name, @NotNull Supplier<@NotNull String> contents)
+            throws IOException;
+
+    @NotNull UniJavaFile createSourceFile(@NotNull UniFileLocation location,
+                                          @NotNull Supplier<@NotNull String> contents)
             throws IOException;
 
     @NotNull UniFile createResource(@NotNull UniFileLocation location, @NotNull Supplier<@NotNull String> contents)

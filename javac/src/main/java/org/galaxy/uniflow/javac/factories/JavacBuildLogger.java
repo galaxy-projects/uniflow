@@ -5,7 +5,7 @@ import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeInfo;
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
-import org.galaxy.uniflow.api.factories.UniMessenger;
+import org.galaxy.uniflow.api.logger.UniBuildLogger;
 import org.galaxy.uniflow.common.EnumUtils;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.JavacUniflow;
@@ -14,15 +14,15 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.tools.Diagnostic;
 
-public class JavacMessenger implements UniMessenger {
+public class JavacBuildLogger implements UniBuildLogger {
 
     @Override
-    public void printMessage(@NotNull MessageKind kind, @NotNull CharSequence msg) {
+    public void log(@NotNull MessageKind kind, @NotNull CharSequence msg) {
         JavacUniflow.getInstance().messager.printMessage(parseKind(kind), msg);
     }
 
     @Override
-    public void printMessage(@NotNull MessageKind kind, @NotNull CharSequence msg, @NotNull UniElement element) {
+    public void log(@NotNull MessageKind kind, @NotNull CharSequence msg, @NotNull UniElement element) {
         if (!(element instanceof JavacElement))
             throw new IllegalArgumentException("Invalid element type");
         JavacElement<?> javacElement = (JavacElement<?>) element;
@@ -33,10 +33,10 @@ public class JavacMessenger implements UniMessenger {
     }
 
     @Override
-    public void printMessage(@NotNull MessageKind kind,
-                             @NotNull CharSequence msg,
-                             @NotNull UniElement element,
-                             @NotNull UniAnnotation annotation) {
+    public void log(@NotNull MessageKind kind,
+                    @NotNull CharSequence msg,
+                    @NotNull UniElement element,
+                    @NotNull UniAnnotation annotation) {
         checkElements(element, annotation);
         JCTree elementTree = ((JavacElement<?>) element).getTree();
         JCTree.JCAnnotation annotationTree = ((JavacAnnotation) annotation).getTree();
@@ -46,11 +46,11 @@ public class JavacMessenger implements UniMessenger {
     }
 
     @Override
-    public void printMessage(@NotNull MessageKind kind,
-                             @NotNull CharSequence msg,
-                             @NotNull UniElement element,
-                             @NotNull UniAnnotation annotation,
-                             @NotNull String attributeName) {
+    public void log(@NotNull MessageKind kind,
+                    @NotNull CharSequence msg,
+                    @NotNull UniElement element,
+                    @NotNull UniAnnotation annotation,
+                    @NotNull String attributeName) {
         checkElements(element, annotation);
         JCTree elementTree = ((JavacElement<?>) element).getTree();
         JCTree.JCAnnotation annotationTree = ((JavacAnnotation) annotation).getTree();
@@ -70,7 +70,7 @@ public class JavacMessenger implements UniMessenger {
             throw new IllegalArgumentException("Invalid annotation type");
     }
 
-    private Diagnostic.Kind parseKind(@NotNull UniMessenger.MessageKind kind) {
+    private Diagnostic.Kind parseKind(@NotNull UniBuildLogger.MessageKind kind) {
         return EnumUtils.convert(Diagnostic.Kind.class, kind);
     }
 }

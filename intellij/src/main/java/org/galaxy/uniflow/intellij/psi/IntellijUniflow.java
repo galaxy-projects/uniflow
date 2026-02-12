@@ -1,5 +1,6 @@
 package org.galaxy.uniflow.intellij.psi;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.LanguageLevelUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.pom.java.LanguageLevel;
@@ -8,7 +9,13 @@ import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiJavaParserFacade;
 import org.galaxy.uniflow.api.Uniflow;
-import org.galaxy.uniflow.api.factories.*;
+import org.galaxy.uniflow.api.factories.UniElementFactory;
+import org.galaxy.uniflow.api.factories.UniElementFinder;
+import org.galaxy.uniflow.api.factories.UniFiler;
+import org.galaxy.uniflow.api.factories.UniTypeFactory;
+import org.galaxy.uniflow.api.logger.UniBuildLogger;
+import org.galaxy.uniflow.api.logger.UniSystemLogger;
+import org.galaxy.uniflow.common.logger.NoOPBuildLogger;
 import org.galaxy.uniflow.intellij.psi.factories.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,7 +30,6 @@ public class IntellijUniflow extends Uniflow {
         facade = JavaPsiFacade.getInstance(module.getProject());
         factory = facade.getElementFactory();
     }
-
 
     @Override
     protected @NotNull UniElementFinder createFinder() {
@@ -58,13 +64,19 @@ public class IntellijUniflow extends Uniflow {
     }
 
     @Override
-    public @NotNull UniFiler createFiler() {
-        return null;
+    @NotNull
+    protected UniFiler createFiler() {
+        return new IntellijFiler(module);
     }
 
     @Override
-    public @NotNull UniMessenger createMessenger() {
-        return null;
+    protected @NotNull UniBuildLogger createBuildLogger() {
+        return NoOPBuildLogger.INSTANCE;
+    }
+
+    @Override
+    protected @NotNull UniSystemLogger createSystemLogger() {
+        return new IntellijSystemLogger(Logger.getInstance(IntellijUniflow.class));
     }
 
     public static @NotNull IntellijUniflow getInstance() {

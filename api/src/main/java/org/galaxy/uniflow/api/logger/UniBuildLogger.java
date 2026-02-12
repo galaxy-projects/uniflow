@@ -1,25 +1,25 @@
-package org.galaxy.uniflow.api.factories;
+package org.galaxy.uniflow.api.logger;
 
 import org.galaxy.uniflow.api.UniElement;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.jetbrains.annotations.NotNull;
 
-public interface UniMessenger {
+public interface UniBuildLogger {
 
-    void printMessage(@NotNull MessageKind kind, @NotNull CharSequence msg);
+    void log(@NotNull MessageKind kind, @NotNull CharSequence msg);
 
-    void printMessage(@NotNull MessageKind kind, @NotNull CharSequence msg, @NotNull UniElement element);
+    void log(@NotNull MessageKind kind, @NotNull CharSequence msg, @NotNull UniElement element);
 
-    void printMessage(@NotNull MessageKind kind,
-                      @NotNull CharSequence msg,
-                      @NotNull UniElement element,
-                      @NotNull UniAnnotation annotation);
+    void log(@NotNull MessageKind kind,
+             @NotNull CharSequence msg,
+             @NotNull UniElement element,
+             @NotNull UniAnnotation annotation);
 
-    void printMessage(@NotNull MessageKind kind,
-                      @NotNull CharSequence msg,
-                      @NotNull UniElement element,
-                      @NotNull UniAnnotation annotation,
-                      @NotNull String attributeName);
+    void log(@NotNull MessageKind kind,
+             @NotNull CharSequence msg,
+             @NotNull UniElement element,
+             @NotNull UniAnnotation annotation,
+             @NotNull String attributeName);
 
     enum MessageKind {
         /**

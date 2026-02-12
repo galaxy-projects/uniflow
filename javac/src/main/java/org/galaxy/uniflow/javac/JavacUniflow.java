@@ -12,8 +12,8 @@ import com.sun.tools.javac.util.Names;
 import org.galaxy.uniflow.api.Uniflow;
 import org.galaxy.uniflow.api.factories.UniElementFinder;
 import org.galaxy.uniflow.api.factories.UniFiler;
-import org.galaxy.uniflow.api.factories.UniMessenger;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
+import org.galaxy.uniflow.api.logger.UniBuildLogger;
 import org.galaxy.uniflow.api.processing.UniProcessingEnvironment;
 import org.galaxy.uniflow.javac.factories.*;
 import org.galaxy.uniflow.javac10.Javac10Uniflow;
@@ -75,13 +75,14 @@ public abstract class JavacUniflow extends Uniflow {
     }
 
     @Override
-    public @NotNull UniFiler createFiler() {
+    @NotNull
+    protected UniFiler createFiler() {
         return new JavacFiler();
     }
 
     @Override
-    public @NotNull UniMessenger createMessenger() {
-        return new JavacMessenger();
+    protected @NotNull UniBuildLogger createBuildLogger() {
+        return new JavacBuildLogger();
     }
 
     public static @NotNull JavacUniflow getInstance() {

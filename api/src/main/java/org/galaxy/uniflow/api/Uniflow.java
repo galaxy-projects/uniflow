@@ -1,6 +1,11 @@
 package org.galaxy.uniflow.api;
 
-import org.galaxy.uniflow.api.factories.*;
+import org.galaxy.uniflow.api.factories.UniElementFactory;
+import org.galaxy.uniflow.api.factories.UniElementFinder;
+import org.galaxy.uniflow.api.factories.UniFiler;
+import org.galaxy.uniflow.api.factories.UniTypeFactory;
+import org.galaxy.uniflow.api.logger.UniBuildLogger;
+import org.galaxy.uniflow.api.logger.UniSystemLogger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -13,14 +18,16 @@ public abstract class Uniflow {
     private final Lazy<UniTypeFactory> typeFactory;
     private final Lazy<UniElementFactory> elementFactory;
     private final Lazy<UniFiler> filer;
-    private final Lazy<UniMessenger> messenger;
+    private final Lazy<UniBuildLogger> buildLogger;
+    private final Lazy<UniSystemLogger> systemLogger;
 
     protected Uniflow() {
         finder = new Lazy<>(this::createFinder);
         typeFactory = new Lazy<>(this::createTypeFactory);
         elementFactory = new Lazy<>(this::createElementFactory);
         filer = new Lazy<>(this::createFiler);
-        messenger = new Lazy<>(this::createMessenger);
+        buildLogger = new Lazy<>(this::createBuildLogger);
+        systemLogger = new Lazy<>(this::createSystemLogger);
         instance = this;
     }
 
@@ -40,8 +47,12 @@ public abstract class Uniflow {
         return filer.get();
     }
 
-    public @NotNull UniMessenger getMessenger() {
-        return messenger.get();
+    public @NotNull UniBuildLogger getBuildLogger() {
+        return buildLogger.get();
+    }
+
+    public @NotNull UniSystemLogger getSystemLogger() {
+        return systemLogger.get();
     }
 
     protected abstract @NotNull UniElementFinder createFinder();
@@ -50,9 +61,11 @@ public abstract class Uniflow {
 
     protected abstract @NotNull UniElementFactory createElementFactory();
 
-    public abstract @NotNull UniFiler createFiler();
+    protected abstract @NotNull UniFiler createFiler();
 
-    public abstract @NotNull UniMessenger createMessenger();
+    protected abstract @NotNull UniBuildLogger createBuildLogger();
+
+    protected abstract @NotNull UniSystemLogger createSystemLogger();
 
     public static @NotNull Uniflow getInstance() {
         if (instance == null)
