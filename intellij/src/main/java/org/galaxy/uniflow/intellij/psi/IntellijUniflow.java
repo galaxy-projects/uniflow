@@ -4,10 +4,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.LanguageLevelUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.pom.java.LanguageLevel;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.PsiJavaParserFacade;
+import com.intellij.psi.*;
 import org.galaxy.uniflow.api.Uniflow;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.api.factories.UniElementFinder;
@@ -24,21 +21,23 @@ public class IntellijUniflow extends Uniflow {
     public Module module;
     public JavaPsiFacade facade;
     public PsiElementFactory factory;
+    public PsiManager manager;
 
     public IntellijUniflow(Module module) {
         this.module = module;
+        manager = PsiManager.getInstance(module.getProject());
         facade = JavaPsiFacade.getInstance(module.getProject());
         factory = facade.getElementFactory();
     }
 
     @Override
     protected @NotNull UniElementFinder createFinder() {
-        return null;
+        return new IntellijElementFinder();
     }
 
     @Override
     protected @NotNull UniTypeFactory createTypeFactory() {
-        return null;
+        return new IntellijTypeFactory();
     }
 
     @Override

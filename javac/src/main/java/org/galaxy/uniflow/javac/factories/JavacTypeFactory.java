@@ -76,44 +76,34 @@ public class JavacTypeFactory implements UniTypeFactory {
     }
 
     @Override
-    public @NotNull UniWildcardType createWildcardType(@NotNull UniType type, UniWildcardType.@NotNull BoundKind kind) {
-        if (!(type instanceof JavacType<?, ?>))
-            throw new IllegalArgumentException("Invalid type");
-        BoundKind boundKind = EnumUtils.convert(BoundKind.class, kind);
-        JavacType<?, ?> javacType = (JavacType<?, ?>) type;
-        Type rawType = javacType.getRawType();
-
+    public @NotNull UniWildcardType createUnboundedWildcardType() {
         return new JavacWildcardType(
                 treeMaker.Wildcard(
-                        treeMaker.TypeBoundKind(boundKind),
-                        javacType.getExpression()
+                        treeMaker.TypeBoundKind(BoundKind.UNBOUND),
+                        null
                 ),
-                new Type.WildcardType(rawType, boundKind, rawType.tsym, rawType.getMetadata())
+                new Type.WildcardType(null, BoundKind.UNBOUND, null)
         );
     }
 
     @Override
-    public @NotNull UniWildcardType createWildcardType(@NotNull UniType type,
-                                                       UniWildcardType.@NotNull BoundKind kind,
+    public @NotNull UniWildcardType createWildcardType(UniWildcardType.@NotNull BoundKind kind,
                                                        @NotNull UniType bound) {
-        if (!(type instanceof JavacType<?, ?>))
-            throw new IllegalArgumentException("Invalid type");
         if (!(bound instanceof JavacType<?, ?>))
             throw new IllegalArgumentException("Invalid bound type");
         BoundKind boundKind = EnumUtils.convert(BoundKind.class, kind);
-        JavacType<?, ?> javacType = (JavacType<?, ?>) type;
-        Type rawType = javacType.getRawType();
+        JavacType<?, ?> javacBoundType = (JavacType<?, ?>) bound;
         Type boundRawType = ((JavacType<?, ?>) bound).getRawType();
 
         return new JavacWildcardType(
                 treeMaker.Wildcard(
                         treeMaker.TypeBoundKind(boundKind),
-                        javacType.getExpression()
+                        javacBoundType.getExpression()
                 ),
-                new Type.WildcardType(rawType, boundKind, rawType.tsym,
+                new Type.WildcardType(boundRawType, boundKind, boundRawType.tsym,
                         new Type.TypeVar(boundRawType.tsym, boundRawType, boundRawType.getLowerBound(),
                                 boundRawType.getMetadata()),
-                        rawType.getMetadata())
+                        boundRawType.getMetadata())
         );
     }
 

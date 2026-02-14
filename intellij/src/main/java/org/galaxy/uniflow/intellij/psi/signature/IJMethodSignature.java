@@ -36,7 +36,7 @@ public record IJMethodSignature(PsiMethod method) implements UniMethodSignature 
         UniFieldSignature[] parameters = new UniFieldSignature[parameterArray.length];
 
         for (int i = 0; i < parameterArray.length; i++)
-            parameters[i] = new IJFieldSignature(parameterArray[i]);
+            parameters[i] = new IJParameterSignature(parameterArray[i]);
         return parameters;
     }
 
