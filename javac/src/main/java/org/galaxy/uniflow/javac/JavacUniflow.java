@@ -14,8 +14,14 @@ import org.galaxy.uniflow.api.factories.UniElementFinder;
 import org.galaxy.uniflow.api.factories.UniFiler;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
 import org.galaxy.uniflow.api.logger.UniBuildLogger;
+import org.galaxy.uniflow.api.logger.UniSystemLogger;
 import org.galaxy.uniflow.api.processing.UniProcessingEnvironment;
-import org.galaxy.uniflow.javac.factories.*;
+import org.galaxy.uniflow.javac.factories.JavacElementFinder;
+import org.galaxy.uniflow.javac.factories.JavacFiler;
+import org.galaxy.uniflow.javac.factories.JavacProcessingEnvironmentImpl;
+import org.galaxy.uniflow.javac.factories.JavacTypeFactory;
+import org.galaxy.uniflow.javac.logger.JavacBuildLogger;
+import org.galaxy.uniflow.javac.logger.JavacSystemLogger;
 import org.galaxy.uniflow.javac10.Javac10Uniflow;
 import org.galaxy.uniflow.javac12.Javac12Uniflow;
 import org.galaxy.uniflow.javac15.Javac15Uniflow;
@@ -83,6 +89,11 @@ public abstract class JavacUniflow extends Uniflow {
     @Override
     protected @NotNull UniBuildLogger createBuildLogger() {
         return new JavacBuildLogger();
+    }
+
+    @Override
+    protected @NotNull UniSystemLogger createSystemLogger() {
+        return new JavacSystemLogger();
     }
 
     public static @NotNull JavacUniflow getInstance() {
