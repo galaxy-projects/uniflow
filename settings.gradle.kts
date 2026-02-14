@@ -27,6 +27,7 @@ dependencyResolutionManagement {
 
 
 include("api")
+include("javac-api")
 include("javac")
 include("common")
 include("gradle-plugin")
