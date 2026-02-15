@@ -1,8 +1,6 @@
 package org.galaxy.uniflow.api.factories;
 
-import org.galaxy.uniflow.api.UniCompilationUnit;
 import org.galaxy.uniflow.api.UniModifiers;
-import org.galaxy.uniflow.api.UniPackage;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.api.modules.directives.*;
 import org.jetbrains.annotations.NotNull;
@@ -10,9 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public interface UniJdk9ElementFactory extends UniElementFactory {
-
-    @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
-                                               @NotNull List<@NotNull UniModule> modules);
 
     @NotNull UniModule createModule(@NotNull UniModifiers modifiers,
                                     @NotNull UniModule.ModuleKind kind,

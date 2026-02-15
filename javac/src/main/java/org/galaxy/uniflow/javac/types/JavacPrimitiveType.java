@@ -5,14 +5,14 @@ import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.types.TypeTag;
 import org.galaxy.uniflow.api.types.UniPrimitiveType;
 import org.galaxy.uniflow.common.EnumUtils;
+import org.galaxy.uniflow.reflection.ReflectClass;
+import org.galaxy.uniflow.reflection.ReflectField;
 import org.jetbrains.annotations.NotNull;
-
-import java.lang.reflect.Field;
 
 public class JavacPrimitiveType extends JavacExpressionType<JCTree.JCPrimitiveTypeTree, Type.JCPrimitiveType>
         implements UniPrimitiveType {
 
-    private static final Field TAG;
+    private static final ReflectField TAG;
 
     public JavacPrimitiveType(JCTree.JCPrimitiveTypeTree expression, Type.JCPrimitiveType type) {
         super(expression, type);
@@ -20,11 +20,7 @@ public class JavacPrimitiveType extends JavacExpressionType<JCTree.JCPrimitiveTy
 
     @Override
     public void setTag(@NotNull TypeTag typeTag) {
-        try {
-            TAG.set(type, EnumUtils.convert(com.sun.tools.javac.code.TypeTag.class, typeTag));
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        TAG.set(type, EnumUtils.convert(com.sun.tools.javac.code.TypeTag.class, typeTag));
     }
 
     @Override
@@ -34,8 +30,8 @@ public class JavacPrimitiveType extends JavacExpressionType<JCTree.JCPrimitiveTy
 
     static {
         try {
-            TAG = Type.JCPrimitiveType.class.getDeclaredField("tag");
-            TAG.setAccessible(true);
+            ReflectClass type = new ReflectClass(Type.JCPrimitiveType.class);
+            TAG = type.field("tag");
         } catch (NoSuchFieldException e) {
             throw new ExceptionInInitializerError(e);
         }

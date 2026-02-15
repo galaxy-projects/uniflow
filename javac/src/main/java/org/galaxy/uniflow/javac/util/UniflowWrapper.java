@@ -1,6 +1,5 @@
 package org.galaxy.uniflow.javac.util;
 
-import com.sun.tools.javac.code.Source;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
@@ -9,7 +8,9 @@ import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniOperatorExpression;
 import org.galaxy.uniflow.api.signatures.UniOperatorSignature;
@@ -23,11 +24,14 @@ import org.galaxy.uniflow.javac.annotations.JavacSimpleAnnotationHolder;
 import org.galaxy.uniflow.javac.elements.JavacCaseLabel;
 import org.galaxy.uniflow.javac.elements.JavacCatch;
 import org.galaxy.uniflow.javac.elements.JavacDefaultCaseLabel;
+import org.galaxy.uniflow.javac.elements.imports.JavacImport;
+import org.galaxy.uniflow.javac.elements.imports.JavacStaticImport;
+import org.galaxy.uniflow.javac.elements.resources.JavacExpressionResource;
+import org.galaxy.uniflow.javac.elements.resources.JavacVariableResource;
 import org.galaxy.uniflow.javac.expression.*;
 import org.galaxy.uniflow.javac.signatures.JavacOperatorSignature;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.*;
-import org.galaxy.uniflow.javac12.statements.JavacYield;
 import org.galaxy.uniflow.javac8.statements.Javac8Case;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,23 +39,23 @@ import java.util.function.Consumer;
 
 public class UniflowWrapper {
 
-    public static @NotNull String expressionToString(JCTree.JCExpression expression) {
+    public static @NotNull String expressionToString(JCTree expression) {
         if (expression instanceof JCTree.JCIdent)
             return NameUtils.nameToString(((JCTree.JCIdent) expression).name);
+        else if (expression instanceof JCTree.JCFieldAccess) {
+            JCTree.JCFieldAccess fieldAccess = (JCTree.JCFieldAccess) expression;
+
+            return expressionToString(fieldAccess.selected) + "." + NameUtils.nameToString(fieldAccess.name);
+        }
         throw new IllegalArgumentException("Unknown expression: " + expression);
     }
 
     // Globals
 
     public static @NotNull UniElement wrap(JCTree element) {
-        VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+        UniElement wrapped = tryToWrap(element, UniElement.class);
 
-        if (wrapper != null) {
-            UniElement result = wrapper.wrap(element);
-
-            if (result != null)
-                return result;
-        }
+        if (wrapped != null) return wrapped;
         if (element instanceof JCTree.JCAnnotation)
             return new JavacAnnotation((JCTree.JCAnnotation) element);
         else if (element instanceof JCTree.JCCatch)
@@ -64,12 +68,10 @@ public class UniflowWrapper {
             return wrap((JCTree.JCPattern) element);
         else if (element instanceof JCTree.JCCaseLabel)
             return wrap((JCTree.JCCaseLabel) element);
-        else if (element instanceof JCTree.JCDirective)
-            return wrap((JCTree.JCDirective) element);
         else if (element instanceof JCTree.JCCompilationUnit)
             return new JavacCompilationUnit((JCTree.JCCompilationUnit) element);
         else if (element instanceof JCTree.JCImport)
-            return new JavacImport((JCTree.JCImport) element);
+            return wrap((JCTree.JCImport) element);
         else if (element instanceof JCTree.JCMethodDecl)
             return new JavacMethod((JCTree.JCMethodDecl) element);
         else if (element instanceof JCTree.JCModifiers)
@@ -80,14 +82,9 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniOperatorExpression wrap(JCTree.JCOperatorExpression expression) {
-        VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+        UniOperatorExpression wrapped = tryToWrap(expression, UniOperatorExpression.class);
 
-        if (wrapper != null) {
-            UniElement result = wrapper.wrap(expression);
-
-            if (result != null)
-                return (UniOperatorExpression) result;
-        }
+        if (wrapped != null) return wrapped;
         if (expression instanceof JCTree.JCBinary)
             return new JavacBinary((JCTree.JCBinary) expression);
         else if (expression instanceof JCTree.JCAssignOp)
@@ -98,14 +95,9 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniExpression wrap(JCTree.JCExpression expression) {
-        VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+        UniExpression wrapped = tryToWrap(expression, UniExpression.class);
 
-        if (wrapper != null) {
-            UniElement result = wrapper.wrap(expression);
-
-            if (result != null)
-                return (UniExpression) result;
-        }
+        if (wrapped != null) return wrapped;
         if (expression instanceof JCTree.JCArrayAccess)
             return new JavacArrayAccess((JCTree.JCArrayAccess) expression);
         else if (expression instanceof JCTree.JCAssign)
@@ -140,14 +132,9 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniStatement wrap(JCTree.JCStatement statement) {
-        VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+        UniStatement wrapped = tryToWrap(statement, UniStatement.class);
 
-        if (wrapper != null) {
-            UniElement result = wrapper.wrap(statement);
-
-            if (result != null)
-                return (UniStatement) result;
-        }
+        if (wrapped != null) return wrapped;
         if (statement instanceof JCTree.JCAssert)
             return new JavacAssert((JCTree.JCAssert) statement);
         else if (statement instanceof JCTree.JCBlock)
@@ -192,8 +179,6 @@ public class UniflowWrapper {
             return new JavacVariable(var);
         } else if (statement instanceof JCTree.JCWhileLoop)
             return new JavacWhileLoop((JCTree.JCWhileLoop) statement);
-        else if (statement instanceof JCTree.JCYield)
-            return new JavacYield((JCTree.JCYield) statement);
         return new JavacStatement<>(statement);
     }
 
@@ -225,12 +210,11 @@ public class UniflowWrapper {
     }
 
     public static @NotNull UniCaseBase wrap(JCTree.JCCase jcCase) {
-        if (JavacUniflow.getInstance().source.compareTo(Source.JDK12) >= 0) {
-            VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
-            UniElement result = wrapper != null ? wrapper.wrap(jcCase) : null;
+        if (JavacUniflow.isCurrentSourceAtLeast("JDK12")) {
+            UniCaseBase wrapped = tryToWrap(jcCase, UniCaseBase.class);
 
-            if (result != null)
-                return (UniCaseBase) result;
+            if (wrapped != null)
+                return wrapped;
             throw new IllegalArgumentException("Unknown statement: " + jcCase);
         }
         return new Javac8Case(jcCase);
@@ -268,7 +252,16 @@ public class UniflowWrapper {
         return new JavacPackage(pkg);
     }
 
-    public static @NotNull UniImport wrap(JCTree.JCImport jcImport) {
+    public static @NotNull UniImportBase wrap(JCTree.JCImport jcImport) {
+        if (JavacUniflow.isCurrentSourceAtLeast("JDK25")) {
+            UniImportBase wrapped = tryToWrap(jcImport, UniImportBase.class);
+
+            if (wrapped != null)
+                return wrapped;
+            throw new IllegalArgumentException("Unknown import: " + jcImport);
+        }
+        if (jcImport.isStatic())
+            return new JavacStaticImport(jcImport);
         return new JavacImport(jcImport);
     }
 
@@ -278,6 +271,14 @@ public class UniflowWrapper {
 
     public static @NotNull UniMethod wrap(JCTree.JCMethodDecl method) {
         return new JavacMethod(method);
+    }
+
+    public static @NotNull UniResource wrapResource(JCTree tree) {
+        if (tree instanceof JCTree.JCVariableDecl)
+            return new JavacVariableResource(wrap((JCTree.JCVariableDecl) tree));
+        else if (tree instanceof JCTree.JCExpression)
+            return new JavacExpressionResource(wrap((JCTree.JCExpression) tree));
+        throw new IllegalArgumentException("Unknown resource: " + tree);
     }
 
     // Types
@@ -333,5 +334,17 @@ public class UniflowWrapper {
 
     public static @NotNull UniClassType symbolToType(Symbol owner) {
         return (UniClassType) typeFromTree(JavacUniflow.getInstance().trees.getTree(owner));
+    }
+
+    private static <T> T tryToWrap(JCTree element, Class<T> targetType) {
+        VersionedWrapper wrapper = JavacUniflow.getInstance().getVersionedWrapper();
+
+        if (wrapper != null) {
+            UniElement result = wrapper.wrap(element);
+
+            if (targetType.isInstance(result))
+                return targetType.cast(result);
+        }
+        return null;
     }
 }

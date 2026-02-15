@@ -14,8 +14,8 @@ public interface UniFileLocation {
     @NotNull CharSequence getName();
 
     enum Location {
-        SOURCE_OUTPUT,
-        CLASS_OUTPUT,
-        NATIVE_HEADER_OUTPUT
+        SOURCE,
+        CLASS,
+        NATIVE_HEADER
     }
 }

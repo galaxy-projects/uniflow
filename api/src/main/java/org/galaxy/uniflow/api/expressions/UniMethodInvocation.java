@@ -12,6 +12,6 @@ public interface UniMethodInvocation extends UniExpression {
 
     @NotNull UniExpression getMethodSelect();
 
-    @NotNull UniList<UniExpression> getArguments();
+    @NotNull UniList<@NotNull UniExpression> getArguments();
 
 }

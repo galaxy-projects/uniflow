@@ -4,12 +4,15 @@ import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationHolder;
 import org.galaxy.uniflow.api.elements.UniCatch;
+import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.signatures.UniFieldSignature;
 import org.galaxy.uniflow.api.signatures.UniMethodSignature;
@@ -22,6 +25,7 @@ import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.JavacModifiers;
 import org.galaxy.uniflow.javac.JavacPackage;
 import org.galaxy.uniflow.javac.JavacUniflow;
+import org.galaxy.uniflow.javac.elements.resources.JavacResource;
 import org.galaxy.uniflow.javac.expression.JavacNewArray;
 import org.galaxy.uniflow.javac.signatures.JavacFieldSignature;
 import org.galaxy.uniflow.javac.signatures.JavacMethodSignature;
@@ -154,8 +158,14 @@ public class JavacUnwrapper {
         return (JCTree.JCModifiers) unwrap((UniElement) modifiers);
     }
 
-    public static JCTree.JCImport unwrap(UniImport uniImport) {
+    public static JCTree.JCImport unwrap(UniImportBase uniImport) {
         return (JCTree.JCImport) unwrap((UniElement) uniImport);
+    }
+
+    public static JCTree unwrap(@NotNull UniResource resource) {
+        if (resource instanceof JavacResource)
+            return unwrap(((JavacResource<?>) resource).getElement());
+        throw new IllegalArgumentException("Unknown resource: " + resource);
     }
 
     // Signatures
@@ -176,5 +186,17 @@ public class JavacUnwrapper {
         if (signature instanceof JavacFieldSignature)
             return ((JavacFieldSignature) signature).getSymbol();
         throw new IllegalArgumentException("Signature not supported: " + signature);
+    }
+
+    public static JCTree.JCExpression expressionFromString(String name) {
+        TreeMaker treeMaker = JavacUniflow.getInstance().treeMaker;
+        int dotIndex = name.lastIndexOf('.');
+
+        if (dotIndex < 0)
+            return treeMaker.Ident(NameUtils.name(name));
+        String prefix = name.substring(0, dotIndex);
+        String suffix = name.substring(dotIndex);
+
+        return treeMaker.Select(expressionFromString(prefix), NameUtils.name(suffix));
     }
 }

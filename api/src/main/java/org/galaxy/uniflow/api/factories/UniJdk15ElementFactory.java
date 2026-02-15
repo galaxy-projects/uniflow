@@ -2,7 +2,6 @@ package org.galaxy.uniflow.api.factories;
 
 import org.galaxy.uniflow.api.UniClass;
 import org.galaxy.uniflow.api.UniClassInitializer;
-import org.galaxy.uniflow.api.UniMethod;
 import org.galaxy.uniflow.api.UniModifiers;
 import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniInstanceOf;
@@ -24,7 +23,7 @@ public interface UniJdk15ElementFactory extends UniJdk12ElementFactory {
                                    @NotNull String name,
                                    @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                    @NotNull List<@NotNull UniType> implementing,
-                                   @NotNull List<@NotNull UniVariable> fields);
+                                   @NotNull List<@NotNull UniClassInitializer> initializers);
 
     @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
                                   @NotNull String name,
@@ -32,8 +31,6 @@ public interface UniJdk15ElementFactory extends UniJdk12ElementFactory {
                                   @Nullable UniType extending,
                                   @NotNull List<@NotNull UniType> implementing,
                                   @NotNull List<@NotNull UniExpression> permitting,
-                                  @NotNull List<@NotNull UniVariable> fields,
-                                  @NotNull List<@NotNull UniMethod> methods,
                                   @NotNull List<@NotNull UniClassInitializer> initializers);
 
     @NotNull UniBindingPattern createBindingPattern(@NotNull UniVariable variable);

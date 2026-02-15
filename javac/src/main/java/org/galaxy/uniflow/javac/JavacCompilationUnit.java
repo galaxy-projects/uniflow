@@ -2,6 +2,7 @@ package org.galaxy.uniflow.javac;
 
 import com.sun.tools.javac.tree.JCTree;
 import org.galaxy.uniflow.api.*;
+import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.javac.lists.JavacList;
@@ -17,11 +18,6 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
 
     public JavacCompilationUnit(JCTree.@NotNull JCCompilationUnit tree) {
         super(tree);
-    }
-
-    @Override
-    public void setModule(@Nullable UniModule module) {
-        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
     }
 
     @Override
@@ -42,7 +38,7 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
     }
 
     @Override
-    public @NotNull UniList<@NotNull UniImport> getImports() {
+    public @NotNull UniList<@NotNull UniImportBase> getImports() {
         return elements().partial(
                 JCTree.JCImport.class::isInstance,
                 JCTree.JCImport.class::cast,
@@ -62,7 +58,7 @@ public class JavacCompilationUnit extends JavacElement<JCTree.JCCompilationUnit>
     }
 
     @Override
-    public @NotNull UniList<UniElement> getOtherElements() {
+    public @NotNull UniList<@NotNull UniElement> getOtherElements() {
         return elements().partial(
                 e -> !(e instanceof JCTree.JCModuleDecl) && !(e instanceof JCTree.JCPackageDecl) && !(e instanceof JCTree.JCImport) && !(e instanceof JCTree.JCClassDecl),
                 Function.identity(),

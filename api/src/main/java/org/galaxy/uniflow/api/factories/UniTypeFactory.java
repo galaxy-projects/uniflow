@@ -28,10 +28,9 @@ public interface UniTypeFactory {
 
     @NotNull UniArrayType createArrayType(@NotNull UniType elementType);
 
-    @NotNull UniWildcardType createWildcardType(@NotNull UniType type, @NotNull UniWildcardType.BoundKind kind);
+    @NotNull UniWildcardType createUnboundedWildcardType();
 
-    @NotNull UniWildcardType createWildcardType(@NotNull UniType type,
-                                                @NotNull UniWildcardType.BoundKind kind,
+    @NotNull UniWildcardType createWildcardType(@NotNull UniWildcardType.BoundKind kind,
                                                 @NotNull UniType bound);
 
     @NotNull UniParameterizedType createParameterizedType(@NotNull UniType elementType,

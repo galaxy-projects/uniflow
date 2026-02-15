@@ -14,7 +14,7 @@ public interface UniJdk12Case extends UniCaseBase {
 
     interface UniJdk12StatementCase extends UniJdk12Case {
 
-        @NotNull UniList<UniStatement> getStatements();
+        @NotNull UniList<@NotNull UniStatement> getStatements();
 
     }
 

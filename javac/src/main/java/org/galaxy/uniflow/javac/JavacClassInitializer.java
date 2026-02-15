@@ -10,4 +10,9 @@ public class JavacClassInitializer extends JavacBlock implements UniClassInitial
     public JavacClassInitializer(JCTree.@NotNull JCBlock tree) {
         super(tree);
     }
+
+    @Override
+    public @NotNull Kind getKind() {
+        return Kind.CLASS_INITIALIZER;
+    }
 }

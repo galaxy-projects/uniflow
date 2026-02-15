@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.galaxy.uniflow.javac.util.JavacUtils.checkList;
+
 public class Javac8ElementFactory extends JavacElementFactory {
 
     private static final ReflectMethod CREATE_CASE;

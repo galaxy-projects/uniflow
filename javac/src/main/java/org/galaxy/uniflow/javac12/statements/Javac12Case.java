@@ -28,7 +28,7 @@ public abstract class Javac12Case extends JavacElement<JCTree.JCCase> implements
     }
 
     @Override
-    public @NotNull UniList<UniCaseLabel> getLabels() {
+    public @NotNull UniList<@NotNull UniCaseLabel> getLabels() {
         return new JavacList<UniCaseLabel, JCTree.JCCaseLabel>(
                 LABELS.createGetter(tree),
                 LABELS.createSetter(tree),
@@ -55,7 +55,7 @@ public abstract class Javac12Case extends JavacElement<JCTree.JCCase> implements
         }
 
         @Override
-        public @NotNull UniList<UniStatement> getStatements() {
+        public @NotNull UniList<@NotNull UniStatement> getStatements() {
             return new JavacList<UniStatement, JCTree.JCStatement>(
                     STATEMENTS.createGetter(tree),
                     STATEMENTS.createSetter(tree),

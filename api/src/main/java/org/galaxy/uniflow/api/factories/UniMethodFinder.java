@@ -21,25 +21,11 @@ public interface UniMethodFinder {
                                       @NotNull UniType returnType,
                                       @NotNull UniType[] parameterTypes);
 
-    // methods with parameters and throws
-    @Nullable UniMethodSignature find(@NotNull UniClassType owner,
-                                      @NotNull String name,
-                                      @NotNull UniType returnType,
-                                      @NotNull UniType[] parameterTypes,
-                                      @NotNull UniType[] thrownTypes);
-
     // methods with parameters
     @Nullable UniMethodSignature find(@NotNull UniClassType owner,
                                       @NotNull String name,
                                       @NotNull UniType returnType,
                                       @NotNull List<UniType> parameterTypes);
-
-    // methods with parameters and throws
-    @Nullable UniMethodSignature find(@NotNull UniClassType owner,
-                                      @NotNull String name,
-                                      @NotNull UniType returnType,
-                                      @NotNull List<UniType> parameterTypes,
-                                      @NotNull List<UniType> thrownTypes);
 
     // no parameters methods
     // uses Class instead of UniClassType
@@ -54,26 +40,10 @@ public interface UniMethodFinder {
                                       @NotNull UniType returnType,
                                       @NotNull UniType[] parameterTypes);
 
-    // methods with parameters and throws
-    // uses Class instead of UniClassType
-    @Nullable UniMethodSignature find(@NotNull Class<?> owner,
-                                      @NotNull String name,
-                                      @NotNull UniType returnType,
-                                      @NotNull UniType[] parameterTypes,
-                                      @NotNull UniType[] thrownTypes);
-
     // methods with parameters
     // uses Class instead of UniClassType
     @Nullable UniMethodSignature find(@NotNull Class<?> owner,
                                       @NotNull String name,
                                       @NotNull UniType returnType,
                                       @NotNull List<UniType> parameterTypes);
-
-    // methods with parameters and throws
-    // uses Class instead of UniClassType
-    @Nullable UniMethodSignature find(@NotNull Class<?> owner,
-                                      @NotNull String name,
-                                      @NotNull UniType returnType,
-                                      @NotNull List<UniType> parameterTypes,
-                                      @NotNull List<UniType> thrownTypes);
 }

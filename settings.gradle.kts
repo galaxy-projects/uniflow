@@ -4,18 +4,31 @@
  * The settings file is used to specify which projects to include in your build.
  * For more detailed information on multi-project builds, please refer to https://docs.gradle.org/8.14/userguide/multi_project_builds.html in the Gradle documentation.
  */
-
 rootProject.name = "uniflow"
 
 pluginManagement {
     repositories {
-        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies")
+    }
+
+    plugins {
+        id("org.jetbrains.intellij.platform") version "2.9.0"
     }
 }
 
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven("https://packages.jetbrains.team/maven/p/ij/intellij-dependencies")
+    }
+}
+
+
 include("api")
+include("javac-api")
 include("javac")
 include("common")
 include("gradle-plugin")
+include("intellij")

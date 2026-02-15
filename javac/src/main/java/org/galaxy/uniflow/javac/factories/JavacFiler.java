@@ -1,13 +1,12 @@
 package org.galaxy.uniflow.javac.factories;
 
 import com.sun.tools.javac.code.Source;
-import org.galaxy.uniflow.api.factories.UniFiler;
 import org.galaxy.uniflow.api.files.UniFile;
 import org.galaxy.uniflow.api.files.UniFileLocation;
 import org.galaxy.uniflow.api.files.UniJavaFile;
+import org.galaxy.uniflow.common.factories.CommonFiler;
 import org.galaxy.uniflow.javac.JavacUniflow;
 import org.galaxy.uniflow.javac.files.JavacFile;
-import org.galaxy.uniflow.javac.files.JavacFileLocation;
 import org.galaxy.uniflow.javac.files.JavacJavaFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,52 +18,18 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.function.Supplier;
 
-public class JavacFiler implements UniFiler {
+public class JavacFiler extends CommonFiler {
 
     @Override
-    public @NotNull UniFileLocation createLocation(@NotNull CharSequence name) {
-        return new JavacFileLocation(UniFileLocation.Location.CLASS_OUTPUT, null, null, name);
+    public boolean doesSupports(UniFileLocation.@NotNull Location location) {
+        return true;
     }
 
     @Override
-    public @NotNull UniFileLocation createLocation(@NotNull CharSequence packageName, @NotNull CharSequence name) {
-        return new JavacFileLocation(UniFileLocation.Location.CLASS_OUTPUT, null, packageName, name);
-    }
-
-    @Override
-    public @NotNull UniFileLocation createLocation(@NotNull CharSequence module,
-                                                   @NotNull CharSequence packageName,
-                                                   @NotNull CharSequence name) {
-        return new JavacFileLocation(UniFileLocation.Location.CLASS_OUTPUT, module, packageName, name);
-    }
-
-    @Override
-    public @NotNull UniFileLocation createLocation(UniFileLocation.@NotNull Location location,
-                                                   @NotNull CharSequence name) {
-        return new JavacFileLocation(location, null, null, name);
-    }
-
-    @Override
-    public @NotNull UniFileLocation createLocation(UniFileLocation.@NotNull Location location,
-                                                   @NotNull CharSequence packageName,
-                                                   @NotNull CharSequence name) {
-        return new JavacFileLocation(location, null, packageName, name);
-    }
-
-    @Override
-    public @NotNull UniFileLocation createLocation(UniFileLocation.@NotNull Location location,
-                                                   @NotNull CharSequence module,
-                                                   @NotNull CharSequence packageName,
-                                                   @NotNull CharSequence name) {
-        return new JavacFileLocation(location, module, packageName, name);
-    }
-
-    @Override
-    public @NotNull UniJavaFile createSourceFile(@NotNull CharSequence name,
-                                                 @NotNull Supplier<@NotNull String> contents)
-            throws IOException {
+    public @NotNull UniJavaFile createSourceFile(@NotNull UniFileLocation location,
+                                                 @NotNull Supplier<@NotNull String> contents) throws IOException {
         JavaFileObject sourceFile = JavacUniflow.getInstance().filer
-                .createSourceFile(name);
+                .createSourceFile(location.getPackage() + "." + location.getName());
 
         try (Writer writer = sourceFile.openWriter()) {
             writer.write(contents.get());
@@ -105,11 +70,11 @@ public class JavacFiler implements UniFiler {
 
     private JavaFileManager.Location getLocation(UniFileLocation location) {
         switch (location.getLocation()) {
-            case SOURCE_OUTPUT:
+            case SOURCE:
                 return StandardLocation.SOURCE_OUTPUT;
-            case NATIVE_HEADER_OUTPUT:
+            case NATIVE_HEADER:
                 return StandardLocation.NATIVE_HEADER_OUTPUT;
-            case CLASS_OUTPUT:
+            case CLASS:
             default:
                 return StandardLocation.CLASS_OUTPUT;
         }

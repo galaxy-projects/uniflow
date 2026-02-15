@@ -1,12 +1,11 @@
 package org.galaxy.uniflow.api;
 
+import org.galaxy.uniflow.api.elements.imports.UniImportBase;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface UniCompilationUnit extends UniElement {
-
-    void setModule(@Nullable UniModule module);
 
     @Nullable UniModule getModule();
 
@@ -14,7 +13,7 @@ public interface UniCompilationUnit extends UniElement {
 
     @Nullable UniPackage getPackage();
 
-    @NotNull UniList<@NotNull UniImport> getImports();
+    @NotNull UniList<@NotNull UniImportBase> getImports();
 
     @NotNull UniList<@NotNull UniClass> getClasses();
 

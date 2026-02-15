@@ -8,13 +8,11 @@ import org.galaxy.uniflow.api.expressions.UniExpression;
 import org.galaxy.uniflow.api.expressions.UniSwitchExpression;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.factories.UniJdk12ElementFactory;
-import org.galaxy.uniflow.api.statements.UniJdk12Case;
-import org.galaxy.uniflow.api.statements.UniJdk8Case;
-import org.galaxy.uniflow.api.statements.UniStatement;
-import org.galaxy.uniflow.api.statements.UniYield;
+import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.javac.JavacElement;
 import org.galaxy.uniflow.javac.expression.JavacExpression;
 import org.galaxy.uniflow.javac.statements.JavacStatement;
+import org.galaxy.uniflow.javac.statements.JavacSwitch;
 import org.galaxy.uniflow.javac10.factories.Javac10ElementFactory;
 import org.galaxy.uniflow.javac12.Reflection;
 import org.galaxy.uniflow.javac12.expression.JavacSwitchExpression;
@@ -28,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.galaxy.uniflow.javac.util.JavacUtils.*;
+
 public class Javac12ElementFactory extends Javac10ElementFactory implements UniJdk12ElementFactory {
 
     private static final ReflectMethod CREATE_CASE;
@@ -37,6 +37,18 @@ public class Javac12ElementFactory extends Javac10ElementFactory implements UniJ
         JavacExpression<?> javacValue = check(value, JavacExpression.class);
 
         return new JavacYield(treeMaker.Yield(javacValue.getTree()));
+    }
+
+    @Override
+    public @NotNull UniSwitch createSwitchStatement(@NotNull UniExpression selector,
+                                                    @NotNull List<@NotNull UniJdk12Case> cases) {
+        JavacExpression<?> javacSelector = check(selector, JavacExpression.class);
+        Stream<Javac12Case> javacCases = checkList(cases, Javac12Case.class);
+
+        return new JavacSwitch(treeMaker.Switch(
+                javacSelector.getTree(),
+                mapToList(javacCases, Javac12Case::getTree)
+        ));
     }
 
     @Override

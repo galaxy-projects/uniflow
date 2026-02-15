@@ -31,16 +31,6 @@ public class JavacTypeParameter extends JavacElement<JCTree.JCTypeParameter> imp
     }
 
     @Override
-    public void setType(@NotNull UniType type) {
-        tree.type = JavacUnwrapper.unwrap(type);
-    }
-
-    @Override
-    public @NotNull UniType getType() {
-        return UniflowWrapper.typeFromTree(tree);
-    }
-
-    @Override
     public @NotNull UniList<@NotNull UniType> getExtends() {
         return new JavacList<>(
                 () -> tree.bounds,

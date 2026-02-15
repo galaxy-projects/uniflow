@@ -8,6 +8,9 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniExpressionResource;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
+import org.galaxy.uniflow.api.elements.resources.UniVariableResource;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.statements.*;
 import org.galaxy.uniflow.api.types.TypeTag;
@@ -19,66 +22,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public interface UniElementFactory {
+public interface UniElementFactory extends UniElementFactoryConversion {
 
-    default boolean supportsJdk9() {
-        return this instanceof UniJdk9ElementFactory;
-    }
-
-    default @NotNull UniJdk9ElementFactory asJdk9() {
-        if (supportsJdk9())
-            return (UniJdk9ElementFactory) this;
-        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
-    }
-
-    default boolean supportsJdk10() {
-        return this instanceof UniJdk10ElementFactory;
-    }
-
-    default @NotNull UniJdk10ElementFactory asJdk10() {
-        if (supportsJdk10())
-            return (UniJdk10ElementFactory) this;
-        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
-    }
-
-    default boolean supportsJdk12() {
-        return this instanceof UniJdk12ElementFactory;
-    }
-
-    default @NotNull UniJdk12ElementFactory asJdk12() {
-        if (supportsJdk12())
-            return (UniJdk12ElementFactory) this;
-        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
-    }
-
-    default boolean supportsJdk15() {
-        return this instanceof UniJdk15ElementFactory;
-    }
-
-    default @NotNull UniJdk15ElementFactory asJdk15() {
-        if (supportsJdk15())
-            return (UniJdk15ElementFactory) this;
-        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
-    }
-
-    default boolean supportsJdk21() {
-        return this instanceof UniJdk21ElementFactory;
-    }
-
-    default @NotNull UniJdk21ElementFactory asJdk21() {
-        if (supportsJdk21())
-            return (UniJdk21ElementFactory) this;
-        throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE);
-    }
-
-    @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
-                                               @NotNull List<@NotNull UniImport> imports,
-                                               @NotNull List<@NotNull UniClass> classes);
-
-    @NotNull UniCompilationUnit createTopLevel(@NotNull List<@NotNull UniElement> elements);
-
-    @NotNull UniPackage createPackage(@NotNull List<@NotNull UniAnnotation> annotations,
-                                      @NotNull String name);
+    @NotNull UniPackage createPackage(@NotNull String name);
 
     @NotNull UniModifiers createModifiers(@NotNull List<@NotNull UniModifier> modifiers,
                                           @NotNull List<@NotNull UniAnnotation> annotations);
@@ -87,64 +33,14 @@ public interface UniElementFactory {
                                   @NotNull String name,
                                   @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                   @Nullable UniType extending,
+                                  @NotNull List<@NotNull UniType> implementing);
+
+    @NotNull UniClass createClass(@NotNull UniModifiers modifiers,
+                                  @NotNull String name,
+                                  @NotNull List<@NotNull UniTypeParameter> typeParameters,
+                                  @Nullable UniType extending,
                                   @NotNull List<@NotNull UniType> implementing,
-                                  @NotNull List<@NotNull UniVariable> fields,
-                                  @NotNull List<@NotNull UniMethod> methods);
-
-    UniClass createClass(@NotNull UniModifiers modifiers,
-                         @NotNull String name,
-                         @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                         @Nullable UniType extending,
-                         @NotNull List<@NotNull UniType> implementing,
-                         @NotNull List<@NotNull UniVariable> fields,
-                         @NotNull List<@NotNull UniMethod> methods,
-                         @NotNull List<@NotNull UniClassInitializer> initializers);
-
-    @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
-                                    @NotNull String name,
-                                    @NotNull Class<?> returnType,
-                                    @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                    @Nullable UniVariable receiveParam,
-                                    @NotNull List<@NotNull UniVariable> parameters,
-                                    @NotNull List<@NotNull UniExpression> thrown,
-                                    @NotNull UniBlock body);
-
-    @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
-                                    @NotNull String name,
-                                    @NotNull UniType returnType,
-                                    @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                    @Nullable UniVariable receiveParam,
-                                    @NotNull List<@NotNull UniVariable> parameters,
-                                    @NotNull List<@NotNull UniExpression> thrown,
-                                    @NotNull UniBlock body);
-
-    @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers,
-                                                 @NotNull String name,
-                                                 @NotNull Class<?> returnType,
-                                                 @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                                 @NotNull UniVariable receiveParam,
-                                                 @NotNull List<@NotNull UniVariable> parameters,
-                                                 @NotNull List<@NotNull UniExpression> thrown,
-                                                 @Nullable UniExpression defaultValue);
-
-    @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers,
-                                                 @NotNull String name,
-                                                 @NotNull UniType returnType,
-                                                 @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                                 @NotNull UniVariable receiveParam,
-                                                 @NotNull List<@NotNull UniVariable> parameters,
-                                                 @NotNull List<@NotNull UniExpression> thrown,
-                                                 @Nullable UniExpression defaultValue);
-
-    @NotNull UniField createField(@NotNull UniModifiers modifiers,
-                                  @NotNull String name,
-                                  @NotNull Class<?> type,
-                                  @Nullable UniExpression init);
-
-    @NotNull UniField createField(@NotNull UniModifiers modifiers,
-                                  @NotNull String name,
-                                  @NotNull UniType type,
-                                  @Nullable UniExpression init);
+                                  @NotNull List<@NotNull UniClassInitializer> initializers);
 
     @NotNull UniVariable createVariable(@NotNull List<@NotNull UniAnnotation> annotations,
                                         @NotNull String name,
@@ -168,6 +64,14 @@ public interface UniElementFactory {
         return createVariable(annotations, name, type, null);
     }
 
+    @NotNull UniParameter createParameter(@NotNull List<@NotNull UniAnnotation> annotations,
+                                          @NotNull String name,
+                                          @NotNull Class<?> type);
+
+    @NotNull UniParameter createParameter(@NotNull List<@NotNull UniAnnotation> annotations,
+                                          @NotNull String name,
+                                          @NotNull UniType type);
+
     @NotNull UniEmpty createSkip();
 
     @NotNull UniBlock createBlock(boolean isStatic, @NotNull List<@NotNull UniStatement> statements);
@@ -181,14 +85,14 @@ public interface UniElementFactory {
                                       @NotNull List<@NotNull UniExpressionStatement> step,
                                       @NotNull UniStatement body);
 
-    @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniVariable variable,
+    @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniParameter variable,
                                                   @NotNull UniExpression iterable,
                                                   @NotNull UniStatement body);
 
     @NotNull UniLabel createLabel(@NotNull String name, @NotNull UniStatement body);
 
     @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
-                                    @NotNull List<@NotNull UniJdk12Case> cases);
+                                    @NotNull List<@NotNull UniJdk8Case> cases);
 
     @NotNull UniJdk8Case createCase(@NotNull UniCaseLabel label, @NotNull List<@NotNull UniStatement> statements);
 
@@ -196,11 +100,15 @@ public interface UniElementFactory {
 
     @NotNull UniSynchronized createSynchronized(@NotNull UniExpression lock, @NotNull UniBlock body);
 
+    @NotNull UniExpressionResource createResource(@NotNull UniExpression expression);
+
+    @NotNull UniVariableResource createResource(@NotNull UniVariable variable);
+
     @NotNull UniTry createTry(@NotNull UniBlock body,
                               @NotNull List<@NotNull UniCatch> catches,
                               @Nullable UniBlock finallyBlock);
 
-    @NotNull UniTry createTry(@NotNull List<@NotNull UniElement> resources,
+    @NotNull UniTry createTry(@NotNull List<@NotNull UniResource> resources,
                               @NotNull UniBlock body,
                               @NotNull List<@NotNull UniCatch> catches,
                               @Nullable UniBlock finallyBlock);
@@ -246,14 +154,14 @@ public interface UniElementFactory {
 
     @NotNull UniAssignment createAssignment(@NotNull UniExpression lhs, @NotNull UniExpression rhs);
 
-    @NotNull UniCompoundAssignment createCompoundAssignment(@NotNull UniElement.Tag opcode,
+    @NotNull UniCompoundAssignment createCompoundAssignment(@NotNull Opcode opcode,
                                                             @NotNull UniExpression lhs,
                                                             @NotNull UniExpression rhs);
 
-    @NotNull UniUnary createUnary(@NotNull UniElement.Tag opcode,
+    @NotNull UniUnary createUnary(@NotNull Opcode opcode,
                                   @NotNull UniExpression argument);
 
-    @NotNull UniBinary createBinary(@NotNull UniElement.Tag opcode,
+    @NotNull UniBinary createBinary(@NotNull Opcode opcode,
                                     @NotNull UniExpression lhs,
                                     @NotNull UniExpression rhs);
 
@@ -280,11 +188,6 @@ public interface UniElementFactory {
                                             @NotNull List<@NotNull UniAnnotationAttribute> attributes);
 
     @NotNull UniAnnotationAttribute createAnnotationAttribute(@NotNull String name, @NotNull UniAnnotationValue value);
-
-    @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors);
-
-    @NotNull UniLet createLet(@NotNull List<@NotNull UniStatement> definitions,
-                              @NotNull UniExpression expression);
 
     @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name);
 

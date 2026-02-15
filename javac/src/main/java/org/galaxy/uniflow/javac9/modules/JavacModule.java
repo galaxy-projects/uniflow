@@ -49,12 +49,12 @@ public class JavacModule extends JavacElement<JCTree> implements UniModule {
     }
 
     @Override
-    public @NotNull UniExpression getName() {
-        return UniflowWrapper.wrap((JCTree.JCExpression) QUALIFIER_ID.get(tree));
+    public @NotNull String getName() {
+        return UniflowWrapper.expressionToString(QUALIFIER_ID.get(tree));
     }
 
     @Override
-    public @NotNull UniList<UniDirective> getDirectives() {
+    public @NotNull UniList<@NotNull UniDirective> getDirectives() {
         return new JavacList<>(
                 DIRECTIVES.createGetter(tree),
                 DIRECTIVES.createSetter(tree),

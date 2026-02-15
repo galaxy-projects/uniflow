@@ -10,6 +10,6 @@ public interface UniSwitchExpression extends UniExpression {
 
     @NotNull UniExpression getSelector();
 
-    @NotNull UniList<UniJdk12Case> getCases();
+    @NotNull UniList<? extends UniJdk12Case> getCases();
 
 }

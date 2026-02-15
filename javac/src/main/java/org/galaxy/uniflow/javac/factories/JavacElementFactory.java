@@ -3,7 +3,6 @@ package org.galaxy.uniflow.javac.factories;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
-import com.sun.tools.javac.util.ListBuffer;
 import org.galaxy.uniflow.api.*;
 import org.galaxy.uniflow.api.annotations.UniAnnotation;
 import org.galaxy.uniflow.api.annotations.UniAnnotationAttribute;
@@ -12,6 +11,9 @@ import org.galaxy.uniflow.api.elements.UniCatch;
 import org.galaxy.uniflow.api.elements.UniModifier;
 import org.galaxy.uniflow.api.elements.labels.UniCaseLabel;
 import org.galaxy.uniflow.api.elements.labels.UniDefaultCaseLabel;
+import org.galaxy.uniflow.api.elements.resources.UniExpressionResource;
+import org.galaxy.uniflow.api.elements.resources.UniResource;
+import org.galaxy.uniflow.api.elements.resources.UniVariableResource;
 import org.galaxy.uniflow.api.expressions.*;
 import org.galaxy.uniflow.api.factories.UniElementFactory;
 import org.galaxy.uniflow.api.factories.UniTypeFactory;
@@ -27,6 +29,9 @@ import org.galaxy.uniflow.javac.annotations.JavacAnnotationAttribute;
 import org.galaxy.uniflow.javac.elements.JavacCaseLabel;
 import org.galaxy.uniflow.javac.elements.JavacCatch;
 import org.galaxy.uniflow.javac.elements.JavacDefaultCaseLabel;
+import org.galaxy.uniflow.javac.elements.resources.JavacExpressionResource;
+import org.galaxy.uniflow.javac.elements.resources.JavacResource;
+import org.galaxy.uniflow.javac.elements.resources.JavacVariableResource;
 import org.galaxy.uniflow.javac.expression.*;
 import org.galaxy.uniflow.javac.statements.*;
 import org.galaxy.uniflow.javac.types.JavacClassType;
@@ -35,15 +40,15 @@ import org.galaxy.uniflow.javac.types.JavacType;
 import org.galaxy.uniflow.javac.types.JavacTypeParameter;
 import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.javac.util.NameUtils;
-import org.galaxy.uniflow.javac12.statements.Javac12Case;
-import org.jetbrains.annotations.Contract;
+import org.galaxy.uniflow.javac8.statements.Javac8Case;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
+
+import static org.galaxy.uniflow.javac.util.JavacUtils.*;
 
 public abstract class JavacElementFactory implements UniElementFactory {
 
@@ -54,34 +59,9 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniCompilationUnit createTopLevel(@NotNull UniPackage packageDecl,
-                                                      @NotNull List<@NotNull UniImport> imports,
-                                                      @NotNull List<@NotNull UniClass> classes) {
-        JavacPackage javacPackage = check(packageDecl, JavacPackage.class);
-        Stream<JavacImport> javacImports = checkList(imports, JavacImport.class);
-        Stream<JavacClass> javacClasses = checkList(classes, JavacClass.class);
-        ListBuffer<JCTree> buffer = new ListBuffer<>();
-
-        buffer.add(javacPackage.getTree());
-        javacImports.map(JavacImport::getTree).forEach(buffer::add);
-        javacClasses.map(JavacClass::getTree).forEach(buffer::add);
-        return new JavacCompilationUnit(treeMaker.TopLevel(buffer.toList()));
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public @NotNull UniCompilationUnit createTopLevel(@NotNull List<@NotNull UniElement> elements) {
-        Stream<JavacElement> javacElements = checkList(elements, JavacElement.class);
-
-        return new JavacCompilationUnit(treeMaker.TopLevel(mapToList(javacElements, JavacElement::getTree)));
-    }
-
-    @Override
-    public @NotNull UniPackage createPackage(@NotNull List<@NotNull UniAnnotation> annotations, @NotNull String name) {
-        Stream<JavacAnnotation> javacAnnotations = checkList(annotations, JavacAnnotation.class);
-
+    public @NotNull UniPackage createPackage(@NotNull String name) {
         return new JavacPackage(treeMaker.PackageDecl(
-                mapToList(javacAnnotations, JavacAnnotation::getTree),
+                com.sun.tools.javac.util.List.nil(),
                 treeMaker.Ident(NameUtils.name(name))
         ));
     }
@@ -102,11 +82,8 @@ public abstract class JavacElementFactory implements UniElementFactory {
                                          @NotNull String name,
                                          @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                          @Nullable UniType extending,
-                                         @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniVariable> fields,
-                                         @NotNull List<@NotNull UniMethod> methods) {
-        return createClass(modifiers, name, typeParameters, extending, implementing, fields, methods,
-                Collections.emptyList());
+                                         @NotNull List<@NotNull UniType> implementing) {
+        return createClass(modifiers, name, typeParameters, extending, implementing, Collections.emptyList());
     }
 
     @Override
@@ -116,22 +93,13 @@ public abstract class JavacElementFactory implements UniElementFactory {
                                          @NotNull List<@NotNull UniTypeParameter> typeParameters,
                                          @Nullable UniType extending,
                                          @NotNull List<@NotNull UniType> implementing,
-                                         @NotNull List<@NotNull UniVariable> fields,
-                                         @NotNull List<@NotNull UniMethod> methods,
                                          @NotNull List<@NotNull UniClassInitializer> initializers) {
         JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
         Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
         JavacExpressionType javacExtending = check(extending, JavacExpressionType.class);
         Stream<JavacExpressionType> javacImplementing =
                 checkList(implementing, JavacExpressionType.class);
-        Stream<JavacVariable> javacFields = checkList(fields, JavacVariable.class);
-        Stream<JavacMethod> javacMethods = checkList(methods, JavacMethod.class);
         Stream<JavacClassInitializer> javacInitializers = checkList(initializers, JavacClassInitializer.class);
-        ListBuffer<JCTree> buffer = new ListBuffer<>();
-
-        javacFields.map(JavacVariable::getTree).forEach(buffer::add);
-        javacMethods.map(JavacMethod::getTree).forEach(buffer::add);
-        javacInitializers.map(JavacClassInitializer::getTree).forEach(buffer::add);
 
         return new JavacClass(treeMaker.ClassDef(
                 javacModifiers.getTree(),
@@ -139,126 +107,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
                 mapToList(javacTypeParameters, JavacTypeParameter::getTree),
                 javacExtending != null ? (JCTree.JCExpression) javacExtending.getExpression() : null,
                 mapToList(javacImplementing, type -> (JCTree.JCExpression) type.getExpression()),
-                buffer.toList()
-        ));
-    }
-
-    @Override
-    public @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers, @NotNull String name,
-                                                        @NotNull Class<?> returnType,
-                                                        @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                                        @NotNull UniVariable receiveParam,
-                                                        @NotNull List<@NotNull UniVariable> parameters,
-                                                        @NotNull List<@NotNull UniExpression> thrown,
-                                                        @Nullable UniExpression defaultValue) {
-        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
-
-        return createAnnotationAttribute(modifiers, name, typeFactory.createClassType(returnType), typeParameters,
-                receiveParam, parameters, thrown, defaultValue);
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public @NotNull UniMethod createAnnotationAttribute(@NotNull UniModifiers modifiers, @NotNull String name,
-                                                        @NotNull UniType returnType,
-                                                        @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                                        @NotNull UniVariable receiveParam,
-                                                        @NotNull List<@NotNull UniVariable> parameters,
-                                                        @NotNull List<@NotNull UniExpression> thrown,
-                                                        @Nullable UniExpression defaultValue) {
-        JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
-        JavacClassType javacReturnType = check(returnType, JavacClassType.class);
-        //noinspection DuplicatedCode
-        Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
-        JavacVariable javacReceiveParam = check(receiveParam, JavacVariable.class);
-        Stream<JavacVariable> javacParameters = checkList(parameters, JavacVariable.class);
-        Stream<JavacExpression> javacThrown = checkList(thrown, JavacExpression.class);
-        JavacExpression<?> javacDefaultValue = check(defaultValue, JavacExpression.class);
-
-        return new JavacMethod(treeMaker.MethodDef(
-                javacModifiers.getTree(),
-                NameUtils.name(name),
-                javacReturnType.getExpression(),
-                mapToList(javacTypeParameters, JavacTypeParameter::getTree),
-                javacReceiveParam.getTree(),
-                mapToList(javacParameters, JavacVariable::getTree),
-                mapToList(javacThrown, threw -> (JCTree.JCExpression) threw.getTree()),
-                null,
-                javacDefaultValue != null ? javacDefaultValue.getTree() : null
-        ));
-    }
-
-    @Override
-    public @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
-                                           @NotNull String name,
-                                           @NotNull Class<?> returnType,
-                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                           @Nullable UniVariable receiveParam,
-                                           @NotNull List<@NotNull UniVariable> parameters,
-                                           @NotNull List<@NotNull UniExpression> thrown,
-                                           @NotNull UniBlock body) {
-        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
-
-        return createMethod(modifiers, name, typeFactory.createClassType(returnType), typeParameters, receiveParam,
-                parameters, thrown, body);
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public @NotNull UniMethod createMethod(@NotNull UniModifiers modifiers,
-                                           @NotNull String name,
-                                           @NotNull UniType returnType,
-                                           @NotNull List<@NotNull UniTypeParameter> typeParameters,
-                                           @Nullable UniVariable receiveParam,
-                                           @NotNull List<@NotNull UniVariable> parameters,
-                                           @NotNull List<@NotNull UniExpression> thrown,
-                                           @NotNull UniBlock body) {
-        JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
-        JavacExpressionType<?, ?> javacReturnType = check(returnType, JavacExpressionType.class);
-        //noinspection DuplicatedCode
-        Stream<JavacTypeParameter> javacTypeParameters = checkList(typeParameters, JavacTypeParameter.class);
-        JavacVariable javacReceiveParam = check(receiveParam, JavacVariable.class);
-        Stream<JavacVariable> javacParameters = checkList(parameters, JavacVariable.class);
-        Stream<JavacExpression> javacThrown = checkList(thrown, JavacExpression.class);
-        JavacBlock javacBody = check(body, JavacBlock.class);
-
-        return new JavacMethod(treeMaker.MethodDef(
-                javacModifiers.getTree(),
-                NameUtils.name(name),
-                javacReturnType.getExpression(),
-                mapToList(javacTypeParameters, JavacTypeParameter::getTree),
-                javacReceiveParam != null ? javacReceiveParam.getTree() : null,
-                mapToList(javacParameters, JavacVariable::getTree),
-                mapToList(javacThrown, threw -> (JCTree.JCExpression) threw.getTree()),
-                javacBody.getTree(),
-                null
-        ));
-    }
-
-    @Override
-    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
-                                         @NotNull String name,
-                                         @NotNull Class<?> type,
-                                         @Nullable UniExpression init) {
-        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
-
-        return createField(modifiers, name, typeFactory.createClassType(type), init);
-    }
-
-    @Override
-    public @NotNull UniField createField(@NotNull UniModifiers modifiers,
-                                         @NotNull String name,
-                                         @NotNull UniType type,
-                                         @Nullable UniExpression init) {
-        JavacModifiers javacModifiers = check(modifiers, JavacModifiers.class);
-        JavacExpressionType<?, ?> javacType = check(type, JavacExpressionType.class);
-        JavacExpression<?> javacInit = check(init, JavacExpression.class);
-
-        return new JavacField(treeMaker.VarDef(
-                javacModifiers.getTree(),
-                NameUtils.name(name),
-                javacType.getExpression(),
-                javacInit != null ? javacInit.getTree() : null
+                mapToList(javacInitializers, JavacClassInitializer::getTree)
         ));
     }
 
@@ -286,6 +135,31 @@ public abstract class JavacElementFactory implements UniElementFactory {
                 NameUtils.name(name),
                 javacType.getExpression(),
                 javacInit != null ? javacInit.getTree() : null,
+                false
+        ));
+    }
+
+    @Override
+    public @NotNull UniParameter createParameter(@NotNull List<@NotNull UniAnnotation> annotations,
+                                                 @NotNull String name,
+                                                 @NotNull Class<?> type) {
+        UniTypeFactory typeFactory = Uniflow.getInstance().getTypeFactory();
+
+        return createParameter(annotations, name, typeFactory.createClassType(type));
+    }
+
+    @Override
+    public @NotNull UniParameter createParameter(@NotNull List<@NotNull UniAnnotation> annotations,
+                                                 @NotNull String name,
+                                                 @NotNull UniType type) {
+        Stream<JavacAnnotation> javacAnnotations = checkList(annotations, JavacAnnotation.class);
+        JavacExpressionType<?, ?> javacType = check(type, JavacExpressionType.class);
+
+        return new JavacParameter(treeMaker.VarDef(
+                treeMaker.Modifiers(0, mapToList(javacAnnotations, JavacAnnotation::getTree)),
+                NameUtils.name(name),
+                javacType.getExpression(),
+                null,
                 false
         ));
     }
@@ -343,15 +217,15 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniVariable variable,
+    public @NotNull UniEnhancedForLoop createForEachLoop(@NotNull UniParameter variable,
                                                          @NotNull UniExpression iterable,
                                                          @NotNull UniStatement body) {
-        JavacVariable javacVariable = check(variable, JavacVariable.class);
+        JavacParameter javacParameter = check(variable, JavacParameter.class);
         JavacExpression<?> javacIterable = check(iterable, JavacExpression.class);
         JavacStatement<?> javacBody = check(body, JavacStatement.class);
 
         return new JavacEnhancedForLoop(treeMaker.ForeachLoop(
-                javacVariable.getTree(),
+                javacParameter.getTree(),
                 javacIterable.getTree(),
                 javacBody.getTree()
         ));
@@ -369,13 +243,13 @@ public abstract class JavacElementFactory implements UniElementFactory {
 
     @Override
     public @NotNull UniSwitch createSwitch(@NotNull UniExpression selector,
-                                           @NotNull List<@NotNull UniJdk12Case> cases) {
+                                           @NotNull List<@NotNull UniJdk8Case> cases) {
         JavacExpression<?> javacSelector = check(selector, JavacExpression.class);
-        Stream<Javac12Case> javacCases = checkList(cases, Javac12Case.class);
+        Stream<Javac8Case> javacCases = checkList(cases, Javac8Case.class);
 
         return new JavacSwitch(treeMaker.Switch(
                 javacSelector.getTree(),
-                mapToList(javacCases, Javac12Case::getTree)
+                mapToList(javacCases, Javac8Case::getTree)
         ));
     }
 
@@ -396,6 +270,16 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
+    public @NotNull UniExpressionResource createResource(@NotNull UniExpression expression) {
+        return new JavacExpressionResource(expression);
+    }
+
+    @Override
+    public @NotNull UniVariableResource createResource(@NotNull UniVariable variable) {
+        return new JavacVariableResource(variable);
+    }
+
+    @Override
     public @NotNull UniTry createTry(@NotNull UniBlock body,
                                      @NotNull List<@NotNull UniCatch> catches,
                                      @Nullable UniBlock finallyBlock) {
@@ -404,17 +288,19 @@ public abstract class JavacElementFactory implements UniElementFactory {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public @NotNull UniTry createTry(@NotNull List<@NotNull UniElement> resources,
+    public @NotNull UniTry createTry(@NotNull List<@NotNull UniResource> resources,
                                      @NotNull UniBlock body,
                                      @NotNull List<@NotNull UniCatch> catches,
                                      @Nullable UniBlock finallyBlock) {
-        Stream<JavacElement> javacResources = checkList(resources, JavacElement.class);
+        Stream<JavacResource> javacResources = checkList(resources, JavacResource.class);
         JavacBlock javacBody = check(body, JavacBlock.class);
         Stream<JavacCatch> javacCatches = checkList(catches, JavacCatch.class);
         JavacBlock javacFinally = check(finallyBlock, JavacBlock.class);
 
         return new JavacTry(treeMaker.Try(
-                mapToList(javacResources, JavacElement::getTree),
+                javacResources.map(JavacResource::getElement)
+                        .map(JavacUnwrapper::unwrap)
+                        .collect(com.sun.tools.javac.util.List.collector()),
                 javacBody.getTree(),
                 mapToList(javacCatches, JavacCatch::getTree),
                 javacFinally != null ? javacFinally.getTree() : null
@@ -587,7 +473,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniCompoundAssignment createCompoundAssignment(UniElement.@NotNull Tag opcode,
+    public @NotNull UniCompoundAssignment createCompoundAssignment(@NotNull Opcode opcode,
                                                                    @NotNull UniExpression lhs,
                                                                    @NotNull UniExpression rhs) {
         JavacExpression<?> javacLhs = check(lhs, JavacExpression.class);
@@ -601,7 +487,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniUnary createUnary(UniElement.@NotNull Tag opcode, @NotNull UniExpression argument) {
+    public @NotNull UniUnary createUnary(@NotNull Opcode opcode, @NotNull UniExpression argument) {
         JavacExpression<?> javacArgument = check(argument, JavacExpression.class);
 
         return new JavacUnary(treeMaker.Unary(
@@ -611,7 +497,7 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    public @NotNull UniBinary createBinary(UniElement.@NotNull Tag opcode,
+    public @NotNull UniBinary createBinary(@NotNull Opcode opcode,
                                            @NotNull UniExpression lhs,
                                            @NotNull UniExpression rhs) {
         JavacExpression<?> javacLhs = check(lhs, JavacExpression.class);
@@ -715,29 +601,6 @@ public abstract class JavacElementFactory implements UniElementFactory {
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public @NotNull UniErroneous createErroneous(@NotNull List<? extends @NotNull UniElement> errors) {
-        Stream<JavacElement> javacErrors = checkList(errors, JavacElement.class);
-
-        return new JavacErroneous(treeMaker.Erroneous(
-                mapToList(javacErrors, JavacElement::getTree)
-        ));
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public @NotNull UniLet createLet(@NotNull List<@NotNull UniStatement> definitions,
-                                     @NotNull UniExpression expression) {
-        Stream<JavacStatement> javacDefinitions = checkList(definitions, JavacStatement.class);
-        JavacExpression<?> javacExpression = check(expression, JavacExpression.class);
-
-        return new JavacLet(treeMaker.LetExpr(
-                mapToList(javacDefinitions, st -> (JCTree.JCStatement) st.getTree()),
-                javacExpression.getTree()
-        ));
-    }
-
-    @Override
     public @NotNull UniFieldAccess createFieldAccess(@NotNull Class<?> selected, @NotNull String name) {
         UniType selectedType = Uniflow.getInstance().getTypeFactory().createType(selected);
 
@@ -774,26 +637,6 @@ public abstract class JavacElementFactory implements UniElementFactory {
         JavacClassType javacType = check(type, JavacClassType.class);
 
         return new JavacFieldAccess((JCTree.JCFieldAccess) treeMaker.ClassLiteral(javacType.getRawType()));
-    }
-
-    @Contract("null, _ -> null")
-    protected <T> T check(Object element, Class<T> type) {
-        if (element == null) return null;
-        if (!type.isInstance(element))
-            throw new IllegalArgumentException("Element " + element + " is not of type " + type);
-        return type.cast(element);
-    }
-
-    protected <T> Stream<T> checkList(List<?> list, Class<T> type) {
-        for (Object element : list) {
-            if (!type.isInstance(element))
-                throw new IllegalArgumentException("Element " + element + " is not of type " + type.getName());
-        }
-        return list.stream().map(type::cast);
-    }
-
-    protected <T, R> com.sun.tools.javac.util.List<T> mapToList(Stream<R> stream, Function<? super R, T> mapper) {
-        return stream.map(mapper).collect(com.sun.tools.javac.util.List.collector());
     }
 
     protected JCTree.JCCaseLabel createCaseLabel(@NotNull UniCaseLabel label) {

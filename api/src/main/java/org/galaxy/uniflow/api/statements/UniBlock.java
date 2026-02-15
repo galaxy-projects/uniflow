@@ -9,6 +9,6 @@ public interface UniBlock extends UniStatement {
 
     boolean isStatic();
 
-    @NotNull UniList<UniStatement> getStatements();
+    @NotNull UniList<@NotNull UniStatement> getStatements();
 
 }

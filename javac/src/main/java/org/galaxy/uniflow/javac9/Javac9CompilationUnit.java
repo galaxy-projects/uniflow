@@ -1,35 +1,20 @@
 package org.galaxy.uniflow.javac9;
 
 import com.sun.tools.javac.tree.JCTree;
-import com.sun.tools.javac.util.List;
 import org.galaxy.uniflow.api.factories.UniConstants;
 import org.galaxy.uniflow.api.modules.UniModule;
 import org.galaxy.uniflow.javac.JavacCompilationUnit;
-import org.galaxy.uniflow.javac.util.JavacUnwrapper;
 import org.galaxy.uniflow.reflection.ReflectClass;
-import org.galaxy.uniflow.reflection.ReflectField;
 import org.galaxy.uniflow.reflection.ReflectMethod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Javac9CompilationUnit extends JavacCompilationUnit {
 
-    private static final ReflectField DEFINITIONS;
     private static final ReflectMethod GET_MODULE;
 
     public Javac9CompilationUnit(JCTree.@NotNull JCCompilationUnit tree) {
         super(tree);
-    }
-
-    @Override
-    public void setModule(@Nullable UniModule module) {
-        JCTree current = (JCTree) GET_MODULE.run(tree);
-        List<JCTree> defs = DEFINITIONS.get(tree);
-
-        if (current != null)
-            defs = defs.stream().filter(e -> e != current).collect(List.collector());
-        defs = defs.append(JavacUnwrapper.unwrap(module));
-        DEFINITIONS.set(tree, defs);
     }
 
     @Override
@@ -42,9 +27,8 @@ public class Javac9CompilationUnit extends JavacCompilationUnit {
     static {
         try {
             ReflectClass type = new ReflectClass(Reflection.COMPILATION_UNIT);
-            DEFINITIONS = type.field("defs");
             GET_MODULE = type.method("getModuleDecl");
-        } catch (NoSuchFieldException | NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             throw new UnsupportedOperationException(UniConstants.JAVA_VERSION_ERROR_MESSAGE, e);
         }
     }

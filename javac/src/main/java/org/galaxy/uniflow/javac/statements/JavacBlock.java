@@ -28,7 +28,7 @@ public class JavacBlock extends JavacElement<JCTree.JCBlock> implements UniBlock
     }
 
     @Override
-    public @NotNull UniList<UniStatement> getStatements() {
+    public @NotNull UniList<@NotNull UniStatement> getStatements() {
         return new JavacList<>(
                 () -> tree.stats,
                 newList -> tree.stats = newList,
